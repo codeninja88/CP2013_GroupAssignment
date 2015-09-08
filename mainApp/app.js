@@ -7,6 +7,8 @@ var app = express();
 app.set('view engine', 'ejs');
 app.locals.pretty = true;
 
+app.use("/styles",express static(__dirname+"/style"));
+
 //middle-ware (to send data to server i think)
 app.use(bodyParser.urlencoded({extended: true}));
 
