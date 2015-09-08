@@ -61,17 +61,17 @@ app.post('/register', function(req, res, next) {
 
 // login authentication
 app.post('/login', function(req, res) {
-  var email = req.body.email;
+  var username = req.body.username;
   var password = req.body.password;
 
-  db.get('SELECT * FROM USER WHERE USER_email = ? AND USER_password = ?', email, password, function(err, row) {
+  db.get('SELECT * FROM USER WHERE user_username = ? AND user_password = ?', username, password, function(err, row) {
 
     //query returns undefined if ? === 'email entered by user that does not exist in db'
-    if (row === undefined || !row.USER_email){
+    if (row === undefined || !row.user_username){
       res.render('login.ejs', {error: 'Invalid email or password.'});
     } else {
-      if (row.USER_password === password) {
-        res.render('dashboard.ejs', {msg: 'You are successfully logged in ' + row.USER_fName.toUpperCase()});
+      if (row.user_password === password) {
+        res.render('dashboard.ejs', {msg: 'You are successfully logged in ' + row.user_fName.toUpperCase()});
         console.log("logged in successfully.");
       } else {
         console.log("invalid login details");
