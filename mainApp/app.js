@@ -7,7 +7,7 @@ var app = express();
 app.set('view engine', 'ejs');
 app.locals.pretty = true;
 
-app.use("/styles",express static(__dirname+"/style"));
+//app.use("/styles",express static(__dirname+"/style"));
 
 //middle-ware (to send data to server i think)
 app.use(bodyParser.urlencoded({extended: true}));
@@ -16,12 +16,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.get('/', function(req, res) {
   res.render('index.ejs', {
     title: "Home",
-    body: "This is Home page"
+    body: "This is Home page",
+    msg: ""
   });
 });
 
-app.get('/register', function(req, res) {
-  res.render('register.ejs');
+app.get('/signup', function(req, res) {
+  res.render('signup.ejs', {
+    title: "Login",
+    error: ""
+  });
 });
 
 app.get('/dashboard', function(req, res) {
@@ -35,24 +39,25 @@ app.get('/logout', function(req, res) {
 app.get('/login', function(req, res) {
   res.render('login.ejs', {
     title: "Login",
-    //body: ""
+    error: ""
+    //msg:""
   });
 });
 
 //post req adding new user to the sqlite database
-app.post('/register', function(req, res, next) {
+app.post('/signup', function(req, res, next) {
   var firstName = req.body.firstName;
   var lastName = req.body.lastName;
-  var email = req.body.email;
+  var username = req.body.username;
   var password = req.body.password;
-  var sqlRequest = "INSERT INTO 'USER' (USER_fName, USER_lName, USER_email, USER_password) " +
-               "VALUES('" + firstName + "', '" + lastName + "', '" + email + "', '" + password + "')"
+  var sqlRequest = "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password) " +
+               "VALUES('" + firstName + "', '" + lastName + "', '" + username + "', '" + password + "')"
   db.run(sqlRequest, function(err) {
     if(err !== null) {
       next(err);
     }
     else {
-      res.render('dashboard.ejs', {msg: 'You have successfully registered and logged in ' + firstName.toUpperCase()})
+      res.render('index.ejs', {title: 'HOME', msg: 'You have successfully signed up and logged in ' + firstName.toUpperCase()})
     }
   });
   //on post req data will be sent using middle-ware "body parser" library
@@ -68,14 +73,14 @@ app.post('/login', function(req, res) {
 
     //query returns undefined if ? === 'email entered by user that does not exist in db'
     if (row === undefined || !row.user_username){
-      res.render('login.ejs', {error: 'Invalid email or password.'});
+      res.render('index.ejs', {error: 'Invalid username or password.'});
     } else {
       if (row.user_password === password) {
-        res.render('dashboard.ejs', {msg: 'You are successfully logged in ' + row.user_fName.toUpperCase()});
+        res.render('index.ejs', {title: 'HOME', msg: 'You are successfully logged in ' + row.user_fName.toUpperCase()});
         console.log("logged in successfully.");
       } else {
         console.log("invalid login details");
-        res.render('login.ejs', {error: 'Invalid email or password.'});
+        res.render('login.ejs', {error: 'Invalid username or password.'});
       }
     }
   });
