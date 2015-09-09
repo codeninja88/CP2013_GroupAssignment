@@ -1,6 +1,7 @@
 var sqlite3 = require("sqlite3").verbose();
 var bodyParser = require('body-parser');
 var express = require('express');
+var session = require('express-session')
 var db = new sqlite3.Database('../DBRevised.sqlite');
 
 var app = express();
@@ -11,6 +12,7 @@ app.locals.pretty = true;
 
 //middle-ware (to send data to server i think)
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(session({resave: true, saveUninitialized: true, secret: 'SOMERANDOMSECRETHERE', cookie: { maxAge: 60000 }}));
 
 // setting index.ejs as main/home page and other routes
 app.get('/', function(req, res) {
