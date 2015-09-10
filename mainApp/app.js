@@ -9,12 +9,12 @@ var app = express();
 app.set('view engine', 'ejs');
 app.locals.pretty = true;
 
-//app.use("/styles",express static(__dirname+"/style"));
+//app.use("/styles",express.static(__dirname + "/styles"));
+app.use( express.static("public"));
+//app.use( express.static("views/styles"));
 
 //middle-ware (to send data to server i think)
 app.use(bodyParser.urlencoded({extended: true}));
-
-
 
 app.use(session({
     secret: 'agileisawesome',
@@ -22,26 +22,26 @@ app.use(session({
     resave: true
 }));
 
-
-
-
 // setting index.ejs as main/home page and other routes
 app.get('/', function(req, res) {
     res.render('index.ejs', {
     title: "Home",
     body: "This is Home page",
-    msg: ""
+    msg: "",
+    error: ""
   });
 
     console.log(req.session);
     console.log(req.session.username);
     console.log(req.session.isAdmin);
-    
+
 });
 
 app.get('/signup', function(req, res) {
   res.render('signup.ejs', {
-    title: "Login",
+    title: "Signup",
+    body: "This is Signup page",
+    msg: "",
     error: ""
   });
     console.log(req.session.username);
@@ -49,8 +49,13 @@ app.get('/signup', function(req, res) {
 
 });
 
-app.get('/dashboard', function(req, res) {
-  res.render('dashboard.ejs');
+app.get('/admin', function(req, res) {
+  res.render('admin.ejs', {
+    title: "admin",
+    body: "This is Admin page",
+    msg: "",
+    error: ""
+  });
 });
 
 app.get('/logout', function(req, res) {
@@ -64,19 +69,47 @@ app.get('/logout', function(req, res) {
 app.get('/login', function(req, res) {
   res.render('login.ejs', {
     title: "Login",
-    error: ""
-    //msg:""
+    error: "",
+    msg:""
   });
 
 });
 
+app.get('/doorGates', function(req, res) {
+  res.render('doorGates.ejs', {
+    title: "door Gates",
+    body: "This is doorGates page",
+    msg: "",
+    error: ""
+  });
+});
 
+app.get('/holidayMode', function(req, res) {
+  res.render('holidayMode.ejs', {
+    title: "holidayMode",
+    body: "This is holidayMode page",
+    msg: "",
+    error: ""
+  });
+});
 
+app.get('/light', function(req, res) {
+  res.render('light.ejs', {
+    title: "light",
+    body: "This is light page",
+    msg: "",
+    error: ""
+  });
+});
 
-
-
-
-
+app.get('/logs', function(req, res) {
+  res.render('logs.ejs', {
+    title: "logs",
+    body: "This is logs page",
+    msg: "",
+    error: ""
+  });
+});
 
 //post req adding new user to the sqlite database
 app.post('/signup', function(req, res, next) {
@@ -110,20 +143,12 @@ app.post('/login', function(req, res) {
       res.render('index.ejs', {error: 'Invalid username or password.'});
     } else {
       if (row.user_password === password) {
-        
-          
-        req.session.username = username;         
+        req.session.username = username;
         req.session.isAdmin = row.user_isAdmin;
-
-          
         res.render('index.ejs', {title: 'HOME', msg: 'You are successfully logged in ' + username.toUpperCase()});
-          
-          
-          
-          
         console.log("logged in successfully.");
 
-          
+
       } else {
         console.log("invalid login details");
         res.render('login.ejs', {error: 'Invalid username or password.'});

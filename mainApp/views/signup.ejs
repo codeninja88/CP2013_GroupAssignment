@@ -1,12 +1,11 @@
 <% include header.ejs %>
 <% include nav.ejs %>
-    
+<p><%= msg %></p>
+<%= error %>
+
+
     <h1>Login Page</h1>
-    
-    <p>
-        <%= error %>
-    </p>
-    
+
     <hr />
     <form method="post">
 
@@ -28,5 +27,7 @@
         <br/>
         <input type="submit" />
     </form>
+	<hr>
 
-<% include footer.ejs %>
+
+  <% include footer.ejs %>

@@ -1,25 +1,24 @@
 <% include header.ejs %>
 <% include nav.ejs %>
-    
+<p><%= msg %></p>
+<%= error %>
+
     <h1>Login Page</h1>
-    
-    <p>
-    <%= error %>
-    </p>
-    
+
     <hr />
     <form method="post">
-       
+
         <span>Username:</span>
         <input type="text" name="username" required="required" />
         <br/>
-        
+
         <span>Password:</span>
         <input type="password" name="password" required="required" />
         <br/>
-        
+
         <input type="submit" />
-        
+
     </form>
+	<hr>
 
 <% include footer.ejs %>
