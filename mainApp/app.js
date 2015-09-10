@@ -44,6 +44,8 @@ app.get('/signup', function(req, res) {
     title: "Login",
     error: ""
   });
+    console.log(req.session.username);
+    console.log(req.session.isAdmin);
 
 });
 
@@ -52,7 +54,11 @@ app.get('/dashboard', function(req, res) {
 });
 
 app.get('/logout', function(req, res) {
-  res.redirect('/');
+    res.redirect('/');
+    req.session.destroy();
+    console.log(req.session.username);
+    console.log(req.session);
+
 });
 
 app.get('/login', function(req, res) {
@@ -63,6 +69,14 @@ app.get('/login', function(req, res) {
   });
 
 });
+
+
+
+
+
+
+
+
 
 //post req adding new user to the sqlite database
 app.post('/signup', function(req, res, next) {
@@ -91,7 +105,7 @@ app.post('/login', function(req, res) {
 
   db.get('SELECT * FROM USER WHERE user_username = ? AND user_password = ?', username, password, function(err, row) {
 
-    //query returns undefined if ? === 'email entered by user that does not exist in db'
+    //query returns undefined if ? === 'username entered by user that does not exist in db'
     if (row === undefined || !row.user_username){
       res.render('index.ejs', {error: 'Invalid username or password.'});
     } else {
@@ -103,6 +117,8 @@ app.post('/login', function(req, res) {
 
           
         res.render('index.ejs', {title: 'HOME', msg: 'You are successfully logged in ' + username.toUpperCase()});
+          
+          
           
           
         console.log("logged in successfully.");
