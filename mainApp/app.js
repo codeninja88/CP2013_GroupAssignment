@@ -1,7 +1,6 @@
 var sqlite3 = require("sqlite3").verbose();
 var bodyParser = require('body-parser');
 var express = require('express');
-
 var session = require('express-session');
 var db = new sqlite3.Database('../DBRevised.sqlite');
 
@@ -13,7 +12,7 @@ app.locals.pretty = true;
 app.use( express.static("public"));
 //app.use( express.static("views/styles"));
 
-//middle-ware (to send data to server i think)
+//middle-ware
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(session({
@@ -24,10 +23,19 @@ app.use(session({
 
 // setting index.ejs as main/home page and other routes
 app.get('/', function(req, res) {
+    // chcking if session created for user after login
+    var userMsg;
+    if (req.session.username) {
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+    } else {
+        userMsg = "";
+    }
+    
     res.render('index.ejs', {
     title: "Home",
     body: "This is Home page",
     msg: "",
+    user: userMsg,
     error: ""
   });
 
@@ -38,24 +46,41 @@ app.get('/', function(req, res) {
 });
 
 app.get('/signup', function(req, res) {
-  res.render('signup.ejs', {
-    title: "Signup",
-    body: "This is Signup page",
-    msg: "",
-    error: ""
-  });
-    console.log(req.session.username);
-    console.log(req.session.isAdmin);
+    // chcking if session created for user after login
+    var userMsg;
+    if (req.session.username) {
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+    } else {
+        userMsg = "";
+    }
+    
+    res.render('signup.ejs', {
+        title: "Signup",
+        body: "This is Signup page",
+        msg: "",
+        user: userMsg,
+        error: ""
+    });
+        console.log(req.session.username);
+        console.log(req.session.isAdmin);
 
 });
 
 app.get('/admin', function(req, res) {
-  res.render('admin.ejs', {
-    title: "admin",
-    body: "This is Admin page",
-    msg: "",
-    error: ""
-  });
+    // chcking if session created for user after login
+    var userMsg;
+    if (req.session.username) {
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+    } else {
+        userMsg = "";
+    }
+    res.render('admin.ejs', {
+        title: "admin",
+        body: "This is Admin page",
+        msg: "",
+        user: userMsg,
+        error: ""
+    });
 });
 
 app.get('/logout', function(req, res) {
@@ -67,48 +92,90 @@ app.get('/logout', function(req, res) {
 });
 
 app.get('/login', function(req, res) {
-  res.render('login.ejs', {
-    title: "Login",
-    error: "",
-    msg:""
-  });
+    // chcking if session created for user after login
+    var userMsg;
+    if (req.session.username) {
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+    } else {
+        userMsg = "";
+    }
+      res.render('login.ejs', {
+        title: "Login",
+        error: "",
+        user: userMsg,
+        msg:""
+      });
 
 });
 
 app.get('/doorGates', function(req, res) {
-  res.render('doorGates.ejs', {
-    title: "door Gates",
-    body: "This is doorGates page",
-    msg: "",
-    error: ""
-  });
+    // chcking if session created for user after login
+    var userMsg;
+    if (req.session.username) {
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+    } else {
+        userMsg = "";
+    }
+    
+      res.render('doorGates.ejs', {
+        title: "door Gates",
+        body: "This is doorGates page",
+        msg: "",
+        user: userMsg,
+        error: ""
+      });
 });
 
 app.get('/holidayMode', function(req, res) {
-  res.render('holidayMode.ejs', {
-    title: "holidayMode",
-    body: "This is holidayMode page",
-    msg: "",
-    error: ""
-  });
+    // chcking if session created for user after login
+    var userMsg;
+    if (req.session.username) {
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+    } else {
+        userMsg = "";
+    }
+    
+      res.render('holidayMode.ejs', {
+        title: "holidayMode",
+        body: "This is holidayMode page",
+        msg: "",
+        user: userMsg,
+        error: ""
+      });
 });
 
 app.get('/light', function(req, res) {
-  res.render('light.ejs', {
-    title: "light",
-    body: "This is light page",
-    msg: "",
-    error: ""
-  });
+    // chcking if session created for user after login
+    var userMsg;
+    if (req.session.username) {
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+    } else {
+        userMsg = "";
+    }
+      res.render('light.ejs', {
+        title: "light",
+        body: "This is light page",
+        msg: "",
+        user: userMsg,
+        error: ""
+      });
 });
 
 app.get('/logs', function(req, res) {
-  res.render('logs.ejs', {
-    title: "logs",
-    body: "This is logs page",
-    msg: "",
-    error: ""
-  });
+    // chcking if session created for user after login
+    var userMsg;
+    if (req.session.username) {
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+    } else {
+        userMsg = "";
+    }
+      res.render('logs.ejs', {
+        title: "logs",
+        body: "This is logs page",
+        msg: "",
+        user: userMsg,
+        error: ""
+      });
 });
 
 //post req adding new user to the sqlite database
@@ -124,11 +191,15 @@ app.post('/signup', function(req, res, next) {
       next(err);
     }
     else {
-      res.render('index.ejs', {title: 'HOME', msg: 'You have successfully signed up and logged in ' + firstName.toUpperCase()})
+      res.render('index.ejs', {
+        title: 'HOME',
+        body: "",
+        error: "",
+        user: "",
+        msg: ""
+      });
     }
   });
-  //on post req data will be sent using middle-ware "body parser" library
-  //res.json(req.body);
 });
 
 // login authentication
@@ -140,18 +211,35 @@ app.post('/login', function(req, res) {
 
     //query returns undefined if ? === 'username entered by user that does not exist in db'
     if (row === undefined || !row.user_username){
-      res.render('index.ejs', {error: 'Invalid username or password.'});
+      res.render('login.ejs', {
+        title: "Login",
+        body: "",
+        msg: "",
+        user: "",
+        error: 'Invalid username or password.'
+      });
     } else {
       if (row.user_password === password) {
         req.session.username = username;
         req.session.isAdmin = row.user_isAdmin;
-        res.render('index.ejs', {title: 'HOME', msg: 'You are successfully logged in ' + username.toUpperCase()});
+        res.render('index.ejs', {
+            title: "Home",
+            body: "",
+            error: "",
+            user: 'Welcome ' + req.session.username.toUpperCase(),
+            msg: ""
+        });
         console.log("logged in successfully.");
-
 
       } else {
         console.log("invalid login details");
-        res.render('login.ejs', {error: 'Invalid username or password.'});
+        res.render('login.ejs', {
+        title: "Login",
+        body: "",
+        msg: "",
+        user: "",
+        error: 'Invalid username or password.'
+      });
       }
     }
   });

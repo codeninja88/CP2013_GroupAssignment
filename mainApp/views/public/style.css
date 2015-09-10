@@ -100,3 +100,29 @@ p {
 	padding-bottom: 7.5%;
 
 }
+
+#error, #msg {
+    font-style: italic
+}
+
+#error {
+    color: red;
+}
+
+.user {
+    color: blue;
+    text-align: right;
+    padding-right: 2%;
+    font-style: italic
+}
+
+#msg {
+    color: darkgreen;
+}
+
+.user a{
+    text-decoration: none;
+    color: inherit;
+}
+
+
