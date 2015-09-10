@@ -1,7 +1,8 @@
 var sqlite3 = require("sqlite3").verbose();
 var bodyParser = require('body-parser');
 var express = require('express');
-var session = require('express-session')
+
+var session = require('express-session');
 var db = new sqlite3.Database('../DBRevised.sqlite');
 
 var app = express();
@@ -12,15 +13,31 @@ app.locals.pretty = true;
 
 //middle-ware (to send data to server i think)
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(session({resave: true, saveUninitialized: true, secret: 'SOMERANDOMSECRETHERE', cookie: { maxAge: 60000 }}));
+
+
+
+//app.use(cookieParser());
+app.use(session({
+    secret: 'agileisawesome',
+    saveUninitialized: true,
+    resave: true
+}));
+
+
+
 
 // setting index.ejs as main/home page and other routes
 app.get('/', function(req, res) {
-  res.render('index.ejs', {
+    res.render('index.ejs', {
     title: "Home",
     body: "This is Home page",
     msg: ""
   });
+
+    console.log(req.session);
+    console.log(req.session.username);
+    console.log(req.session.isAdmin);
+    
 });
 
 app.get('/signup', function(req, res) {
@@ -28,6 +45,7 @@ app.get('/signup', function(req, res) {
     title: "Login",
     error: ""
   });
+
 });
 
 app.get('/dashboard', function(req, res) {
@@ -44,6 +62,7 @@ app.get('/login', function(req, res) {
     error: ""
     //msg:""
   });
+
 });
 
 //post req adding new user to the sqlite database
@@ -78,8 +97,18 @@ app.post('/login', function(req, res) {
       res.render('index.ejs', {error: 'Invalid username or password.'});
     } else {
       if (row.user_password === password) {
-        res.render('index.ejs', {title: 'HOME', msg: 'You are successfully logged in ' + row.user_fName.toUpperCase()});
+        
+          
+        req.session.username = username;         
+        req.session.isAdmin = row.user_isAdmin;
+
+          
+        res.render('index.ejs', {title: 'HOME', msg: 'You are successfully logged in ' + username.toUpperCase()});
+          
+          
         console.log("logged in successfully.");
+
+          
       } else {
         console.log("invalid login details");
         res.render('login.ejs', {error: 'Invalid username or password.'});
