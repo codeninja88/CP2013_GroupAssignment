@@ -41,11 +41,19 @@ function userCheck(req) {
 
 
 // PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
-function printDebug(req) {
+function printDebug(req, pageName) {
 
-    console.log(req.session);
-    console.log(req.session.username);
-    console.log(req.session.isAdmin);
+    //console.log(req.session);
+
+    console.log("\nPAGE: " + pageName);
+
+    if (req.session.username !== undefined) {
+
+        console.log("---> user: \t" + req.session.username);
+        console.log("---> isAdmin: \t" + req.session.isAdmin);
+
+    }
+
 
 }
 
@@ -110,7 +118,7 @@ app.get('/', function(req, res) {
         }
     );
 
-    printDebug(req);
+    printDebug(req, "HOME / INDEX");
 
 });
 
@@ -131,7 +139,7 @@ app.get('/signup', function(req, res) {
         }
     );
 
-    printDebug(req);
+    printDebug(req, "SIGNUP");
 
 });
 
@@ -152,7 +160,7 @@ app.get('/admin', function(req, res) {
         }
     );
 
-    printDebug(req);
+    printDebug(req, "ADMIN");
 
 });
 
@@ -160,10 +168,11 @@ app.get('/admin', function(req, res) {
 // GET LOGOUT
 app.get('/logout', function(req, res) {
 
+
     res.redirect('/');
     req.session.destroy();
-    console.log(req.session.username);
-    console.log(req.session);
+    console.log("Session successfully destroyed\n");
+
 
 });
 
@@ -182,7 +191,7 @@ app.get('/login', function(req, res) {
         }
     );
 
-    printDebug(req);
+    printDebug(req, "LOGIN");
 
 });
 
@@ -202,7 +211,7 @@ app.get('/doorGates', function(req, res) {
         }
     );
 
-    printDebug(req);
+    printDebug(req, "DOORS/GATES");
 
 });
 
@@ -222,7 +231,7 @@ app.get('/holidayMode', function(req, res) {
         }
     );
 
-    printDebug(req);
+    printDebug(req, "HOLIDAY MODE");
 
 });
 
@@ -241,7 +250,7 @@ app.get('/light', function(req, res) {
         }
     );
 
-    printDebug(req);
+    printDebug(req, "LIGHT");
 
 });
 
@@ -260,7 +269,7 @@ app.get('/logs', function(req, res) {
         }
     );
 
-    printDebug(req);
+    printDebug(req, "LOGS");
 
 });
 
@@ -316,33 +325,35 @@ app.post('/login',
 
     function(req, res) {
 
-        var username = req.body.username;
-        var password = req.body.password;
 
-        db.get('SELECT * FROM USER WHERE user_username = ? AND user_password = ?', username, password,
+        db.get('SELECT * FROM USER WHERE user_username = ? AND user_password = ?', req.body.username, req.body.password,
 
             function(err, row) {
 
-                //query returns undefined if ? === 'username entered by user that does not exist in db'
+                var errMsg = "ERROR:\t Invalid username / password combination.";
+
+                // query returns undefined if username entered does not exist in db
                 if (row === undefined || !row.user_username) {
 
                     res.render('login.ejs',
+
                         {
 
                             title: "Login",
                             body: "",
                             msg: "",
                             user: "",
-                            error: 'Invalid username or password.'
+                            error: errMsg
 
                         }
+
                     );
 
                 } else {
 
-                    if (row.user_password === password) {
+                    if (row.user_password === req.body.password) {
 
-                        req.session.username = username;
+                        req.session.username = req.body.username;
                         req.session.isAdmin = row.user_isAdmin;
 
                         res.render('index.ejs',
@@ -357,11 +368,13 @@ app.post('/login',
 
                         );
 
-                        console.log("logged in successfully.");
+
+                        console.log("Logged in successfully.");
+                        printDebug(req, "INDEX");
 
                     } else {
 
-                        console.log("invalid login details");
+                        console.log(errMsg);
 
                         res.render('login.ejs',
 
@@ -370,7 +383,7 @@ app.post('/login',
                                 body: "",
                                 msg: "",
                                 user: "",
-                                error: 'Invalid username or password.'
+                                error: errMsg
 
                             }
 
