@@ -1,11 +1,13 @@
 <% include header.ejs %>
 <% include nav.ejs %>
-<p id='msg'><%= msg %></p>
-<p id='error'><%= error %><a href='/logout'>LOG OUT</a></p>
+
+<p id='error'><%= error %></p>
 
     <h1>Login Page</h1>
 
     <hr />
+
+
     <form method="post">
 
         <span>Username:</span>
@@ -19,6 +21,7 @@
         <input type="submit" />
 
     </form>
+
 	<hr>
 
 <% include footer.ejs %>

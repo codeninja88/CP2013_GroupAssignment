@@ -1,4 +1,5 @@
-@import url('http://fonts.googleapis.com/css?family=Khula');
+@import url('//fonts.googleapis.com/css?family=Khula');
+
 @charset "utf-8";
 
 #menu {
@@ -74,7 +75,7 @@ p {
 	font-family:Khula;
 }
 
-#rcorners2 {
+#logoContainer div {
     border-bottom-left-radius: 25px;
 	border-bottom-right-radius: 25px;
     border: 5px solid #000000;
@@ -85,7 +86,7 @@ p {
 	margin-list:none
 }
 
-#globalContainer {
+#logoContainer {
 	padding-right: 2.5%;
 	padding-top: 2%;
 	padding-left: 2%;
