@@ -259,6 +259,7 @@ app.get('/light', function(req, res) {
 app.get('/logs', function(req, res) {
 
     userCheck(req);
+
     res.render('logs.ejs',
         {
             title: "logs",
@@ -302,15 +303,7 @@ app.post('/signup',
                 if (err !== null) next(err);
                 else {
 
-                    res.render('index.ejs', {
-
-                        title: 'HOME',
-                        body: "",
-                        error: "",
-                        user: "",
-                        msg: ""
-
-                    });
+                    res.redirect("/");
 
                 }
             }
@@ -349,6 +342,8 @@ app.post('/login',
 
                     );
 
+
+
                 } else {
 
                     if (row.user_password === req.body.password) {
@@ -356,17 +351,8 @@ app.post('/login',
                         req.session.username = req.body.username;
                         req.session.isAdmin = row.user_isAdmin;
 
-                        res.render('index.ejs',
 
-                            {
-                                title: "Home",
-                                body: "",
-                                error: "",
-                                user: 'Welcome ' + req.session.username.toUpperCase(),
-                                msg: ""
-                            }
-
-                        );
+                        res.redirect("/");
 
 
                         console.log("Logged in successfully.");
