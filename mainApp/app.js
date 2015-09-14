@@ -1,35 +1,63 @@
+
+// Dependency module declarations
 var sqlite3 = require("sqlite3").verbose();
 var bodyParser = require('body-parser');
 var express = require('express');
 var session = require('express-session');
-var db = new sqlite3.Database('../DBRevised.sqlite');
+var db = new sqlite3.Database('database.sqlite');
 
+
+
+// Create instance of Express
 var app = express();
+
+
+
 app.set('view engine', 'ejs');
-app.locals.pretty = true;
 
-//app.use("/styles",express.static(__dirname + "/styles"));
-app.use( express.static("public"));
-//app.use( express.static("views/styles"));
+app.locals.pretty = true; // makes sure code is readable in JS console
 
-//middle-ware
+app.use(express.static("public"));
+
+
+
+
+function userCheck(req) {
+    
+    
+    if (req.session.username) {
+        
+        userMsg = 'Welcome ' + req.session.username.toUpperCase();
+        
+    } else {
+        
+        userMsg = "";
+        
+    }
+    
+}
+
+
+// Middleware between client side and server side
 app.use(bodyParser.urlencoded({extended: true}));
 
+//Session initialisation
 app.use(session({
     secret: 'agileisawesome',
     saveUninitialized: true,
     resave: true
 }));
 
-// setting index.ejs as main/home page and other routes
+
+
+
+
+// Set up home page
 app.get('/', function(req, res) {
-    // chcking if session created for user after login
+    // checking if user is logged in
     var userMsg;
-    if (req.session.username) {
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-    } else {
-        userMsg = "";
-    }
+    
+    userCheck(req);
     
     res.render('index.ejs', {
     title: "Home",
@@ -45,15 +73,15 @@ app.get('/', function(req, res) {
 
 });
 
+
+
+
 app.get('/signup', function(req, res) {
-    // chcking if session created for user after login
+    // checking if session created for user after login
     var userMsg;
-    if (req.session.username) {
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-    } else {
-        userMsg = "";
-    }
     
+    userCheck(req);
+      
     res.render('signup.ejs', {
         title: "Signup",
         body: "This is Signup page",
@@ -67,13 +95,10 @@ app.get('/signup', function(req, res) {
 });
 
 app.get('/admin', function(req, res) {
-    // chcking if session created for user after login
+    // checking if session created for user after login
     var userMsg;
-    if (req.session.username) {
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-    } else {
-        userMsg = "";
-    }
+    userCheck(req);
+    
     res.render('admin.ejs', {
         title: "admin",
         body: "This is Admin page",
@@ -94,11 +119,8 @@ app.get('/logout', function(req, res) {
 app.get('/login', function(req, res) {
     // chcking if session created for user after login
     var userMsg;
-    if (req.session.username) {
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-    } else {
-        userMsg = "";
-    }
+    userCheck(req);
+    
       res.render('login.ejs', {
         title: "Login",
         error: "",
@@ -111,11 +133,7 @@ app.get('/login', function(req, res) {
 app.get('/doorGates', function(req, res) {
     // chcking if session created for user after login
     var userMsg;
-    if (req.session.username) {
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-    } else {
-        userMsg = "";
-    }
+    userCheck(req);
     
       res.render('doorGates.ejs', {
         title: "door Gates",
@@ -129,11 +147,7 @@ app.get('/doorGates', function(req, res) {
 app.get('/holidayMode', function(req, res) {
     // chcking if session created for user after login
     var userMsg;
-    if (req.session.username) {
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-    } else {
-        userMsg = "";
-    }
+    userCheck(req);
     
       res.render('holidayMode.ejs', {
         title: "holidayMode",
@@ -147,11 +161,7 @@ app.get('/holidayMode', function(req, res) {
 app.get('/light', function(req, res) {
     // chcking if session created for user after login
     var userMsg;
-    if (req.session.username) {
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-    } else {
-        userMsg = "";
-    }
+    userCheck(req);
       res.render('light.ejs', {
         title: "light",
         body: "This is light page",
@@ -164,11 +174,7 @@ app.get('/light', function(req, res) {
 app.get('/logs', function(req, res) {
     // chcking if session created for user after login
     var userMsg;
-    if (req.session.username) {
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-    } else {
-        userMsg = "";
-    }
+    userCheck(req);
       res.render('logs.ejs', {
         title: "logs",
         body: "This is logs page",
