@@ -70,10 +70,6 @@ form {
 	font-family:Khula;
 }
 
-p {
-	text-align:center;
-	font-family:Khula;
-}
 
 #logoContainer div {
     border-bottom-left-radius: 25px;
@@ -127,3 +123,35 @@ p {
 }
 
 
+
+#outerContainer {
+    margin-left: 1.75%;
+    margin-right: 1.75%;
+    display: block;
+}
+
+
+#innerContainerLeft {
+    width:25%;
+    float: left;
+}
+
+#innerContainerLeft table, tr, td , button {
+    width:100%;
+    position: inherit;
+}
+
+#innerContainerLeft button {
+    padding-top: 5%;
+    padding-bottom: 5%;
+    background: greenyellow;
+    font-size: 26px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+
+}
+
+#innerContainerRight {
+    float: left;
+    width: 71.5%;
+}
