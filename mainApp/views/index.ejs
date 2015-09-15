@@ -1,12 +1,30 @@
 <% include header.ejs %>
 <% include nav.ejs %>
 
+<% if(login !== '') { %>
+
+<form method="post">
+    <span>Username:</span>
+    <input type="text" name="username" required="required" />
+    <br/>
+
+    <span>Password:</span>
+    <input type="password" name="password" required="required" />
+    <br/>
+
+    <input type="submit" />
+
+</form>
+
+<% } %>
+
 
 <div id="logoContainer">
         
 	<div>
         
         <center><img id="logo" src="automationLogo.png"></center>
+
         
     </div>
         

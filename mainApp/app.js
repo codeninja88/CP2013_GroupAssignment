@@ -15,8 +15,19 @@ var session = require('express-session');
 var userMsg = "";
 var db = new sqlite3.Database('database.sqlite');
 
+var app = express();
 
+// SESSION SETUP
+app.use(
+    session(
+        {
+            secret: 'agileisawesome',
+            saveUninitialized: true,
+            resave: true
 
+        }
+    )
+);
 
 
 
@@ -61,7 +72,7 @@ function printDebug(req, pageName) {
 //----------------------> SETUP   <----------------------------//
 
 
-var app = express();
+
 
 app.set('view engine', 'ejs');
 app.locals.pretty = true; // makes sure code is readable in JS console
@@ -74,20 +85,6 @@ app.use(
         }
     )
 );
-
-
-// SESSION SETUP
-app.use(
-    session(
-        {
-            secret: 'agileisawesome',
-            saveUninitialized: true,
-            resave: true
-
-        }
-    )
-);
-
 
 
 app.listen(
@@ -106,22 +103,62 @@ app.listen(
 // GET HOME
 app.get('/', function(req, res) {
 
-    userCheck(req);
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username){
 
-    res.render('index.ejs',
-        {
-            title: "Home",
-            body: "This is Home page",
-            msg: "",
-            user: userMsg,
-            error: ""
-        }
-    );
+        //setting nav info to pass client side/browser for display
+        var navMenu = [
+            { navButton: '/', buttonName: 'Home' },
+            { navButton: 'admin', buttonName: 'Admin' },
+            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+            { navButton: 'light', buttonName: 'Lights' },
+            { navButton: 'logs', buttonName: 'Logs' },
+            { navButton: 'createUser', buttonName: 'Create User' }
+        ];
 
-    printDebug(req, "HOME / INDEX");
+        userCheck(req);
+
+        res.render('index.ejs',
+            {
+                title: "Home",
+                body: "This is Home page",
+                msg: "",
+                user: userMsg,
+                error: "",
+                navMenu: navMenu,
+                login: ''
+            }
+        );
+
+        printDebug(req, "HOME / INDEX");
+
+
+    } else {
+
+        var navMenu = [
+            { navButton: '/', buttonName: 'Home' }
+        ];
+
+        userCheck(req);
+
+        res.render('index.ejs',
+            {
+                title: "Home",
+                body: "This is Home page",
+                msg: "",
+                user: userMsg,
+                error: "",
+                navMenu: navMenu,
+                login: '##'
+            }
+        );
+
+        printDebug(req, "HOME / INDEX");
+    }
+
 
 });
-
 
 
 
@@ -131,6 +168,17 @@ app.get('/createUser', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
+        //setting nav info to pass client side/browser for display
+        var navMenu = [
+            { navButton: '/', buttonName: 'Home' },
+            { navButton: 'admin', buttonName: 'Admin' },
+            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+            { navButton: 'light', buttonName: 'Lights' },
+            { navButton: 'logs', buttonName: 'Logs' },
+            { navButton: 'createUser', buttonName: 'Create User' }
+        ];
+
         userCheck(req);
 
         res.render('createUser.ejs',
@@ -139,7 +187,8 @@ app.get('/createUser', function(req, res) {
                 body: "This is createUser page",
                 msg: "",
                 user: userMsg,
-                error: ""
+                error: "",
+                navMenu: navMenu
             }
         );
 
@@ -167,6 +216,17 @@ app.get('/admin', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
+        //setting nav info to pass client side/browser for display
+        var navMenu = [
+            { navButton: '/', buttonName: 'Home' },
+            { navButton: 'admin', buttonName: 'Admin' },
+            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+            { navButton: 'light', buttonName: 'Lights' },
+            { navButton: 'logs', buttonName: 'Logs' },
+            { navButton: 'createUser', buttonName: 'Create User' }
+        ];
+
         userCheck(req);
 
         res.render('admin.ejs',
@@ -175,7 +235,8 @@ app.get('/admin', function(req, res) {
                 body: "This is Admin page",
                 msg: "",
                 user: userMsg,
-                error: ""
+                error: "",
+                navMenu: navMenu
             }
         );
 
@@ -194,9 +255,8 @@ app.get('/admin', function(req, res) {
 // GET LOGOUT
 app.get('/logout', function(req, res) {
 
-
-    res.redirect('/');
     req.session.destroy();
+    res.redirect('/');
     console.log("Session successfully destroyed\n");
 
 
@@ -206,6 +266,18 @@ app.get('/logout', function(req, res) {
 // GET LOG IN
 app.get('/login', function(req, res) {
 
+    //var navMenu = getNavInfo(navMenu);
+    var navMenu = [
+        { navButton: '/', buttonName: 'Home' },
+        { navButton: 'admin', buttonName: 'Admin' },
+        { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+        { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+        { navButton: 'light', buttonName: 'Lights' },
+        { navButton: 'logs', buttonName: 'Logs' },
+        { navButton: 'createUser', buttonName: 'Create User' }
+    ];
+
+
     userCheck(req);
 
     res.render('login.ejs',
@@ -213,7 +285,8 @@ app.get('/login', function(req, res) {
             title: "Login",
             error: "",
             user: userMsg,
-            msg:""
+            msg:"",
+            navMenu: navMenu
         }
     );
 
@@ -228,15 +301,28 @@ app.get('/doorGates', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
+        //setting nav info to pass client side/browser for display
+        var navMenu = [
+            { navButton: '/', buttonName: 'Home' },
+            { navButton: 'admin', buttonName: 'Admin' },
+            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+            { navButton: 'light', buttonName: 'Lights' },
+            { navButton: 'logs', buttonName: 'Logs' },
+            { navButton: 'createUser', buttonName: 'Create User' }
+        ];
+
         userCheck(req);
 
         res.render('doorGates.ejs',
+
             {
                 title: "door Gates",
                 body: "This is doorGates page",
                 msg: "",
                 user: userMsg,
-                error: ""
+                error: "",
+                navMenu: navMenu
             }
         );
 
@@ -257,6 +343,17 @@ app.get('/holidayMode', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
+        //setting nav info to pass client side/browser for display
+        var navMenu = [
+            { navButton: '/', buttonName: 'Home' },
+            { navButton: 'admin', buttonName: 'Admin' },
+            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+            { navButton: 'light', buttonName: 'Lights' },
+            { navButton: 'logs', buttonName: 'Logs' },
+            { navButton: 'createUser', buttonName: 'Create User' }
+        ];
+
         userCheck(req);
 
         res.render('holidayMode.ejs',
@@ -265,7 +362,8 @@ app.get('/holidayMode', function(req, res) {
                 body: "This is holidayMode page",
                 msg: "",
                 user: userMsg,
-                error: ""
+                error: "",
+                navMenu: navMenu
             }
         );
 
@@ -286,6 +384,17 @@ app.get('/light', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
+        //setting nav info to pass client side/browser for display
+        var navMenu = [
+            { navButton: '/', buttonName: 'Home' },
+            { navButton: 'admin', buttonName: 'Admin' },
+            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+            { navButton: 'light', buttonName: 'Lights' },
+            { navButton: 'logs', buttonName: 'Logs' },
+            { navButton: 'createUser', buttonName: 'Create User' }
+        ];
+
         userCheck(req);
 
         res.render('light.ejs',
@@ -294,7 +403,8 @@ app.get('/light', function(req, res) {
                 body: "This is light page",
                 msg: "",
                 user: userMsg,
-                error: ""
+                error: "",
+                navMenu: navMenu
             }
         );
 
@@ -315,6 +425,17 @@ app.get('/logs', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
+        //setting nav info to pass client side/browser for display
+        var navMenu = [
+            { navButton: '/', buttonName: 'Home' },
+            { navButton: 'admin', buttonName: 'Admin' },
+            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+            { navButton: 'light', buttonName: 'Lights' },
+            { navButton: 'logs', buttonName: 'Logs' },
+            { navButton: 'createUser', buttonName: 'Create User' }
+        ];
+
         userCheck(req);
 
         res.render('logs.ejs',
@@ -323,7 +444,8 @@ app.get('/logs', function(req, res) {
                 body: "This is logs page",
                 msg: "",
                 user: userMsg,
-                error: ""
+                error: "",
+                navMenu: navMenu
             }
         );
 
@@ -377,7 +499,7 @@ app.post('/createUser',
 
 
 // POST -->  LOGIN
-app.post('/login',
+app.post('/',
 
     function(req, res) {
 

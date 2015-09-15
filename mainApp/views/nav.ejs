@@ -4,14 +4,9 @@
         
 		<ul>
 
-			<li><a href="/">Home</a></li>
-			<li><a href="admin">Admin</a></li>
-			<li><a href="holidayMode">Holiday Mode</a></li>
-			<li><a href="doorGates">Doors and Gates</a></li>
-			<li><a href="light">Lights</a></li>
-			<li><a href="logs">Logs</a></li>
-			<li><a href="login">Login</a></li>
-			<li><a href="createUser">Create User</a></li>
+			<% navMenu.forEach(function(nav) { %>
+			<li><a href="<%= nav.navButton %>"> <%= nav.buttonName %></a></li>
+			<% }); %>
 
 		</ul>
         
