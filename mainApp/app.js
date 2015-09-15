@@ -124,43 +124,69 @@ app.get('/', function(req, res) {
 
 
 
+
 // GET SIGN UP
-app.get('/signup', function(req, res) {
+app.get('/createUser', function(req, res) {
 
-    userCheck(req);
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username){
 
-    res.render('signup.ejs',
-        {
-            title: "Signup",
-            body: "This is Signup page",
-            msg: "",
-            user: userMsg,
-            error: ""
-        }
-    );
+        userCheck(req);
 
-    printDebug(req, "SIGNUP");
+        res.render('createUser.ejs',
+            {
+                title: "createUser",
+                body: "This is createUser page",
+                msg: "",
+                user: userMsg,
+                error: ""
+            }
+        );
+
+        printDebug(req, "createUser");
+
+
+    } else {
+
+        res.redirect('/');
+
+    }
+
 
 });
+
+
+
+// WORKING HERE^^^^^^^^^^^^^^^^^^^^^^^
 
 
 
 // GET ADMIN
 app.get('/admin', function(req, res) {
 
-    userCheck(req);
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username){
 
-    res.render('admin.ejs',
-        {
-            title: "admin",
-            body: "This is Admin page",
-            msg: "",
-            user: userMsg,
-            error: ""
-        }
-    );
+        userCheck(req);
 
-    printDebug(req, "ADMIN");
+        res.render('admin.ejs',
+            {
+                title: "admin",
+                body: "This is Admin page",
+                msg: "",
+                user: userMsg,
+                error: ""
+            }
+        );
+
+        printDebug(req, "ADMIN");
+
+    } else {
+
+        res.redirect('/');
+
+    }
+
 
 });
 
@@ -199,19 +225,28 @@ app.get('/login', function(req, res) {
 // GET DOORS/GATES
 app.get('/doorGates', function(req, res) {
 
-    userCheck(req);
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username){
 
-    res.render('doorGates.ejs',
-        {
-            title: "door Gates",
-            body: "This is doorGates page",
-            msg: "",
-            user: userMsg,
-            error: ""
-        }
-    );
+        userCheck(req);
 
-    printDebug(req, "DOORS/GATES");
+        res.render('doorGates.ejs',
+            {
+                title: "door Gates",
+                body: "This is doorGates page",
+                msg: "",
+                user: userMsg,
+                error: ""
+            }
+        );
+
+        printDebug(req, "DOORS/GATES");
+
+    } else {
+
+        res.redirect('/');
+
+    }
 
 });
 
@@ -219,19 +254,28 @@ app.get('/doorGates', function(req, res) {
 // GET HOLIDAY MODE
 app.get('/holidayMode', function(req, res) {
 
-    userCheck(req);
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username){
 
-    res.render('holidayMode.ejs',
-        {
-            title: "holidayMode",
-            body: "This is holidayMode page",
-            msg: "",
-            user: userMsg,
-            error: ""
-        }
-    );
+        userCheck(req);
 
-    printDebug(req, "HOLIDAY MODE");
+        res.render('holidayMode.ejs',
+            {
+                title: "holidayMode",
+                body: "This is holidayMode page",
+                msg: "",
+                user: userMsg,
+                error: ""
+            }
+        );
+
+        printDebug(req, "HOLIDAY MODE");
+
+    } else {
+
+        res.redirect('/');
+
+    }
 
 });
 
@@ -239,18 +283,28 @@ app.get('/holidayMode', function(req, res) {
 // GET LIGHTS
 app.get('/light', function(req, res) {
 
-    userCheck(req);
-    res.render('light.ejs',
-        {
-            title: "light",
-            body: "This is light page",
-            msg: "",
-            user: userMsg,
-            error: ""
-        }
-    );
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username){
 
-    printDebug(req, "LIGHT");
+        userCheck(req);
+
+        res.render('light.ejs',
+            {
+                title: "light",
+                body: "This is light page",
+                msg: "",
+                user: userMsg,
+                error: ""
+            }
+        );
+
+        printDebug(req, "LIGHT");
+
+    } else {
+
+        res.redirect('/');
+
+    }
 
 });
 
@@ -258,19 +312,28 @@ app.get('/light', function(req, res) {
 // GET LOGS
 app.get('/logs', function(req, res) {
 
-    userCheck(req);
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username){
 
-    res.render('logs.ejs',
-        {
-            title: "logs",
-            body: "This is logs page",
-            msg: "",
-            user: userMsg,
-            error: ""
-        }
-    );
+        userCheck(req);
 
-    printDebug(req, "LOGS");
+        res.render('logs.ejs',
+            {
+                title: "logs",
+                body: "This is logs page",
+                msg: "",
+                user: userMsg,
+                error: ""
+            }
+        );
+
+        printDebug(req, "LOGS");
+
+    } else {
+
+        res.redirect('/');
+
+    }
 
 });
 
@@ -284,7 +347,7 @@ app.get('/logs', function(req, res) {
 //-------------> POST REQUESTS <----------------------------//
 
 // POST --> ADD NEW USER
-app.post('/signup',
+app.post('/createUser',
 
     function(req, res, next) {
 
@@ -317,7 +380,6 @@ app.post('/signup',
 app.post('/login',
 
     function(req, res) {
-
 
         db.get('SELECT * FROM USER WHERE user_username = ? AND user_password = ?', req.body.username, req.body.password,
 
