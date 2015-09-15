@@ -1,9 +1,3 @@
-
-
-
-
-
-
 //-----------------------------------------------------------------//
 //-------> MODULE DECLARATIONS & INITIALISATIONS <-----------------//
 
@@ -88,11 +82,9 @@ app.use(
 
 
 app.listen(
-    process.env.PORT || 3000,
-    function() {
+    process.env.PORT || 3000, function() {
         console.log("running at --> http://localhost:3000/");
-    }
-);
+    });
 
 
 
@@ -103,9 +95,8 @@ app.listen(
 //-------------> GET REQUESTS <----------------------------//
 
 // GET HOME
-app.get('/',
+app.get('/', function(req, res) {
 
-<<<<<<< Updated upstream
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
@@ -143,10 +134,6 @@ app.get('/',
             { navButton: '/', buttonName: 'Home' }
         ];
 
-=======
-    function(req, res) {
-
->>>>>>> Stashed changes
         userCheck(req);
 
         res.render('index.ejs',
@@ -155,7 +142,6 @@ app.get('/',
                 body: "This is Home page",
                 msg: "",
                 user: userMsg,
-<<<<<<< Updated upstream
                 error: "",
                 navMenu: navMenu,
                 login: '##'
@@ -165,21 +151,12 @@ app.get('/',
         printDebug(req, "HOME / INDEX");
     }
 
-=======
-                error: ""
-            }
-        );
 
-        printDebug(req, "HOME / INDEX");
->>>>>>> Stashed changes
-
-    }
-);
+});
 
 
 
 // GET SIGN UP
-<<<<<<< Updated upstream
 app.get('/createUser', function(req, res) {
 
     //Checking if user logged in otherwise redirecting to home page
@@ -218,28 +195,8 @@ app.get('/createUser', function(req, res) {
 
     }
 
-=======
-app.get('/signup',
 
-    function(req, res) {
-
-        userCheck(req);
-
-        res.render('signup.ejs',
-            {
-                title: "Signup",
-                body: "This is Signup page",
-                msg: "",
-                user: userMsg,
-                error: ""
-            }
-        );
-
-        printDebug(req, "SIGNUP");
->>>>>>> Stashed changes
-
-    }
-);
+});
 
 
 
@@ -248,10 +205,8 @@ app.get('/signup',
 
 
 // GET ADMIN
-app.get('/admin',
-    function(req, res) {
+app.get('/admin', function(req, res) {
 
-<<<<<<< Updated upstream
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
@@ -287,52 +242,24 @@ app.get('/admin',
 
     }
 
-=======
-        userCheck(req);
 
-        res.render('admin.ejs',
-            {
-                title: "admin",
-                body: "This is Admin page",
-                msg: "",
-                user: userMsg,
-                error: ""
-            }
-        );
-
-        printDebug(req, "ADMIN");
->>>>>>> Stashed changes
-
-    }
-);
+});
 
 
 // GET LOGOUT
-<<<<<<< Updated upstream
 app.get('/logout', function(req, res) {
 
     req.session.destroy();
     res.redirect('/');
     console.log("Session successfully destroyed\n");
-=======
-app.get('/logout',
-    function(req, res) {
-
-        res.redirect('/');
-        req.session.destroy();
-        console.log("Session successfully destroyed\n");
->>>>>>> Stashed changes
 
 
-    }
-);
+});
 
 
 // GET LOG IN
-app.get('/login',
-    function(req, res) {
+app.get('/login', function(req, res) {
 
-<<<<<<< Updated upstream
     //var navMenu = getNavInfo(navMenu);
     var navMenu = [
         { navButton: '/', buttonName: 'Home' },
@@ -356,30 +283,15 @@ app.get('/login',
             navMenu: navMenu
         }
     );
-=======
-        userCheck(req);
 
-        res.render('login.ejs',
-            {
-                title: "Login",
-                error: "",
-                user: userMsg,
-                msg:""
-            }
-        );
->>>>>>> Stashed changes
+    printDebug(req, "LOGIN");
 
-        printDebug(req, "LOGIN");
-
-    }
-);
+});
 
 
 // GET DOORS/GATES
-app.get('/doorGates',
-    function(req, res) {
+app.get('/doorGates', function(req, res) {
 
-<<<<<<< Updated upstream
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
@@ -415,31 +327,13 @@ app.get('/doorGates',
         res.redirect('/');
 
     }
-=======
-        userCheck(req);
 
-        res.render('doorGates.ejs',
-            {
-                title: "door Gates",
-                body: "This is doorGates page",
-                msg: "",
-                user: userMsg,
-                error: ""
-            }
-        );
-
-        printDebug(req, "DOORS/GATES");
->>>>>>> Stashed changes
-
-    }
-);
+});
 
 
 // GET HOLIDAY MODE
-app.get('/holidayMode',
-    function(req, res) {
+app.get('/holidayMode', function(req, res) {
 
-<<<<<<< Updated upstream
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
@@ -474,31 +368,13 @@ app.get('/holidayMode',
         res.redirect('/');
 
     }
-=======
-        userCheck(req);
 
-        res.render('holidayMode.ejs',
-            {
-                title: "holidayMode",
-                body: "This is holidayMode page",
-                msg: "",
-                user: userMsg,
-                error: ""
-            }
-        );
-
-        printDebug(req, "HOLIDAY MODE");
->>>>>>> Stashed changes
-
-    }
-);
+});
 
 
 // GET LIGHTS
-app.get('/light',
-    function(req, res) {
+app.get('/light', function(req, res) {
 
-<<<<<<< Updated upstream
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
@@ -515,16 +391,12 @@ app.get('/light',
 
         userCheck(req);
 
-=======
-        userCheck(req);
->>>>>>> Stashed changes
         res.render('light.ejs',
             {
                 title: "light",
                 body: "This is light page",
                 msg: "",
                 user: userMsg,
-<<<<<<< Updated upstream
                 error: "",
                 navMenu: navMenu
             }
@@ -537,23 +409,13 @@ app.get('/light',
         res.redirect('/');
 
     }
-=======
-                error: ""
-            }
-        );
 
-        printDebug(req, "LIGHT");
->>>>>>> Stashed changes
-
-    }
-);
+});
 
 
 // GET LOGS
-app.get('/logs',
-    function(req, res) {
+app.get('/logs', function(req, res) {
 
-<<<<<<< Updated upstream
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
@@ -588,24 +450,8 @@ app.get('/logs',
         res.redirect('/');
 
     }
-=======
-        userCheck(req);
 
-        res.render('logs.ejs',
-            {
-                title: "logs",
-                body: "This is logs page",
-                msg: "",
-                user: userMsg,
-                error: ""
-            }
-        );
-
-        printDebug(req, "LOGS");
->>>>>>> Stashed changes
-
-    }
-);
+});
 
 
 
@@ -712,4 +558,3 @@ app.post('/',
         );
     }
 );
-
