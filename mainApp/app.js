@@ -107,8 +107,7 @@ app.get('/', function(req, res) {
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
             { navButton: 'doorGates', buttonName: 'Doors and Gates' },
             { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' },
-            { navButton: 'createUser', buttonName: 'Create User' }
+            { navButton: 'logs', buttonName: 'Logs' }
         ];
 
         userCheck(req);
@@ -155,55 +154,6 @@ app.get('/', function(req, res) {
 });
 
 
-
-// GET SIGN UP
-app.get('/createUser', function(req, res) {
-
-    //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username){
-
-        //setting nav info to pass client side/browser for display
-        var navMenu = [
-            { navButton: '/', buttonName: 'Home' },
-            { navButton: 'admin', buttonName: 'Admin' },
-            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-            { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' },
-            { navButton: 'createUser', buttonName: 'Create User' }
-        ];
-
-        userCheck(req);
-
-        res.render('createUser.ejs',
-            {
-                title: "createUser",
-                body: "This is createUser page",
-                msg: "",
-                user: userMsg,
-                error: "",
-                navMenu: navMenu
-            }
-        );
-
-        printDebug(req, "createUser");
-
-
-    } else {
-
-        res.redirect('/');
-
-    }
-
-
-});
-
-
-
-// WORKING HERE^^^^^^^^^^^^^^^^^^^^^^^
-
-
-
 // GET ADMIN
 app.get('/admin', function(req, res) {
 
@@ -217,8 +167,7 @@ app.get('/admin', function(req, res) {
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
             { navButton: 'doorGates', buttonName: 'Doors and Gates' },
             { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' },
-            { navButton: 'createUser', buttonName: 'Create User' }
+            { navButton: 'logs', buttonName: 'Logs' }
         ];
 
         userCheck(req);
@@ -267,8 +216,7 @@ app.get('/login', function(req, res) {
         { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
         { navButton: 'doorGates', buttonName: 'Doors and Gates' },
         { navButton: 'light', buttonName: 'Lights' },
-        { navButton: 'logs', buttonName: 'Logs' },
-        { navButton: 'createUser', buttonName: 'Create User' }
+        { navButton: 'logs', buttonName: 'Logs' }
     ];
 
 
@@ -302,8 +250,7 @@ app.get('/doorGates', function(req, res) {
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
             { navButton: 'doorGates', buttonName: 'Doors and Gates' },
             { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' },
-            { navButton: 'createUser', buttonName: 'Create User' }
+            { navButton: 'logs', buttonName: 'Logs' }
         ];
 
         userCheck(req);
@@ -344,8 +291,7 @@ app.get('/holidayMode', function(req, res) {
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
             { navButton: 'doorGates', buttonName: 'Doors and Gates' },
             { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' },
-            { navButton: 'createUser', buttonName: 'Create User' }
+            { navButton: 'logs', buttonName: 'Logs' }
         ];
 
         userCheck(req);
@@ -385,8 +331,7 @@ app.get('/light', function(req, res) {
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
             { navButton: 'doorGates', buttonName: 'Doors and Gates' },
             { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' },
-            { navButton: 'createUser', buttonName: 'Create User' }
+            { navButton: 'logs', buttonName: 'Logs' }
         ];
 
         userCheck(req);
@@ -426,8 +371,7 @@ app.get('/logs', function(req, res) {
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
             { navButton: 'doorGates', buttonName: 'Doors and Gates' },
             { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' },
-            { navButton: 'createUser', buttonName: 'Create User' }
+            { navButton: 'logs', buttonName: 'Logs' }
         ];
 
         userCheck(req);
@@ -463,7 +407,7 @@ app.get('/logs', function(req, res) {
 //-------------> POST REQUESTS <----------------------------//
 
 // POST --> ADD NEW USER
-app.post('/createUser',
+app.post('/admin',
 
     function(req, res, next) {
 
