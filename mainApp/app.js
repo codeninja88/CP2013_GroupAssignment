@@ -89,21 +89,17 @@ app.listen(
     });
 
 
+function setNavContent (navType) {
+    var navMenu;
 
+    if (navType === 'simple') {
 
+        navMenu = [
+            { navButton: '/', buttonName: 'Home' }
+        ];
 
-
-//----------------------------------------------------------//
-//-------------> GET REQUESTS <----------------------------//
-
-// GET HOME
-app.get('/', function(req, res) {
-
-    //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username){
-
-        //setting nav info to pass client side/browser for display
-        var navMenu = [
+    } else if (navType === 'full') {
+        navMenu = [
             { navButton: '/', buttonName: 'Home' },
             { navButton: 'admin', buttonName: 'Admin' },
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
@@ -111,6 +107,24 @@ app.get('/', function(req, res) {
             { navButton: 'light', buttonName: 'Lights' },
             { navButton: 'logs', buttonName: 'Logs' }
         ];
+    }
+
+    return navMenu;
+
+}
+
+//----------------------------------------------------------//
+//-------------> GET REQUESTS <----------------------------//
+
+// GET HOME
+app.get('/', function(req, res) {
+
+    var navMenu;
+
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username){
+
+        navMenu = setNavContent('full');
 
         userCheck(req);
 
@@ -131,9 +145,7 @@ app.get('/', function(req, res) {
 
     } else {
 
-        var navMenu = [
-            { navButton: '/', buttonName: 'Home' }
-        ];
+        navMenu = setNavContent('simple');
 
         userCheck(req);
 
@@ -162,18 +174,12 @@ app.get('/', function(req, res) {
 // GET ADMIN
 app.get('/admin', function(req, res) {
 
+    var navMenu;
+
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        //setting nav info to pass client side/browser for display
-        var navMenu = [
-            { navButton: '/', buttonName: 'Home' },
-            { navButton: 'admin', buttonName: 'Admin' },
-            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-            { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' }
-        ];
+        navMenu = setNavContent('full');
 
         userCheck(req);
 
@@ -212,53 +218,16 @@ app.get('/logout', function(req, res) {
 });
 
 
-// GET LOG IN
-app.get('/login', function(req, res) {
-
-    //var navMenu = getNavInfo(navMenu);
-    var navMenu = [
-        { navButton: '/', buttonName: 'Home' },
-        { navButton: 'admin', buttonName: 'Admin' },
-        { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-        { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-        { navButton: 'light', buttonName: 'Lights' },
-        { navButton: 'logs', buttonName: 'Logs' }
-    ];
-
-
-    userCheck(req);
-
-    res.render('login.ejs',
-        {
-            title: "Login",
-            error: "",
-            user: userMsg,
-            msg:"",
-            navMenu: navMenu,
-            isLoggedIn: true
-        }
-    );
-
-    printDebug(req, "LOGIN");
-
-});
-
 
 // GET DOORS/GATES
 app.get('/doorGates', function(req, res) {
 
+    var navMenu;
+
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        //setting nav info to pass client side/browser for display
-        var navMenu = [
-            { navButton: '/', buttonName: 'Home' },
-            { navButton: 'admin', buttonName: 'Admin' },
-            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-            { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' }
-        ];
+        navMenu = setNavContent('full');
 
         userCheck(req);
 
@@ -289,18 +258,12 @@ app.get('/doorGates', function(req, res) {
 // GET HOLIDAY MODE
 app.get('/holidayMode', function(req, res) {
 
+    var navMenu;
+
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        //setting nav info to pass client side/browser for display
-        var navMenu = [
-            { navButton: '/', buttonName: 'Home' },
-            { navButton: 'admin', buttonName: 'Admin' },
-            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-            { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' }
-        ];
+        navMenu = setNavContent('full');
 
         userCheck(req);
 
@@ -330,18 +293,12 @@ app.get('/holidayMode', function(req, res) {
 // GET LIGHTS
 app.get('/light', function(req, res) {
 
+    var navMenu;
+
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        //setting nav info to pass client side/browser for display
-        var navMenu = [
-            { navButton: '/', buttonName: 'Home' },
-            { navButton: 'admin', buttonName: 'Admin' },
-            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-            { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' }
-        ];
+        navMenu = setNavContent('full');
 
         userCheck(req);
 
@@ -371,18 +328,12 @@ app.get('/light', function(req, res) {
 // GET LOGS
 app.get('/logs', function(req, res) {
 
+    var navMenu;
+
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        //setting nav info to pass client side/browser for display
-        var navMenu = [
-            { navButton: '/', buttonName: 'Home' },
-            { navButton: 'admin', buttonName: 'Admin' },
-            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-            { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' }
-        ];
+        navMenu = setNavContent('full');
 
         userCheck(req);
 
