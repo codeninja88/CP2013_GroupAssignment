@@ -1,5 +1,4 @@
-function createUserForm() {
-
+function createUserForm(){
     document.getElementById("innerContainerRight").innerHTML = " <form method='post'> " +
         " <span>First Name:</span> " +
         " <input type='text' name='firstName' required='required' /> " +
@@ -16,6 +15,5 @@ function createUserForm() {
         " <br/> " +
         " <input type='submit' />" +
         " </form> ";
-
-
 }
+

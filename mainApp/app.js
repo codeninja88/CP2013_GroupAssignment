@@ -11,6 +11,8 @@ var db = new sqlite3.Database('database.sqlite');
 
 var app = express();
 
+app.use(express.static(__dirname));
+
 // SESSION SETUP
 app.use(
     session(
