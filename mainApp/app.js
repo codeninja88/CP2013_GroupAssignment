@@ -69,7 +69,6 @@ function printDebug(req, pageName) {
 
 
 
-
 app.set('view engine', 'ejs');
 app.locals.pretty = true; // makes sure code is readable in JS console
 
@@ -113,6 +112,23 @@ function setNavContent (navType) {
 
 }
 
+function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn) {
+
+    var ejsObject = {
+        title: title,
+        body: body,
+        msg: msg,
+        user: user,
+        error: error,
+        navMenu: navMenu,
+        isLoggedIn: isLoggedIn
+    }
+
+    return ejsObject;
+
+}
+
+
 //----------------------------------------------------------//
 //-------------> GET REQUESTS <----------------------------//
 
@@ -120,6 +136,7 @@ function setNavContent (navType) {
 app.get('/', function(req, res) {
 
     var navMenu;
+    var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
@@ -128,17 +145,9 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        res.render('index.ejs',
-            {
-                title: "Home",
-                body: "This is Home page",
-                msg: "",
-                user: userMsg,
-                error: "",
-                navMenu: navMenu,
-                isLoggedIn: true
-            }
-        );
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true);
+
+        res.render('index.ejs', ejsObject);
 
         printDebug(req, "HOME / INDEX");
 
@@ -149,32 +158,22 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        res.render('index.ejs',
-            {
-                title: "Home",
-                body: "This is Home page",
-                msg: "",
-                user: userMsg,
-                error: "",
-                navMenu: navMenu,
-                isLoggedIn: false
-            }
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, false);
 
-        );
-
-
+        res.render('index.ejs', ejsObject);
 
         printDebug(req, "HOME / INDEX");
     }
 
-
 });
+
 
 
 // GET ADMIN
 app.get('/admin', function(req, res) {
 
     var navMenu;
+    var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
@@ -183,17 +182,9 @@ app.get('/admin', function(req, res) {
 
         userCheck(req);
 
-        res.render('admin.ejs',
-            {
-                title: "admin",
-                body: "This is Admin page",
-                msg: "",
-                user: userMsg,
-                error: "",
-                navMenu: navMenu,
-                isLoggedIn: true
-            }
-        );
+        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true);
+
+        res.render('admin.ejs', ejsObject);
 
         printDebug(req, "ADMIN");
 
@@ -202,7 +193,6 @@ app.get('/admin', function(req, res) {
         res.redirect('/');
 
     }
-
 
 });
 
@@ -214,7 +204,6 @@ app.get('/logout', function(req, res) {
     res.redirect('/');
     console.log("Session successfully destroyed\n");
 
-
 });
 
 
@@ -223,6 +212,7 @@ app.get('/logout', function(req, res) {
 app.get('/doorGates', function(req, res) {
 
     var navMenu;
+    var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
@@ -231,18 +221,9 @@ app.get('/doorGates', function(req, res) {
 
         userCheck(req);
 
-        res.render('doorGates.ejs',
+        ejsObject = generateEjsVariables("Doors/Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true);
 
-            {
-                title: "door Gates",
-                body: "This is doorGates page",
-                msg: "",
-                user: userMsg,
-                error: "",
-                navMenu: navMenu,
-                isLoggedIn: true
-            }
-        );
+        res.render('doorGates.ejs', ejsObject);
 
         printDebug(req, "DOORS/GATES");
 
@@ -259,6 +240,7 @@ app.get('/doorGates', function(req, res) {
 app.get('/holidayMode', function(req, res) {
 
     var navMenu;
+    var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
@@ -267,17 +249,9 @@ app.get('/holidayMode', function(req, res) {
 
         userCheck(req);
 
-        res.render('holidayMode.ejs',
-            {
-                title: "holidayMode",
-                body: "This is holidayMode page",
-                msg: "",
-                user: userMsg,
-                error: "",
-                navMenu: navMenu,
-                isLoggedIn: true
-            }
-        );
+        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true);
+
+        res.render('holidayMode.ejs',ejsObject);
 
         printDebug(req, "HOLIDAY MODE");
 
@@ -294,6 +268,7 @@ app.get('/holidayMode', function(req, res) {
 app.get('/light', function(req, res) {
 
     var navMenu;
+    var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
@@ -302,17 +277,9 @@ app.get('/light', function(req, res) {
 
         userCheck(req);
 
-        res.render('light.ejs',
-            {
-                title: "light",
-                body: "This is light page",
-                msg: "",
-                user: userMsg,
-                error: "",
-                navMenu: navMenu,
-                isLoggedIn: true
-            }
-        );
+        ejsObject = generateEjsVariables("Light", "This is Light page", "", userMsg, "", navMenu, true);
+
+        res.render('light.ejs', ejsObject);
 
         printDebug(req, "LIGHT");
 
@@ -329,6 +296,7 @@ app.get('/light', function(req, res) {
 app.get('/logs', function(req, res) {
 
     var navMenu;
+    var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
@@ -337,17 +305,9 @@ app.get('/logs', function(req, res) {
 
         userCheck(req);
 
-        res.render('logs.ejs',
-            {
-                title: "logs",
-                body: "This is logs page",
-                msg: "",
-                user: userMsg,
-                error: "",
-                navMenu: navMenu,
-                isLoggedIn: true
-            }
-        );
+        ejsObject = generateEjsVariables("Logs", "This is Logs page", "", userMsg, "", navMenu, true);
+
+        res.render('logs.ejs', ejsObject);
 
         printDebug(req, "LOGS");
 
@@ -358,11 +318,6 @@ app.get('/logs', function(req, res) {
     }
 
 });
-
-
-
-
-
 
 
 //-----------------------------------------------------------//
@@ -408,61 +363,38 @@ app.post('/',
 
             function(err, row) {
 
-                var errMsg = "ERROR:\t Invalid username / password combination.";
+                var navMenu;
+                var ejsObject;
+                var errMsg = "ERROR:\t Invalid Username and/or password.";
 
                 // query returns undefined if username entered does not exist in db
                 if (row === undefined || !row.user_username) {
 
-                    res.render('login.ejs',
+                    navMenu = setNavContent('simple');
 
-                        {
+                    userCheck(req);
 
-                            title: "Login",
-                            body: "",
-                            msg: "",
-                            user: "",
-                            error: errMsg,
-                            isLoggedIn: false
+                    ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, errMsg, navMenu, false);
 
-                        }
-
-                    );
+                    res.render('index.ejs', ejsObject);
 
 
+                } else if (row.user_password === req.body.password) {
+
+                    req.session.username = req.body.username;
+                    req.session.isAdmin = row.user_isAdmin;
+
+                    res.redirect("/");
+
+                    console.log("Logged in successfully.");
+                    printDebug(req, "INDEX");
 
                 } else {
 
-                    if (row.user_password === req.body.password) {
+                    console.log("If you got here that means we have bug in code.");
 
-                        req.session.username = req.body.username;
-                        req.session.isAdmin = row.user_isAdmin;
-
-
-                        res.redirect("/");
-
-
-                        console.log("Logged in successfully.");
-                        printDebug(req, "INDEX");
-
-                    } else {
-
-                        console.log(errMsg);
-
-                        res.render('login.ejs',
-
-                            {
-                                title: "Login",
-                                body: "",
-                                msg: "",
-                                user: "",
-                                error: errMsg,
-                                isLoggedIn: false
-
-                            }
-
-                        );
-                    }
                 }
+
             }
         );
     }

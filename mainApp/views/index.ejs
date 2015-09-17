@@ -1,6 +1,8 @@
 <% include header.ejs %>
 <% include nav.ejs %>
 
+<%= error %>
+
 <% if(isLoggedIn === false) { %>
 
 <form method="post">
@@ -25,7 +27,6 @@
         
         <center><img id="logo" src="automationLogo.png"></center>
 
-        
     </div>
         
 </div>
