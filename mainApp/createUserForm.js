@@ -13,6 +13,10 @@ function createUserForm(){
         " <span>Password:</span> " +
         " <input type='password' name='password' required='required' />" +
         " <br/> " +
+        " <span>User Level:</span> " +
+        " <input type='radio' name='userLevel' required='required' value='0' checked/>User" +
+        " <input type='radio' name='userLevel' required='required' value='1'/>Admin" +
+        " <br/>" +
         " <input type='submit' />" +
         " </form> ";
 }

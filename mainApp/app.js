@@ -417,9 +417,10 @@ app.post('/admin',
         var lastName = req.body.lastName;
         var username = req.body.username;
         var password = req.body.password;
+        var isAdmin = req.body.userLevel;
 
-        var sqlRequest = "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password) " +
-            "VALUES('" + firstName + "', '" + lastName + "', '" + username + "', '" + password + "')";
+        var sqlRequest = "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password, user_isAdmin) " +
+            "VALUES('" + firstName + "', '" + lastName + "', '" + username + "', '" + password + "', '" + isAdmin + "')";
 
         db.run(sqlRequest,
 
