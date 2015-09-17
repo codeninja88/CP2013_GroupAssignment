@@ -16,4 +16,9 @@
 
 <p id='msg'><%= msg %></p>
 
-<p id='user'><%= user %><a href='/logout'>LOG OUT</a></p>
+<p id='user'>
+	<%= user %>
+	<% if (isLoggedIn === true){ %>
+		<a href='/logout'>LOG OUT</a>
+	<%}%>
+</p>

@@ -122,7 +122,7 @@ app.get('/', function(req, res) {
                 user: userMsg,
                 error: "",
                 navMenu: navMenu,
-                login: ''
+                isLoggedIn: true
             }
         );
 
@@ -145,9 +145,12 @@ app.get('/', function(req, res) {
                 user: userMsg,
                 error: "",
                 navMenu: navMenu,
-                login: '##'
+                isLoggedIn: false
             }
+
         );
+
+
 
         printDebug(req, "HOME / INDEX");
     }
@@ -181,7 +184,8 @@ app.get('/admin', function(req, res) {
                 msg: "",
                 user: userMsg,
                 error: "",
-                navMenu: navMenu
+                navMenu: navMenu,
+                isLoggedIn: true
             }
         );
 
@@ -230,7 +234,8 @@ app.get('/login', function(req, res) {
             error: "",
             user: userMsg,
             msg:"",
-            navMenu: navMenu
+            navMenu: navMenu,
+            isLoggedIn: true
         }
     );
 
@@ -265,7 +270,8 @@ app.get('/doorGates', function(req, res) {
                 msg: "",
                 user: userMsg,
                 error: "",
-                navMenu: navMenu
+                navMenu: navMenu,
+                isLoggedIn: true
             }
         );
 
@@ -305,7 +311,8 @@ app.get('/holidayMode', function(req, res) {
                 msg: "",
                 user: userMsg,
                 error: "",
-                navMenu: navMenu
+                navMenu: navMenu,
+                isLoggedIn: true
             }
         );
 
@@ -345,7 +352,8 @@ app.get('/light', function(req, res) {
                 msg: "",
                 user: userMsg,
                 error: "",
-                navMenu: navMenu
+                navMenu: navMenu,
+                isLoggedIn: true
             }
         );
 
@@ -385,7 +393,8 @@ app.get('/logs', function(req, res) {
                 msg: "",
                 user: userMsg,
                 error: "",
-                navMenu: navMenu
+                navMenu: navMenu,
+                isLoggedIn: true
             }
         );
 
@@ -461,7 +470,8 @@ app.post('/',
                             body: "",
                             msg: "",
                             user: "",
-                            error: errMsg
+                            error: errMsg,
+                            isLoggedIn: false
 
                         }
 
@@ -494,7 +504,8 @@ app.post('/',
                                 body: "",
                                 msg: "",
                                 user: "",
-                                error: errMsg
+                                error: errMsg,
+                                isLoggedIn: false
 
                             }
 
