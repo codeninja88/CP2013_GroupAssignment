@@ -365,23 +365,25 @@ app.post('/admin',
             var navMenu = setNavContent('full');
             userCheck(req);
             var ejsObject;
+            var userStatusData = [];
 
-            db.each(sqlRequest, function(err, row) {
+            db.serialize(function() {
 
-                    //console.log(row.user_fName);
-                    userStatusData = row;
+                db.each(sqlRequest, function(err, row) {
 
+                    userStatusData.push({username: row.user_username, status: row.user_isLoggedIn})
+
+                }, function (){
 
                     ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData);
 
-                    res.render('admin.ejs', ejsObject);
-
-
                     console.log(userStatusData);
 
-                }
-            );
+                    res.render('admin.ejs', ejsObject);
 
+                });
+
+            });
 
         }
     }

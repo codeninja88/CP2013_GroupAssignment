@@ -40,8 +40,10 @@
         </div>
 
         <div id="innerContainerRight">
-            <%= userStatusData %>
 
+            <% userStatusData.forEach(function(usersData) { %>
+            <li><%= usersData.username %> <%= usersData.status %></li>
+            <% }); %>
 
         </div>
 
