@@ -13,42 +13,35 @@
             <table>
                 <tr>
                     <td>
-                        <button onclick='createUserForm()'>Create</button>
+                        <button class="adminBttns" onclick='createUserForm()'>Create</button>
                     </td>
                 </tr>
 
                 <tr>
                     <td>
-                        <button>Edit</button>
+                        <button class="adminBttns">Edit</button>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <button>Delete</button>
+                        <button class="adminBttns">Delete</button>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <button>Status</button>
+                        <!--<button onclick='showStatus()'>Status</button>-->
+                        <form method="post">
+                            <input type='hidden' name='formName' value='showStatus'/>
+                            <input class="adminBttns" type="submit" name="submit" value="Status"/>
+                        </form>
                     </td>
                 </tr>
             </table>
         </div>
 
         <div id="innerContainerRight">
-            <!--<h4>INNER RIGHT</h4>-->
-            <!--<hr />-->
-            <!--<p>-->
-                <!--Blaa blaaa  blaaa blahsjhgjhgjhgjhal ljlkjaslas-->
-                <!--Blaa blaaa  blaaa blahsjhgjhgjhgjhal ljlkjaslas-->
-                <!--Blaa blaaa  blaaa blahsjhgjhgjhgjhal ljlkjaslas-->
-                <!--Blaa blaaa  blaaa blahsjhgjhgjhgjhal ljlkjaslas-->
-                <!--Blaa blaaa  blaaa blahsjhgjhgjhgjhal ljlkjaslas-->
-                <!--Blaa blaaa  blaaa blahsjhgjhgjhgjhal ljlkjaslas-->
-                <!--Blaa blaaa  blaaa blahsjhgjhgjhgjhal ljlkjaslas-->
-                <!--Blaa blaaa  blaaa blahsjhgjhgjhgjhal ljlkjaslas-->
+            <%= userStatusData %>
 
-            <!--</p>-->
 
         </div>
 

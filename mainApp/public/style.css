@@ -141,7 +141,7 @@ form {
     position: inherit;
 }
 
-#innerContainerLeft button {
+.adminBttns {
     padding-top: 5%;
     padding-bottom: 5%;
     background: greenyellow;
@@ -149,6 +149,10 @@ form {
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
 
+}
+
+.adminBttns:focus {
+    outline: none;
 }
 
 #innerContainerRight {

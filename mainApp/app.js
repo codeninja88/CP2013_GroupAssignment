@@ -7,6 +7,7 @@ var express = require('express');
 var session = require('express-session');
 
 var userMsg = "";
+var userStatusData = [];
 var db = new sqlite3.Database('database.sqlite');
 
 var app = express();
@@ -112,7 +113,7 @@ function setNavContent (navType) {
 
 }
 
-function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn) {
+function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData) {
 
     var ejsObject = {
         title: title,
@@ -121,7 +122,8 @@ function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedI
         user: user,
         error: error,
         navMenu: navMenu,
-        isLoggedIn: isLoggedIn
+        isLoggedIn: isLoggedIn,
+        userStatusData: userStatusData
     }
 
     return ejsObject;
@@ -145,7 +147,7 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true);
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData);
 
         res.render('index.ejs', ejsObject);
 
@@ -158,7 +160,7 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, false);
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, false, userStatusData);
 
         res.render('index.ejs', ejsObject);
 
@@ -182,7 +184,7 @@ app.get('/admin', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true);
+        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData);
 
         res.render('admin.ejs', ejsObject);
 
@@ -221,7 +223,7 @@ app.get('/doorGates', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Doors/Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true);
+        ejsObject = generateEjsVariables("Doors/Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData);
 
         res.render('doorGates.ejs', ejsObject);
 
@@ -249,7 +251,7 @@ app.get('/holidayMode', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true);
+        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData);
 
         res.render('holidayMode.ejs',ejsObject);
 
@@ -277,7 +279,7 @@ app.get('/light', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Light", "This is Light page", "", userMsg, "", navMenu, true);
+        ejsObject = generateEjsVariables("Light", "This is Light page", "", userMsg, "", navMenu, true, userStatusData);
 
         res.render('light.ejs', ejsObject);
 
@@ -305,7 +307,7 @@ app.get('/logs', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Logs", "This is Logs page", "", userMsg, "", navMenu, true);
+        ejsObject = generateEjsVariables("Logs", "This is Logs page", "", userMsg, "", navMenu, true, userStatusData);
 
         res.render('logs.ejs', ejsObject);
 
@@ -328,27 +330,60 @@ app.post('/admin',
 
     function(req, res, next) {
 
-        var firstName = req.body.firstName;
-        var lastName = req.body.lastName;
-        var username = req.body.username;
-        var password = req.body.password;
-        var isAdmin = req.body.userLevel;
+        var formName = req.body.formName;
+        var sqlRequest;
 
-        var sqlRequest = "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password, user_isAdmin) " +
+        if (formName === 'createUser') {
+
+
+            var firstName = req.body.firstName;
+            var lastName = req.body.lastName;
+            var username = req.body.username;
+            var password = req.body.password;
+            var isAdmin = req.body.userLevel;
+
+            sqlRequest= "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password, user_isAdmin) " +
             "VALUES('" + firstName + "', '" + lastName + "', '" + username + "', '" + password + "', '" + isAdmin + "')";
 
-        db.run(sqlRequest,
+            db.run(sqlRequest,
 
-            function(err) {
+                function (err) {
 
-                if (err !== null) next(err);
-                else {
+                    if (err !== null) next(err);
+                    else {
 
-                    res.redirect("/");
+                        res.redirect("/");
+
+                    }
+                }
+            );
+
+        } else if (formName === 'showStatus') {
+
+            sqlRequest = "SELECT * FROM 'USER'";
+
+            var navMenu = setNavContent('full');
+            userCheck(req);
+            var ejsObject;
+
+            db.each(sqlRequest, function(err, row) {
+
+                    //console.log(row.user_fName);
+                    userStatusData = row;
+
+
+                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData);
+
+                    res.render('admin.ejs', ejsObject);
+
+
+                    console.log(userStatusData);
 
                 }
-            }
-        );
+            );
+
+
+        }
     }
 );
 
@@ -374,7 +409,7 @@ app.post('/',
 
                     userCheck(req);
 
-                    ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, errMsg, navMenu, false);
+                    ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, errMsg, navMenu, false, userStatusData);
 
                     res.render('index.ejs', ejsObject);
 
