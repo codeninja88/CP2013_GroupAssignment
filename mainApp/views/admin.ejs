@@ -19,14 +19,13 @@
 
                 <tr>
                     <td>
-                        <button class="adminBttns">Edit</button>
+                        <form method="post">
+                            <input type='hidden' name='formName' value='showEdit'/>
+                            <input class="adminBttns" type="submit" name="submit" value="Edit"/>
+                        </form>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <button class="adminBttns">Delete</button>
-                    </td>
-                </tr>
+
                 <tr>
                     <td>
                         <!--<button onclick='showStatus()'>Status</button>-->
@@ -41,9 +40,56 @@
 
         <div id="innerContainerRight">
 
-            <% userStatusData.forEach(function(usersData) { %>
+            <%userStatusData.forEach(function(usersData) { %>
             <li><%= usersData.username %> <%= usersData.status %></li>
             <% }); %>
+
+
+
+
+
+
+
+            <%if (userEditData[0] !== undefined) { %>
+
+            <script>
+                function showSelectedUser(test) {
+
+                    var selectedUser = document.getElementById("userDropbox");
+
+                    console.log(selectedUser.value);
+
+                    document.getElementById("editUsersInfo").innerHTML =
+
+                            "<h1>"+ selectedUser.value + test + "</h1>";
+
+
+                    if (selectedUser.value) {
+
+                    }
+
+
+                }
+            </script>
+
+
+                <select id="userDropbox" onchange="showSelectedUser(<%= userEditData.username %>)">
+                    <option value="">Select User</option>
+                <%userEditData.forEach(function (usersData) { %>
+                    <option value="<%=usersData.username %>"><%=usersData.username %></option>
+
+
+                <%});%>
+                </select>
+
+
+            <%    %>
+            <div id="editUsersInfo">
+
+            </div>
+
+            <%}%>
+
 
         </div>
 

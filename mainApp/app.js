@@ -8,6 +8,7 @@ var session = require('express-session');
 
 var userMsg = "";
 var userStatusData = [];
+var userEditData = [];
 var db = new sqlite3.Database('database.sqlite');
 
 var app = express();
@@ -113,7 +114,7 @@ function setNavContent (navType) {
 
 }
 
-function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData) {
+function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData, userEditData) {
 
     var ejsObject = {
         title: title,
@@ -123,8 +124,9 @@ function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedI
         error: error,
         navMenu: navMenu,
         isLoggedIn: isLoggedIn,
-        userStatusData: userStatusData
-    }
+        userStatusData: userStatusData,
+        userEditData: userEditData
+    };
 
     return ejsObject;
 
@@ -147,7 +149,7 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData);
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
         res.render('index.ejs', ejsObject);
 
@@ -160,7 +162,7 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, false, userStatusData);
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, false, userStatusData, userEditData);
 
         res.render('index.ejs', ejsObject);
 
@@ -184,7 +186,7 @@ app.get('/admin', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData);
+        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
         res.render('admin.ejs', ejsObject);
 
@@ -223,7 +225,7 @@ app.get('/doorGates', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Doors/Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData);
+        ejsObject = generateEjsVariables("Doors/Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
         res.render('doorGates.ejs', ejsObject);
 
@@ -251,7 +253,7 @@ app.get('/holidayMode', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData);
+        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
         res.render('holidayMode.ejs',ejsObject);
 
@@ -279,7 +281,7 @@ app.get('/light', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Light", "This is Light page", "", userMsg, "", navMenu, true, userStatusData);
+        ejsObject = generateEjsVariables("Light", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
         res.render('light.ejs', ejsObject);
 
@@ -307,7 +309,7 @@ app.get('/logs', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Logs", "This is Logs page", "", userMsg, "", navMenu, true, userStatusData);
+        ejsObject = generateEjsVariables("Logs", "This is Logs page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
         res.render('logs.ejs', ejsObject);
 
@@ -341,9 +343,20 @@ app.post('/admin',
             var username = req.body.username;
             var password = req.body.password;
             var isAdmin = req.body.userLevel;
+            var address = req.body.address;
+            var phone = req.body.phone;
+            var email = req.body.email;
 
-            sqlRequest= "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password, user_isAdmin) " +
-            "VALUES('" + firstName + "', '" + lastName + "', '" + username + "', '" + password + "', '" + isAdmin + "')";
+            sqlRequest= "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password, user_isAdmin, user_address, user_phone, user_email) " +
+            "VALUES('"
+            + firstName + "', '"
+            + lastName + "', '"
+            + username + "', '"
+            + password + "', '"
+            + isAdmin + "', '"
+            + address + "', '"
+            + phone + "', '"
+            + email + "')";
 
             db.run(sqlRequest,
 
@@ -366,6 +379,8 @@ app.post('/admin',
             userCheck(req);
             var ejsObject;
             var userStatusData = [];
+            var userEditData = [];
+
 
             db.serialize(function() {
 
@@ -375,7 +390,7 @@ app.post('/admin',
 
                 }, function (){
 
-                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData);
+                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
                     console.log(userStatusData);
 
@@ -385,7 +400,45 @@ app.post('/admin',
 
             });
 
+        } else if (formName === 'showEdit') {
+
+            sqlRequest = "SELECT * FROM 'USER'";
+
+            var navMenu = setNavContent('full');
+            userCheck(req);
+            var ejsObject;
+            var userEditData = [];
+            var userStatusData = [];
+
+
+            db.serialize(function() {
+
+                db.each(sqlRequest, function(err, row) {
+
+                    userEditData.push({
+                        username: row.user_username,
+                        fName: row.user_fName,
+                        lName: row.user_lName,
+                        isAdmin: row.user_isAdmin,
+                        address: row.user_address,
+                        phone: row.user_phone,
+                        email: row.user_email
+                    })
+
+                }, function (){
+
+                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+
+                    console.log(userEditData);
+
+                    res.render('admin.ejs', ejsObject);
+
+                });
+
+            });
+
         }
+
     }
 );
 
@@ -411,7 +464,7 @@ app.post('/',
 
                     userCheck(req);
 
-                    ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, errMsg, navMenu, false, userStatusData);
+                    ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, errMsg, navMenu, false, userStatusData, userEditData);
 
                     res.render('index.ejs', ejsObject);
 

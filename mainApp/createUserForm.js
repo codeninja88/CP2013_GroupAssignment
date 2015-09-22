@@ -24,6 +24,18 @@ function createUserForm(){
         " <input type='radio' name='userLevel' required='required' value='1'/>Admin" +
         " <br/>" +
 
+        " <span>Address:</span>" +
+        " <input type='text' name='address' /> " +
+        " <br/> " +
+
+        " <span>Phone:</span>" +
+        " <input type='text' name='phone' /> " +
+        " <br/> " +
+
+        " <span>Email:</span>" +
+        " <input type='text' name='email' /> " +
+        " <br/> " +
+
         " <input type='hidden' name='formName' value='createUser'/>" +
 
 
