@@ -440,7 +440,7 @@ app.post('/admin',
 
                     res.render('admin.ejs', ejsObject);
 
-                });
+                })
 
             });
 
