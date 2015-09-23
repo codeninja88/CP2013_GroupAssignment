@@ -42,7 +42,7 @@ li {
 }
 
 body {
-	background-color: #C4C4C4;
+	background-color: lightgreen;
 	margin-left: auto;
     margin-right: auto;
 	width:100%;
@@ -77,7 +77,7 @@ form {
     border: 5px solid #000000;
     width: 100%;
     min-height: 200%;
-	background: #999999;
+	background: green;
 	margin: auto;
 	margin-list:none
 }
@@ -144,10 +144,11 @@ form {
 .adminBttns {
     padding-top: 5%;
     padding-bottom: 5%;
-    background: greenyellow;
+    background: green;
     font-size: 26px;
     border-top-right-radius: 25px;
     border-bottom-right-radius: 25px;
+    width: 100%;
 
 }
 
