@@ -40,15 +40,24 @@
 
         <div id="innerContainerRight">
 
-            <%userStatusData.forEach(function(usersData) { %>
-            <li><%= usersData.username %> <%= usersData.status %></li>
-            <% }); %>
-
-
-
-
-
-
+            <%if (userStatusData[0]!== undefined) {%>
+                <table>
+                    <tr>
+                        <td><h2>User</h2></td>
+                        <td><h2>Status</h2></td>
+                    </tr>
+                <%userStatusData.forEach(function(usersData) { %>
+                    <tr>
+                        <td><%= usersData.username %></td>
+                        <%if (usersData.status === 1) {%>
+                            <td><status class="green">Online</status> </td>
+                        <%}else {%>
+                            <td><status class="red">Offline</status> </td>
+                        <%}%>
+                    </tr>
+                <% }); %>
+                </table>
+            <%}%>
 
             <%if (userEditData[0] !== undefined) { %>
 
@@ -62,7 +71,6 @@
                     document.getElementById("editUsersInfo").innerHTML =
 
                             "<h1>"+ selectedUser.value + test + "</h1>";
-
 
                     if (selectedUser.value) {
 

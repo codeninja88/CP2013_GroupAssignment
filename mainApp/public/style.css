@@ -159,3 +159,21 @@ form {
     float: left;
     width: 71.5%;
 }
+
+#innerContainerRight table {
+	width: 50%;
+	border-collapse: collapse;
+	text-align: center;
+}
+
+/*#innerContainerRight tr td {*/
+	/*border: 1px solid black;*/
+/*}*/
+
+.green {
+	color: green;
+}
+
+.red {
+	color: red;
+}
