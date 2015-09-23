@@ -448,9 +448,26 @@ app.post('/admin',
 
         else if (formName === 'saveChanges') {
 
+            sqlRequest = "UPDATE 'USER' SET " +
+                "user_fName = '" + req.body.fName + "', " +
+                "user_lName = '" + req.body.lName + "', " +
+                "user_address = '" + req.body.address + "', " +
+                "user_phone = '" + req.body.phone + "', " +
+                "user_email = '" + req.body.email + "'" +
+                " WHERE user_username = '" + req.body.username + "';";
 
+            db.run(sqlRequest,
 
+                function (err) {
 
+                    if (err !== null) next(err);
+                    else {
+
+                        res.redirect("/admin");
+
+                    }
+                }
+            );
 
 
         }
