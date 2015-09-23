@@ -204,6 +204,13 @@ app.get('/admin', function(req, res) {
 // GET LOGOUT
 app.get('/logout', function(req, res) {
 
+    // Changing login status in database back to offline
+    db.run("UPDATE 'USER' SET user_isLoggedIn = ? WHERE user_username = ?", 0, req.session.username, function (err) {
+
+        if (err !== null) next(err);
+
+    });
+
     req.session.destroy();
     res.redirect('/');
     console.log("Session successfully destroyed\n");
@@ -447,7 +454,7 @@ app.post('/admin',
 // POST -->  LOGIN
 app.post('/',
 
-    function(req, res) {
+    function(req, res, next) {
 
         db.get('SELECT * FROM USER WHERE user_username = ? AND user_password = ?', req.body.username, req.body.password,
 
@@ -471,8 +478,16 @@ app.post('/',
 
                 } else if (row.user_password === req.body.password) {
 
+                    // Changing login status in database to user is logged in / true
+                    db.run("UPDATE 'USER' SET user_isLoggedIn = ? WHERE user_username = ?", 1, req.body.username, function (err) {
+
+                        if (err !== null) next(err);
+
+                    });
+
                     req.session.username = req.body.username;
                     req.session.isAdmin = row.user_isAdmin;
+
 
                     res.redirect("/");
 
