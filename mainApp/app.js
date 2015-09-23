@@ -456,6 +456,8 @@ app.post('/admin',
                 "user_email = '" + req.body.email + "'" +
                 " WHERE user_username = '" + req.body.username + "';";
 
+            console.log(sqlRequest);
+
             db.run(sqlRequest,
 
                 function (err) {
@@ -464,6 +466,8 @@ app.post('/admin',
                     else {
 
                         res.redirect("/admin");
+                        console.log(sqlRequest);
+
 
                     }
                 }

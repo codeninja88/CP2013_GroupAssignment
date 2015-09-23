@@ -72,12 +72,13 @@
                 userEditData.forEach(function(userData) {
 
                     if (userData.username === selectedUser.value) {
-
                         selectedUser = userData;
+                        console.log("IF entered");
 
                     }
 
                 })
+
 
 
                 var formToShow =
@@ -120,6 +121,8 @@
                         " <br/> " +
 
                         " <input type='hidden' name='formName' value='saveChanges'/>" +
+
+                        " <input type='hidden' name='username' value='" + selectedUser.username + "'/>" +
 
 
                         " <input type='submit' />" +
