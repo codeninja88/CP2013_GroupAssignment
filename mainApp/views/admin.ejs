@@ -2,107 +2,169 @@
 <% include nav.ejs %>
 
 
-    <h1>Admin</h1>
-    <hr />
+<h1>Admin</h1>
+<hr />
 
-    <div id="outerContainer">
+<div id="outerContainer">
 
 
 
-        <div id="innerContainerLeft">
-            <table>
-                <tr>
-                    <td>
-                        <button class="adminBttns" onclick='createUserForm()'>Create</button>
-                    </td>
-                </tr>
+    <div id="innerContainerLeft">
+        <table>
+            <tr>
+                <td>
+                    <button class="adminBttns" onclick='createUserForm()'>Create</button>
+                </td>
+            </tr>
 
-                <tr>
-                    <td>
-                        <form method="post">
-                            <input type='hidden' name='formName' value='showEdit'/>
-                            <input class="adminBttns" type="submit" name="submit" value="Edit"/>
-                        </form>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <form method="post">
+                        <input type='hidden' name='formName' value='showEdit'/>
+                        <input class="adminBttns" type="submit" name="submit" value="Edit"/>
+                    </form>
+                </td>
+            </tr>
 
-                <tr>
-                    <td>
-                        <!--<button onclick='showStatus()'>Status</button>-->
-                        <form method="post">
-                            <input type='hidden' name='formName' value='showStatus'/>
-                            <input class="adminBttns" type="submit" name="submit" value="Status"/>
-                        </form>
-                    </td>
-                </tr>
-            </table>
-        </div>
+            <tr>
+                <td>
+                    <!--<button onclick='showStatus()'>Status</button>-->
+                    <form method="post">
+                        <input type='hidden' name='formName' value='showStatus'/>
+                        <input class="adminBttns" type="submit" name="submit" value="Status"/>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
 
-        <div id="innerContainerRight">
+    <div id="innerContainerRight">
 
-            <%if (userStatusData[0]!== undefined) {%>
-                <table>
-                    <tr>
-                        <td><h2>User</h2></td>
-                        <td><h2>Status</h2></td>
-                    </tr>
-                <%userStatusData.forEach(function(usersData) { %>
-                    <tr>
-                        <td><%= usersData.username %></td>
-                        <%if (usersData.status === 1) {%>
-                            <td><status class="green">Online</status> </td>
-                        <%}else {%>
-                            <td><status class="red">Offline</status> </td>
-                        <%}%>
-                    </tr>
-                <% }); %>
-                </table>
-            <%}%>
+        <%if (userStatusData[0]!== undefined) {%>
+        <table>
+            <tr>
+                <td><h2>User</h2></td>
+                <td><h2>Status</h2></td>
+            </tr>
+            <%userStatusData.forEach(function(usersData) { %>
+            <tr>
+                <td><%= usersData.username %></td>
+                <%if (usersData.status === 1) {%>
+                <td><status class="green">Online</status> </td>
+                <%}else {%>
+                <td><status class="red">Offline</status> </td>
+                <%}%>
+            </tr>
+            <% }); %>
+        </table>
+        <%}%>
 
-            <%if (userEditData[0] !== undefined) { %>
+        <%if (userEditData[0] !== undefined) { %>
 
-            <script>
-                function showSelectedUser(test) {
+        <script>
 
-                    var selectedUser = document.getElementById("userDropbox");
 
-                    console.log(selectedUser.value);
 
-                    document.getElementById("editUsersInfo").innerHTML =
+            function showSelectedUser(userEditData) {
 
-                            "<h1>"+ selectedUser.value + test + "</h1>";
+                var selectedUser = document.getElementById("userDropbox");
 
-                    if (selectedUser.value) {
+                userEditData.forEach(function(userData) {
+
+                    if (userData.username === selectedUser.value) {
+
+                        selectedUser = userData;
 
                     }
 
+                })
 
+
+                var formToShow =
+                        " <form method='post'> " +
+
+                        " <span>First Name:</span> " +
+                        " <input type='text' name='firstName' required='required' value='" + selectedUser.fName + "'/> " +
+                        " <br/> " +
+
+                        " <span>Last Name:</span> " +
+                        " <input type='text' name='lastName' required='required' value='" + selectedUser.lName + "' /> " +
+                        " <br/> " +
+
+                        " <span>Username:</span>" +
+                        " <input type='username' name='username' required='required' value='" + selectedUser.username + "' /> " +
+                        " <br/> " +
+
+
+                        " <span>User Level:</span> ";
+
+
+                if (selectedUser.isAdmin === 0) {
+                    formToShow +=  " <input type='radio' name='userLevel' required='required' value='0' checked/>User" +
+                    " <input type='radio' name='userLevel' required='required' value='1'/>Admin";
+                } else {
+                    formToShow +=  " <input type='radio' name='userLevel' required='required' value='0' />User" +
+                    " <input type='radio' name='userLevel' required='required' value='1'checked/>Admin";
                 }
-            </script>
+
+                formToShow +=
+
+                        " <br/>" +
+
+                        " <span>Address:</span>" +
+                        " <input type='text' name='address' value='" + selectedUser.address + "' /> " +
+                        " <br/> " +
+
+                        " <span>Phone:</span>" +
+                        " <input type='text' name='phone' value='" + selectedUser.phone + "' /> " +
+                        " <br/> " +
+
+                        " <span>Email:</span>" +
+                        " <input type='text' name='email' value='" + selectedUser.email + "' /> " +
+                        " <br/> " +
+
+                        " <input type='hidden' name='formName' value='saveChanged'/>" +
 
 
-                <select id="userDropbox" onchange="showSelectedUser(<%= userEditData.username %>)">
-                    <option value="">Select User</option>
-                <%userEditData.forEach(function (usersData) { %>
-                    <option value="<%=usersData.username %>"><%=usersData.username %></option>
+                        " <input type='submit' />" +
+
+                        " </form> ";
 
 
-                <%});%>
-                </select>
+
+                document.getElementById("editUsersInfo").innerHTML = formToShow;
 
 
-            <%    %>
-            <div id="editUsersInfo">
 
-            </div>
 
-            <%}%>
+            }
+        </script>
 
+
+        <select id="userDropbox" onchange="showSelectedUser(<%= JSON.stringify(userEditData) %>)">
+            <option value="">Select User</option>
+            <%userEditData.forEach(function (usersData) { %>
+            <option value="<%=usersData.username %>"><%=usersData.username %></option>
+
+
+            <%});%>
+        </select>
+
+
+        <%    %>
+        <div id="editUsersInfo">
+
+            <!--this is a placeholder-->
 
         </div>
 
+        <%}%>
+
 
     </div>
+
+
+</div>
 
 
 
