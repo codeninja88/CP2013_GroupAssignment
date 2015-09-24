@@ -7,6 +7,7 @@ var express = require('express');
 var session = require('express-session');
 
 var userMsg = "";
+var active = "color:white";
 var userStatusData = [];
 var userEditData = [];
 var db = new sqlite3.Database('database.sqlite');
@@ -125,7 +126,8 @@ function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedI
         navMenu: navMenu,
         isLoggedIn: isLoggedIn,
         userStatusData: userStatusData,
-        userEditData: userEditData
+        userEditData: userEditData,
+        currentPage: active
     };
 
     return ejsObject;
@@ -159,6 +161,7 @@ app.get('/', function(req, res) {
     } else {
 
         navMenu = setNavContent('simple');
+
 
         userCheck(req);
 
@@ -232,7 +235,7 @@ app.get('/doorGates', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Doors/Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Doors and Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
         res.render('doorGates.ejs', ejsObject);
 
@@ -288,7 +291,7 @@ app.get('/light', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Light", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
         res.render('light.ejs', ejsObject);
 

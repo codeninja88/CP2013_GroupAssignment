@@ -5,7 +5,7 @@
 		<ul>
 
 			<% navMenu.forEach(function(nav) { %>
-			<li><a href="<%= nav.navButton %>"> <%= nav.buttonName %></a></li>
+			<li><a href="<%= nav.navButton %>"<% if (title === nav.buttonName) {%>style="<%= currentPage %>"> <%} else {%>><%}%> <%= nav.buttonName %></a></li>
 			<% }); %>
 
 		</ul>
