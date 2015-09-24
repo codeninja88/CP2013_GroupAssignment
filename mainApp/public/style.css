@@ -200,6 +200,10 @@ form {
 	color: white;
 }
 
+#container #menu {
+    display: block;
+}
+
 @media screen and (max-width: 768px) {
     #menu {
         display: block;
@@ -224,35 +228,7 @@ form {
         border-right:none;
     }
 
-    .container{
-        width:300px;
-        background:#ccc;
-        margin:10px;
-        float:left;
-    }
-
-    .dropDownHeader{
-        background:url('http://cdn1.iconfinder.com/data/icons/vaga/arrow_up.png') no-repeat;
-        background-position:right 0px;
-        cursor:pointer;
-    }
-
-    .collapsed .dropDownHeader{
-        background-image:url('http://cdn2.iconfinder.com/data/icons/vaga/arrow_down.png');
-    }
-
-    #menu{
-        height:auto;
-        min-height:100px;
-        overflow:hidden;
-        transition:all 0.3s linear;
-        -webkit-transition:all 0.3s linear;
-        -moz-transition:all 0.3s linear;
-        -ms-transition:all 0.3s linear;
-        -o-transition:all 0.3s linear;
-    }
-    .collapsed .content{
-        min-height:0px;
-        height:0px;
+    #container #menu {
+        display: none;
     }
 }

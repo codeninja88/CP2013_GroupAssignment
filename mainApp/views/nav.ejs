@@ -1,7 +1,9 @@
-<div class="container">
+<div id="container">
 
-    <div class="dropDownHeader" onclick="menuExpand()">Drop down for a fully sick navbar
+    <div id="dropDownMenu" value="show" onclick="expandMenu()" style="border: 1px solid black;">
+        <p></p>
         <nav>
+
             <div id="menu">
 
                 <ul>
@@ -9,10 +11,7 @@
                     <% navMenu.forEach(function(nav) { %>
                     <li><a href="<%= nav.navButton %>" name="<%= nav.buttonName %>" <% if (title === nav.buttonName) {%>style="<%= currentPage %>"> <%} else {%>><%}%> <%= nav.buttonName %></a></li>
                     <% }); %>
-
                 </ul>
-
-
 
             </div>
         </nav>
