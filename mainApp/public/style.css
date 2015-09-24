@@ -199,3 +199,60 @@ form {
 .active {
 	color: white;
 }
+
+@media screen and (max-width: 768px) {
+    #menu {
+        display: block;
+        background:#ddd;
+        text-align: center;
+        background-color:#089108;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    #nav.js {
+        display: none;
+    }
+
+    ul {
+        width: 100%;
+        list-style: none;
+    }
+
+    li {
+        width:100%;
+        border-right:none;
+    }
+
+    .container{
+        width:300px;
+        background:#ccc;
+        margin:10px;
+        float:left;
+    }
+
+    .dropDownHeader{
+        background:url('http://cdn1.iconfinder.com/data/icons/vaga/arrow_up.png') no-repeat;
+        background-position:right 0px;
+        cursor:pointer;
+    }
+
+    .collapsed .dropDownHeader{
+        background-image:url('http://cdn2.iconfinder.com/data/icons/vaga/arrow_down.png');
+    }
+
+    #menu{
+        height:auto;
+        min-height:100px;
+        overflow:hidden;
+        transition:all 0.3s linear;
+        -webkit-transition:all 0.3s linear;
+        -moz-transition:all 0.3s linear;
+        -ms-transition:all 0.3s linear;
+        -o-transition:all 0.3s linear;
+    }
+    .collapsed .content{
+        min-height:0px;
+        height:0px;
+    }
+}

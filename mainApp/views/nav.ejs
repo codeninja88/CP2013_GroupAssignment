@@ -1,18 +1,24 @@
-<nav>
-    
-    <div id="menu">
-        
-		<ul>
+<div class="container">
 
-			<% navMenu.forEach(function(nav) { %>
-			<li><a href="<%= nav.navButton %>"<% if (title === nav.buttonName) {%>style="<%= currentPage %>"> <%} else {%>><%}%> <%= nav.buttonName %></a></li>
-			<% }); %>
+    <div class="dropDownHeader" onclick="menuExpand()">Drop down for a fully sick navbar
+        <nav>
+            <div id="menu">
 
-		</ul>
-        
-	</div>
-    
-</nav>
+                <ul>
+
+                    <% navMenu.forEach(function(nav) { %>
+                    <li><a href="<%= nav.navButton %>" name="<%= nav.buttonName %>" <% if (title === nav.buttonName) {%>style="<%= currentPage %>"> <%} else {%>><%}%> <%= nav.buttonName %></a></li>
+                    <% }); %>
+
+                </ul>
+
+
+
+            </div>
+        </nav>
+    </div>
+
+</div>
 
 <p id='msg'><%= msg %></p>
 
