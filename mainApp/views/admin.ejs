@@ -71,11 +71,8 @@
 
                 userEditData.forEach(function(userData) {
 
-                    if (userData.username === selectedUser.value) {
-                        selectedUser = userData;
-                        console.log("IF entered");
+                    if (userData.username === selectedUser.value)selectedUser = userData;
 
-                    }
 
                 })
 
@@ -86,11 +83,11 @@
                         " <form method='post'> " +
 
                         " <span>First Name:</span> " +
-                        " <input type='text' name='firstName' required='required' value='" + selectedUser.fName + "'/> " +
+                        " <input type='text' name='fName' required='required' value='" + selectedUser.fName + "'/> " +
                         " <br/> " +
 
                         " <span>Last Name:</span> " +
-                        " <input type='text' name='lastName' required='required' value='" + selectedUser.lName + "' /> " +
+                        " <input type='text' name='lName' required='required' value='" + selectedUser.lName + "' /> " +
                         " <br/> " +
 
                         " <span>User Level:</span> ";
@@ -125,7 +122,9 @@
                         " <input type='hidden' name='username' value='" + selectedUser.username + "'/>" +
 
 
-                        " <input type='submit' />" +
+                        " <input id='submitChanges' name='submitBttn' value='Save' type='submit' />" +
+                        " <input id='deleteUser' name='submitBttn' value='Delete User' type='submit' />" +
+
 
                         " </form> ";
 
