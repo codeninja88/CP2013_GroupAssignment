@@ -344,6 +344,10 @@ app.post('/admin',
 
         var formName = req.body.formName;
         var sqlRequest;
+        var userStatusData = [];
+        var userEditData = [];
+        navMenu = setNavContent('full');
+        userCheck(req);
 
         if (formName === 'createUser') {
 
@@ -374,8 +378,9 @@ app.post('/admin',
 
                     if (err !== null) next(err);
                     else {
-
-                        res.redirect("/");
+                        userMsg = "New user has been created successfully";
+                        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+                        res.render("admin.ejs", ejsObject);
 
                     }
                 }
@@ -471,7 +476,9 @@ app.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            res.redirect("/admin");
+                            userMsg = "User details have been updated successfully";
+                            ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+                            res.render("admin.ejs", ejsObject);
 
                         }
                     }
@@ -486,7 +493,9 @@ app.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            res.redirect("/admin");
+                            userMsg = "User successfully deleted";
+                            ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+                            res.render("admin.ejs", ejsObject);
                             console.log("USER DELETED");
 
                         }
@@ -514,7 +523,7 @@ app.post('/',
 
                 var navMenu;
                 var ejsObject;
-                var errMsg = "ERROR:\t Invalid Username and/or password.";
+                var errMsg = "ERROR:\t Invalid username and/or password.";
 
                 // query returns undefined if username entered does not exist in db
                 if (row === undefined || !row.user_username) {
