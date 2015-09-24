@@ -19,11 +19,8 @@
 
 </div>
 
+<!--  FOLLOWING CODE DISPLAYS MESSAGE IF ANY PASSED BY SERVER  -->
 <p id='msg'><%= msg %></p>
 
-<p id='user'>
-	<%= user %>
-	<% if (isLoggedIn === true){ %>
-		<a href='/logout'>LOG OUT</a>
-	<%}%>
-</p>
+<!--  FOLLOWING CODE DISPLAYS USERNAME AND LOGOUT BUTTON IF USER LOGGED IN  -->
+<p id='user'><%= user %><% if (isLoggedIn === true){ %><a href='/logout'>LOG OUT</a><%}%></p>

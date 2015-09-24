@@ -10,6 +10,7 @@ var userMsg = "";
 var active = "color:white";
 var userStatusData = [];
 var userEditData = [];
+var lightsData = [];
 var db = new sqlite3.Database('database.sqlite');
 
 var app = express();
@@ -115,7 +116,7 @@ function setNavContent (navType) {
 
 }
 
-function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData, userEditData) {
+function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData, userEditData, lightsData) {
 
     var ejsObject = {
         title: title,
@@ -127,7 +128,8 @@ function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedI
         isLoggedIn: isLoggedIn,
         userStatusData: userStatusData,
         userEditData: userEditData,
-        currentPage: active
+        currentPage: active,
+        lightsData: lightsData
     };
 
     return ejsObject;
@@ -283,6 +285,7 @@ app.get('/light', function(req, res) {
 
     var navMenu;
     var ejsObject;
+    lightsData = '';
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
@@ -291,7 +294,7 @@ app.get('/light', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData);
 
         res.render('light.ejs', ejsObject);
 
@@ -337,7 +340,7 @@ app.get('/logs', function(req, res) {
 //-----------------------------------------------------------//
 //-------------> POST REQUESTS <----------------------------//
 
-// POST --> ADD NEW USER
+// POST --> ADD/EDIT USERS
 app.post('/admin',
 
     function(req, res, next) {
@@ -565,3 +568,100 @@ app.post('/',
         );
     }
 );
+
+
+
+
+
+// POST -->  LIGHTS
+app.post('/light', function(req, res) {
+
+    var formName = req.body.formName;
+    var sqlRequest;
+    var lightsData = '';
+    userCheck(req);
+
+    if (formName === 'showLightTimes') {
+
+        sqlRequest = "SELECT * FROM 'PREFERENCE'";
+
+        var navMenu = setNavContent('full');
+        userCheck(req);
+        var ejsObject;
+        var userEditData = [];
+        var userStatusData = [];
+        lightsData = [];
+
+
+        db.serialize(function() {
+
+            db.each(sqlRequest, function(err, row) {
+
+                if (row.pref_name.startsWith('light')) {
+
+                    lightsData.push({
+                        lightName: row.pref_name,
+                        startTime: row.pref_startTime,
+                        stopTime: row.pref_stopTime
+                    })
+
+                }
+
+            }, function (){
+
+                ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData);
+
+                console.log(lightsData);
+
+                res.render('light.ejs', ejsObject);
+
+            })
+
+        });
+
+    }
+
+
+    if (req.body.submitBttn === 'Set Times') {
+
+        sqlRequest = "UPDATE PREFERENCE " +
+            "SET pref_startTime = (case when pref_name = 'light_balcony' then '"+req.body.light_balconyOn+"' "+
+                                        "when pref_name = 'light_livingRoom' then '"+req.body.light_livingRoomOn+"' "+
+                                        "when pref_name = 'light_bedroom1' then '"+req.body.light_bedroom1On+"' "+
+                                        "when pref_name = 'light_bedroom2' then '"+req.body.light_bedroom2On+"' "+
+                                        "when pref_name = 'light_kitchen' then '"+req.body.light_kitchenOn+"' "+
+                                        "when pref_name = 'light_hallway' then '"+req.body.light_hallwayOn+"' "+
+                                        "when pref_name = 'light_bathroom' then '"+req.body.light_bathroomOn+"' "+
+                                "end)," +
+
+                "pref_stopTime = (case when pref_name = 'light_balcony' then '"+req.body.light_balconyOff+"' "+                                                          "when pref_name = 'light_livingRoom' then '"+req.body.light_livingRoomOff+"' "+
+                                        "when pref_name = 'light_bedroom1' then '"+req.body.light_bedroom1Off+"' "+
+                                        "when pref_name = 'light_bedroom2' then '"+req.body.light_bedroom2Off+"' "+
+                                        "when pref_name = 'light_kitchen' then '"+req.body.light_kitchenOff+"' "+
+                                        "when pref_name = 'light_hallway' then '"+req.body.light_hallwayOff+"' "+
+                                        "when pref_name = 'light_bathroom' then '"+req.body.light_bathroomOff+"' "+
+                                "end)";
+
+        db.run(sqlRequest, function (err) {
+
+            if (err !== null) next(err);
+            else {
+                var navMenu = setNavContent('full');
+                userCheck(req);
+                var ejsObject;
+                var userEditData = [];
+                var userStatusData = [];
+                lightsData = '';
+                var msg = "Lights' on/off time updated successfully";
+
+                ejsObject = generateEjsVariables("Lights", "This is Light page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, lightsData);
+
+                res.render("light.ejs", ejsObject);
+
+            }
+        });
+    }
+
+});
+
+

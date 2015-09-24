@@ -3,9 +3,55 @@
 
 
 
-    <h1>Lights Page</h1>
-    <hr />
-    <h2>Lights content will go here</h2>
-	<hr>
+<h1>Lights Page</h1>
+<hr />
+
+
+<div id="outerContainer">
+
+
+    <div id="innerContainerLeft">
+        <table>
+            <tr>
+                <td>
+                    <form method="post">
+                        <input type='hidden' name='formName' value='showLightTimes'/>
+                        <input class="innerContainerLeftButtons" type="submit" name="submit" value="Set On/Off Time"/>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="innerContainerRight">
+
+        <%if (lightsData !== '') {%>
+            <form method="post">
+                <table>
+                    <tr>
+                        <td><h2>Light Name</h2></td>
+                        <td><h2>On Time</h2></td>
+                        <td><h2>Off Time</h2></td>
+                    </tr>
+                    <%lightsData.forEach(function(lightData) { %>
+                    <tr>
+                        <td><label><%= lightData.lightName %> </label></td>
+                        <td><input type='text' name='<%= lightData.lightName %>On' value='<%= lightData.startTime %>' placeholder='HH:MI:SS' /> </td>
+                        <td><input type='text' name='<%= lightData.lightName %>Off' value='<%= lightData.stopTime %>' placeholder='HH:MI:SS'/></td>
+                    </tr>
+                    <% }); %>
+                    <tr>
+                        <td></td>
+                        <td colspan="2"><input id='setLightTimes' name='submitBttn' value='Set Times' type='submit' /></td>
+                    </tr>
+                </table>
+            </form>
+        <%}%>
+
+
+    </div>
+
+
+</div>
 
 <% include footer.ejs %>
