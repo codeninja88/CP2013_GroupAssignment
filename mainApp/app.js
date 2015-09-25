@@ -440,7 +440,9 @@ app.post('/admin',
                         isAdmin: row.user_isAdmin,
                         address: row.user_address,
                         phone: row.user_phone,
-                        email: row.user_email
+                        email: row.user_email,
+                        startTime: row.user_startTime,
+                        endTime: row.user_endTime
                     })
 
                 }, function (){
@@ -467,8 +469,14 @@ app.post('/admin',
                 "user_address = '" + req.body.address + "', " +
                 "user_isAdmin = '" + req.body.userLevel + "', " +
                 "user_phone = '" + req.body.phone + "', " +
-                "user_email = '" + req.body.email + "'" +
-                " WHERE user_username = '" + req.body.username + "';";
+                "user_email = '" + req.body.email + "'";
+                if (req.body.userLevel == 0) {
+                    sqlRequest +=
+                        ", user_startTime = '" + req.body.startTime + "', " +
+                        "user_endTime = '" + req.body.endTime + "'";
+                }
+
+                sqlRequest += " WHERE user_username = '" + req.body.username + "';";
 
 
                 db.run(sqlRequest,

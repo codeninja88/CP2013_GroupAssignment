@@ -78,6 +78,8 @@
 
 
 
+
+
                 var formToShow =
 
                         " <form method='post'> " +
@@ -93,15 +95,20 @@
                         " <span>User Level:</span> ";
 
 
+
+
                 if (selectedUser.isAdmin === 0) {
-                    formToShow +=  " <input type='radio' name='userLevel' required='required' value='0' checked/>User" +
+                    formToShow +=  " <input type='radio' name='userLevel' required='required' value='0' checked />User" +
                     " <input type='radio'  name='userLevel' required='required' value='1'/>Admin";
-                    formToShow += "<br />Start Time: <input type='time' name='user_startTime' />";
-                    formToShow += "<br />End Time: <input type='time' name='user_endTime' />";
+                    formToShow += "<br />Start Time: <input type='time' name='startTime' value='" + selectedUser.startTime + "' />";
+                    formToShow += "<br />End Time: <input type='time' name='endTime' value='" + selectedUser.endTime + "'/>";
 
                 } else {
                     formToShow +=  " <input type='radio' name='userLevel' required='required' value='0' />User" +
                     " <input type='radio' name='userLevel' required='required' value='1'checked/>Admin";
+                    formToShow += "<br />Start Time: <input type='time' name='startTime' value='" + selectedUser.startTime + "' disabled />";
+                    formToShow += "<br />End Time: <input type='time' name='endTime' value='" + selectedUser.endTime + "' disabled />";
+
                 }
 
                 formToShow +=
