@@ -465,11 +465,11 @@ app.post('/admin',
                 "user_fName = '" + req.body.fName + "', " +
                 "user_lName = '" + req.body.lName + "', " +
                 "user_address = '" + req.body.address + "', " +
+                "user_isAdmin = '" + req.body.userLevel + "', " +
                 "user_phone = '" + req.body.phone + "', " +
                 "user_email = '" + req.body.email + "'" +
                 " WHERE user_username = '" + req.body.username + "';";
 
-                console.log(sqlRequest);
 
 
                 db.run(sqlRequest,
