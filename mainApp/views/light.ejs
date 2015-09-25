@@ -32,12 +32,20 @@
                         <td><h2>Light Name</h2></td>
                         <td><h2>On Time</h2></td>
                         <td><h2>Off Time</h2></td>
+                        <td><h2>Light Status</h2></td>
                     </tr>
                     <%lightsData.forEach(function(lightData) { %>
                     <tr>
                         <td><label><%= lightData.lightName %> </label></td>
-                        <td><input type='text' name='<%= lightData.lightName %>On' value='<%= lightData.startTime %>' placeholder='HH:MM:SS' /> </td>
-                        <td><input type='text' name='<%= lightData.lightName %>Off' value='<%= lightData.stopTime %>' placeholder='HH:MM:SS'/></td>
+                        <td><input type='time' name='<%= lightData.lightName %>On' value='<%= lightData.startTime %>' /> </td>
+                        <td><input type='time' name='<%= lightData.lightName %>Off' value='<%= lightData.stopTime %>' /></td>
+                        <td><label>
+                                <% if (!lightData.isActive) {%>
+                                    Off
+                                <% } else { %>
+                                    On
+                                <%}%>
+                            </label></td>
                     </tr>
                     <% }); %>
                     <tr>

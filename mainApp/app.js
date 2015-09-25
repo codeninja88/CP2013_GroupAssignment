@@ -609,7 +609,8 @@ app.post('/light', function(req, res, next) {
                     lightsData.push({
                         lightName: row.pref_name,
                         startTime: row.pref_startTime,
-                        stopTime: row.pref_stopTime
+                        stopTime: row.pref_stopTime,
+                        isActive: row.pref_isActive
                     })
 
                 }
@@ -670,5 +671,109 @@ app.post('/light', function(req, res, next) {
     }
 
 });
+
+
+
+
+
+
+// timer for lights
+setInterval( function() {
+
+
+    sqlRequest = "SELECT * FROM 'PREFERENCE'";
+    var lightsData = [];
+    var time24 = convertTo24Hour();
+
+    db.serialize(function() {
+
+        db.each(sqlRequest, function(err, row) {
+
+            if (row.pref_name.startsWith('light')) {
+
+                lightsData.push({
+                    lightName: row.pref_name,
+                    startTime: row.pref_startTime,
+                    stopTime: row.pref_stopTime
+                })
+
+            }
+
+
+
+        }, function (){
+
+            lightsData.forEach(function(lightData) {
+
+                var sqlRequest;
+
+                var startTime = lightData.startTime.toString().trim();
+                var stopTime = lightData.stopTime.toString().trim();
+                var systemTime = time24.toString().trim();
+                var lightName = lightData.lightName.toString().trim();
+
+
+
+                if (startTime.localeCompare(systemTime) === 0){
+
+                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '"+ lightName +"';";
+
+                    db.run(sqlRequest, function (err) {
+
+                        if (err !== null) next(err);
+
+                    });
+
+                }
+
+                if (stopTime.localeCompare(systemTime) === 0) {
+
+                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '"+ lightName +"';";
+
+                    db.run(sqlRequest, function (err) {
+
+                        if (err !== null) next(err);
+
+
+                    });
+
+                }
+
+            });
+
+        })
+
+    });
+
+
+
+
+
+    //var time = formatAMPM(date);
+
+// CONVERTING SYSTEM TIME FORMAT TO CHECK WITH SQL DATE DATA
+    function convertTo24Hour() {
+        var date = new Date();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var time = hours + ':' + minutes + ' ' + ampm;
+
+        var hours = parseInt(time.substr(0, 2));
+        if(time.indexOf('am') != -1 && hours == 12) {
+            time = time.replace('12', '0');
+        }
+        if(time.indexOf('pm')  != -1 && hours < 12) {
+            time = time.replace(hours, (hours + 12));
+        }
+        return time.replace(/(am|pm)/, '');
+    }
+
+
+}, 1000);
+
 
 
