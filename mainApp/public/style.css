@@ -229,4 +229,18 @@ form {
     #container #menu {
         display: none;
     }
+
+    #innerContainerRight {
+        clear: both;
+    }
+
+    #innerContainerLeft table, tr, td , button {
+        width:350%;
+        position: inherit;
+    }
+
+    #dropDownMenu {
+        border: 1px solid #089108;
+        background-color: #089108;
+    }
 }
