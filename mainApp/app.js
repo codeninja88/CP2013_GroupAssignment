@@ -573,7 +573,7 @@ app.post('/',
 
 
 // POST -->  LIGHTS
-app.post('/light', function(req, res) {
+app.post('/light', function(req, res, next) {
 
     var formName = req.body.formName;
     var sqlRequest;
