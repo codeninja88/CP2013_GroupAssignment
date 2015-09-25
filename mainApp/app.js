@@ -471,7 +471,6 @@ app.post('/admin',
                 " WHERE user_username = '" + req.body.username + "';";
 
 
-
                 db.run(sqlRequest,
 
                     function (err) {
