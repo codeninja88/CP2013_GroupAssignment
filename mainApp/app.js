@@ -347,14 +347,14 @@ app.post('/admin',
 
         var formName = req.body.formName;
         var sqlRequest;
+        var msg;
         var userStatusData = [];
         var userEditData = [];
         navMenu = setNavContent('full');
         userCheck(req);
 
         if (formName === 'createUser') {
-
-
+            
             var firstName = req.body.firstName;
             var lastName = req.body.lastName;
             var username = req.body.username;
@@ -381,8 +381,8 @@ app.post('/admin',
 
                     if (err !== null) next(err);
                     else {
-                        userMsg = "New user has been created successfully";
-                        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+                        msg = "New user has been created successfully";
+                        ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData);
                         res.render("admin.ejs", ejsObject);
 
                     }
@@ -479,8 +479,8 @@ app.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            userMsg = "User details have been updated successfully";
-                            ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+                            msg = "User details have been updated successfully";
+                            ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData);
                             res.render("admin.ejs", ejsObject);
 
                         }
@@ -496,8 +496,8 @@ app.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            userMsg = "User successfully deleted";
-                            ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+                            msg = "User successfully deleted";
+                            ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData);
                             res.render("admin.ejs", ejsObject);
                             console.log("USER DELETED");
 
