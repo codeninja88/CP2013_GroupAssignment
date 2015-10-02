@@ -101,7 +101,7 @@ function setNavContent (navType) {
             { navButton: '/', buttonName: 'Home' }
         ];
 
-    } else if (navType === 'full') {
+    }  else if (navType === 'full') {
         navMenu = [
             { navButton: '/', buttonName: 'Home' },
             { navButton: 'admin', buttonName: 'Admin' },
@@ -110,6 +110,16 @@ function setNavContent (navType) {
             { navButton: 'light', buttonName: 'Lights' },
             { navButton: 'logs', buttonName: 'Logs' }
         ];
+
+    } else if (navType === 'standard') {
+        navMenu = [
+            { navButton: '/', buttonName: 'Home' },
+            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
+            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
+            { navButton: 'light', buttonName: 'Lights' },
+            { navButton: 'logs', buttonName: 'Logs' }
+        ];
+
     }
 
     return navMenu;
@@ -147,7 +157,7 @@ app.get('/', function(req, res) {
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username){
+    if (req.session.username && req.session.isAdmin === 1){
 
         navMenu = setNavContent('full');
 
@@ -159,6 +169,17 @@ app.get('/', function(req, res) {
 
         printDebug(req, "HOME / INDEX");
 
+
+    } else if (req.session.username && req.session.isAdmin === 0){
+        navMenu = setNavContent('standard');
+
+        userCheck(req);
+
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+
+        res.render('index.ejs', ejsObject);
+
+        printDebug(req, "HOME / INDEX");
 
     } else {
 
@@ -185,7 +206,7 @@ app.get('/admin', function(req, res) {
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username){
+    if (req.session.username && req.session.isAdmin === 1){
 
         navMenu = setNavContent('full');
 
@@ -233,7 +254,7 @@ app.get('/doorGates', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        navMenu = setNavContent('full');
+        navMenu = setNavContent('standard');
 
         userCheck(req);
 
@@ -261,7 +282,7 @@ app.get('/holidayMode', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        navMenu = setNavContent('full');
+        navMenu = setNavContent('standard');
 
         userCheck(req);
 
@@ -290,7 +311,7 @@ app.get('/light', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        navMenu = setNavContent('full');
+        navMenu = setNavContent('standard');
 
         userCheck(req);
 
@@ -318,7 +339,7 @@ app.get('/logs', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username){
 
-        navMenu = setNavContent('full');
+        navMenu = setNavContent('standard');
 
         userCheck(req);
 
@@ -527,7 +548,7 @@ app.post('/',
 
     function(req, res, next) {
 
-        db.get('SELECT * FROM USER WHERE user_username = ? AND user_password = ?', req.body.username, req.body.password,
+        db.get('SELECT * FROM USER WHERE user_username = ? AND  user_password = ?', req.body.username, req.body.password,
 
             function(err, row) {
 
@@ -547,8 +568,26 @@ app.post('/',
                     res.render('index.ejs', ejsObject);
 
 
-                } else if (row.user_password === req.body.password) {
+                } else if (row.user_password === req.body.password && row.user_isAdmin === 0) { //different menu shown due to access level
 
+                    navMenu = setNavContent('standard');
+                    // Changing login status in database to user is logged in / true
+                    db.run("UPDATE 'USER' SET user_isLoggedIn = ? WHERE user_username = ?", 1, req.body.username, function (err) {
+
+                        if (err !== null) next(err);
+
+                    });
+                    req.session.username = req.body.username;
+                    req.session.isAdmin = row.user_isAdmin;
+
+
+                    res.redirect("/");
+
+                    console.log("Logged in successfully.");
+                    printDebug(req, "INDEX");
+
+                } else if (row.user_password === req.body.password && row.user_isAdmin === 1) {
+                    navMenu = setNavContent('full')
                     // Changing login status in database to user is logged in / true
                     db.run("UPDATE 'USER' SET user_isLoggedIn = ? WHERE user_username = ?", 1, req.body.username, function (err) {
 
