@@ -252,7 +252,7 @@ app.get('/doorGates', function(req, res) {
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username){
+    if (req.session.username && req.session.isAdmin === 0){
 
         navMenu = setNavContent('standard');
 
@@ -264,8 +264,17 @@ app.get('/doorGates', function(req, res) {
 
         printDebug(req, "DOORS/GATES");
 
-    } else {
+    } else if (req.session.username && req.session.isAdmin === 1) {
+        navMenu = setNavContent('full');
 
+        userCheck(req);
+
+        ejsObject = generateEjsVariables("Doors and Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+
+        res.render('doorGates.ejs', ejsObject);
+
+        printDebug(req, "DOORS/GATES");
+    }else {
         res.redirect('/');
 
     }
@@ -280,7 +289,7 @@ app.get('/holidayMode', function(req, res) {
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username){
+    if (req.session.username && req.session.isAdmin === 0) {
 
         navMenu = setNavContent('standard');
 
@@ -288,10 +297,20 @@ app.get('/holidayMode', function(req, res) {
 
         ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
-        res.render('holidayMode.ejs',ejsObject);
+        res.render('holidayMode.ejs', ejsObject);
 
         printDebug(req, "HOLIDAY MODE");
 
+    } else if (req.session.username && req.session.isAdmin === 1) {
+        navMenu = setNavContent('full');
+
+        userCheck(req);
+
+        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+
+        res.render('holidayMode.ejs', ejsObject);
+
+        printDebug(req, "HOLIDAY MODE");
     } else {
 
         res.redirect('/');
@@ -309,7 +328,7 @@ app.get('/light', function(req, res) {
     lightsData = '';
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username){
+    if (req.session.username && req.session.isAdmin === 0) {
 
         navMenu = setNavContent('standard');
 
@@ -321,7 +340,17 @@ app.get('/light', function(req, res) {
 
         printDebug(req, "LIGHT");
 
-    } else {
+    } else if (req.session.username && req.session.isAdmin === 1) {
+        navMenu = setNavContent('full');
+
+        userCheck(req);
+
+        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData);
+
+        res.render('light.ejs', ejsObject);
+
+        printDebug(req, "LIGHT");
+    }else {
 
         res.redirect('/');
 
@@ -337,7 +366,7 @@ app.get('/garden', function(req, res) {
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username){
+    if (req.session.username && req.session.isAdmin === 0) {
 
         navMenu = setNavContent('standard');
 
@@ -349,7 +378,18 @@ app.get('/garden', function(req, res) {
 
         printDebug(req, "GARDEN");
 
-    } else {
+    } else if (req.session.username && req.session.isAdmin === 1) {
+        navMenu = setNavContent('full');
+
+        userCheck(req);
+
+        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+
+        res.render('garden.ejs', ejsObject);
+
+        printDebug(req, "GARDEN");
+
+    }else {
 
         res.redirect('/');
 
