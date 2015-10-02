@@ -108,7 +108,7 @@ function setNavContent (navType) {
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
             { navButton: 'doorGates', buttonName: 'Doors and Gates' },
             { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' }
+            { navButton: 'garden', buttonName: 'Garden' }
         ];
 
     } else if (navType === 'standard') {
@@ -117,7 +117,7 @@ function setNavContent (navType) {
             { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
             { navButton: 'doorGates', buttonName: 'Doors and Gates' },
             { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'logs', buttonName: 'Logs' }
+            { navButton: 'garden', buttonName: 'Garden' }
         ];
 
     }
@@ -330,8 +330,8 @@ app.get('/light', function(req, res) {
 });
 
 
-// GET LOGS
-app.get('/logs', function(req, res) {
+// GET GARDEN
+app.get('/garden', function(req, res) {
 
     var navMenu;
     var ejsObject;
@@ -343,11 +343,11 @@ app.get('/logs', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Logs", "This is Logs page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
 
-        res.render('logs.ejs', ejsObject);
+        res.render('garden.ejs', ejsObject);
 
-        printDebug(req, "LOGS");
+        printDebug(req, "GARDEN");
 
     } else {
 
