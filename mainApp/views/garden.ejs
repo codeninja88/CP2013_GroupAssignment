@@ -29,16 +29,16 @@
 		<form method="post">
 			<table>
 				<tr>
-					<td><h2>Garden Name</h2></td>
+					<td><h2>Light Name</h2></td>
 					<td><h2>On Time</h2></td>
 					<td><h2>Off Time</h2></td>
-					<td><h2>Garden Status</h2></td>
+					<td><h2>Light Status</h2></td>
 				</tr>
-				<%gardenData.forEach(function(gardenData) { %>
+				<%gardenData.forEach(function(gardensData) { %>
 				<tr>
 					<td><label><%= gardenData.gardenName %> </label></td>
-					<td><input type='time' name='<%= gardenData.gardenName %>On' value='<%= gardenData.startTime %>' /> </td>
-					<td><input type='time' name='<%= gardenData.gardenName %>Off' value='<%= gardenData.stopTime %>' /></td>
+					<td><input type='time' name='<%= gardensData.gardenName %>On' value='<%= gardensData.startTime %>' /> </td>
+					<td><input type='time' name='<%= gardensData.gardenName %>Off' value='<%= gardensData.stopTime %>' /></td>
 					<td><label>
 							<% if (!gardenData.isActive) {%>
 							Off

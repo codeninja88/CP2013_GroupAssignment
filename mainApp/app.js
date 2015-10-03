@@ -11,6 +11,7 @@ var active = "color:white";
 var userStatusData = [];
 var userEditData = [];
 var lightsData = [];
+var gardenData = [];
 var db = new sqlite3.Database('database.sqlite');
 
 var app = express();
@@ -126,7 +127,7 @@ function setNavContent (navType) {
 
 }
 
-function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData, userEditData, lightsData) {
+function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData, userEditData, lightsData, gardenData) {
 
     var ejsObject = {
         title: title,
@@ -139,7 +140,8 @@ function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedI
         userStatusData: userStatusData,
         userEditData: userEditData,
         currentPage: active,
-        lightsData: lightsData
+        lightsData: lightsData,
+        gardenData: gardenData
     };
 
     return ejsObject;
@@ -372,7 +374,7 @@ app.get('/garden', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, gardenData);
 
         res.render('garden.ejs', ejsObject);
 
@@ -383,7 +385,7 @@ app.get('/garden', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, gardenData);
 
         res.render('garden.ejs', ejsObject);
 
@@ -756,6 +758,93 @@ app.post('/light', function(req, res, next) {
 
 });
 
+// POST -->  GARDEN
+app.post('/garden', function(req, res, next) {
+
+    var formName = req.body.formName;
+    var sqlRequest;
+    var gardenData = '';
+    userCheck(req);
+
+    if (formName === 'showGardenTimes') {
+
+        sqlRequest = "SELECT * FROM 'PREFERENCE'";
+        if (req.session.isAdmin === 0) {
+            var navMenu = setNavContent('standard');
+        } else {
+            var navMenu = setNavContent('full');
+        }
+
+
+        userCheck(req);
+        var ejsObject;
+        var userEditData = [];
+        var userStatusData = [];
+        gardenData = [];
+
+
+        db.serialize(function() {
+
+            db.each(sqlRequest, function(err, row) {
+
+                if (row.pref_name.startsWith('garden')) {
+
+                    gardenData.push({
+                        gardenName: row.pref_name,
+                        startTime: row.pref_startTime,
+                        stopTime: row.pref_stopTime,
+                        isActive: row.pref_isActive
+                    })
+
+                }
+
+            }, function (){
+
+                ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, gardenData);
+
+                console.log(gardenData);
+
+                res.render('garden.ejs', ejsObject);
+
+            })
+
+        });
+
+    }
+
+
+    if (req.body.submitBttn === 'Set Times') {
+
+        sqlRequest = "UPDATE PREFERENCE " +
+            "SET pref_startTime = (case when pref_name = 'garden_sprinkler1' then '"+req.body.garden_sprinkler1On+"' "+
+            "when pref_name = 'garden_sprinkler2' then '"+req.body.garden_sprinkler2On+"' "+
+            "end)," +
+
+            "pref_stopTime = (case when pref_name = 'garden_sprinkler1' then '"+req.body.garden_sprinkler1Off+"' "+                                                          "when pref_name = 'light_livingRoom' then '"+req.body.light_livingRoomOff+"' "+
+            "when pref_name = 'garden_sprinkler2Off' then '"+req.body.garden_sprinkler2Off+"' "+
+            "end)";
+
+        db.run(sqlRequest, function (err) {
+
+            if (err !== null) next(err);
+            else {
+                var navMenu = setNavContent('full');
+                userCheck(req);
+                var ejsObject;
+                var userEditData = [];
+                var userStatusData = [];
+                gardenData = '';
+                var msg = "Garden' on/off time updated successfully";
+
+                ejsObject = generateEjsVariables("Garden", "This is Garden page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, gardenData);
+
+                res.render("garden.ejs", ejsObject);
+
+            }
+        });
+    }
+
+});
 
 
 
@@ -859,5 +948,100 @@ setInterval( function() {
 
 }, 1000);
 
+// timer for garden
+setInterval( function() {
 
 
+    sqlRequest = "SELECT * FROM 'PREFERENCE'";
+    var gardenData = [];
+    var time24 = convertTo24Hour();
+
+    db.serialize(function() {
+
+        db.each(sqlRequest, function(err, row) {
+
+            if (row.pref_name.startsWith('garden')) {
+
+                gardenData.push({
+                    gardenName: row.pref_name,
+                    startTime: row.pref_startTime,
+                    stopTime: row.pref_stopTime
+                })
+
+            }
+
+
+
+        }, function (){
+
+            gardenData.forEach(function(gardensData) {
+
+                var sqlRequest;
+
+                var startTime = gardensData.startTime.toString().trim();
+                var stopTime = gardensData.stopTime.toString().trim();
+                var systemTime = time24.toString().trim();
+                var gardenName = gardensData.gardenName.toString().trim();
+
+
+
+                if (startTime.localeCompare(systemTime) === 0){
+
+                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '"+ gardenName +"';";
+
+                    db.run(sqlRequest, function (err) {
+
+                        if (err !== null) next(err);
+
+                    });
+
+                }
+
+                if (stopTime.localeCompare(systemTime) === 0) {
+
+                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '"+ gardenName +"';";
+
+                    db.run(sqlRequest, function (err) {
+
+                        if (err !== null) next(err);
+
+
+                    });
+
+                }
+
+            });
+
+        })
+
+    });
+
+
+
+
+
+    //var time = formatAMPM(date);
+
+// CONVERTING SYSTEM TIME FORMAT TO CHECK WITH SQL DATE DATA
+    function convertTo24Hour() {
+        var date = new Date();
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var time = hours + ':' + minutes + ' ' + ampm;
+
+        var hours = parseInt(time.substr(0, 2));
+        if(time.indexOf('am') != -1 && hours == 12) {
+            time = time.replace('12', '0');
+        }
+        if(time.indexOf('pm')  != -1 && hours < 12) {
+            time = time.replace(hours, (hours + 12));
+        }
+        return time.replace(/(am|pm)/, '');
+    }
+
+
+}, 1000);
