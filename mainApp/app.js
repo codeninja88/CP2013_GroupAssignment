@@ -670,8 +670,13 @@ app.post('/light', function(req, res, next) {
     if (formName === 'showLightTimes') {
 
         sqlRequest = "SELECT * FROM 'PREFERENCE'";
+        if (req.session.isAdmin === 0) {
+            var navMenu = setNavContent('standard');
+        } else {
+            var navMenu = setNavContent('full');
+        }
 
-        var navMenu = setNavContent('full');
+
         userCheck(req);
         var ejsObject;
         var userEditData = [];

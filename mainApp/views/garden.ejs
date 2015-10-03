@@ -2,9 +2,64 @@
 <% include nav.ejs %>
 
 
-    <h1>Garden Page</h1>
-	<hr />
-	<h2>Garden content will go here</h2>
-	<hr>
+
+<h1>Garden Page</h1>
+<hr />
+
+
+<div id="outerContainer">
+
+
+	<div id="innerContainerLeft">
+		<table>
+			<tr>
+				<td>
+					<form method="post">
+						<input type='hidden' name='formName' value='showGardenTimes'/>
+						<input class="innerContainerLeftButtons" type="submit" name="submit" value="Set On/Off Time"/>
+					</form>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div id="innerContainerRight">
+
+		<%if (gardenData !== '') {%>
+		<form method="post">
+			<table>
+				<tr>
+					<td><h2>Garden Name</h2></td>
+					<td><h2>On Time</h2></td>
+					<td><h2>Off Time</h2></td>
+					<td><h2>Garden Status</h2></td>
+				</tr>
+				<%gardenData.forEach(function(gardenData) { %>
+				<tr>
+					<td><label><%= gardenData.gardenName %> </label></td>
+					<td><input type='time' name='<%= gardenData.gardenName %>On' value='<%= gardenData.startTime %>' /> </td>
+					<td><input type='time' name='<%= gardenData.gardenName %>Off' value='<%= gardenData.stopTime %>' /></td>
+					<td><label>
+							<% if (!gardenData.isActive) {%>
+							Off
+							<% } else { %>
+							On
+							<%}%>
+						</label></td>
+				</tr>
+				<% }); %>
+				<tr>
+					<td></td>
+					<td colspan="2"><input id='setGardenTimes' name='submitBttn' value='Set Times' type='submit' /></td>
+				</tr>
+			</table>
+		</form>
+		<%}%>
+
+
+	</div>
+
+
+</div>
 
 <% include footer.ejs %>
