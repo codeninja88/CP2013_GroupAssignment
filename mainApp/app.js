@@ -427,6 +427,7 @@ app.post('/admin',
             var phone = req.body.phone;
             var email = req.body.email;
 
+
             sqlRequest= "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password, user_isAdmin, user_address, user_phone, user_email) " +
             "VALUES('"
             + firstName + "', '"
@@ -590,7 +591,7 @@ app.post('/',
 
     function(req, res, next) {
 
-        db.get('SELECT * FROM USER WHERE user_username = ? AND  user_password = ?', req.body.username, req.body.password,
+        db.get('SELECT * FROM USER WHERE user_username = ? AND user_password = ?', req.body.username, req.body.password,
 
             function(err, row) {
 
@@ -619,8 +620,27 @@ app.post('/',
                         if (err !== null) next(err);
 
                     });
+
+
+
+
                     req.session.username = req.body.username;
                     req.session.isAdmin = row.user_isAdmin;
+
+
+
+                    if ((row.user_startTime != null || row.user_startTime != undefined) &&
+                        (row.user_endTime != null || row.user_endTime != undefined)) {
+
+                        req.session.startTime = row.user_startTime;
+                        req.session.endTime = row.user_endTime;
+
+
+                        console.log(req.session.startTime);
+                        console.log(req.session.endTime);
+
+                    }
+
 
 
                     res.redirect("/");
@@ -857,41 +877,36 @@ setInterval( function() {
 
 
     sqlRequest = "SELECT * FROM 'PREFERENCE'";
-    var lightsData = [];
+    var allData = [];
     var time24 = convertTo24Hour();
 
     db.serialize(function() {
 
         db.each(sqlRequest, function(err, row) {
 
-            if (row.pref_name.startsWith('light')) {
-
-                lightsData.push({
-                    lightName: row.pref_name,
-                    startTime: row.pref_startTime,
-                    stopTime: row.pref_stopTime
-                })
-
-            }
-
+            allData.push({
+                pref_name: row.pref_name,
+                startTime: row.pref_startTime,
+                stopTime: row.pref_stopTime
+            })
 
 
         }, function (){
 
-            lightsData.forEach(function(lightData) {
+            allData.forEach(function(data) {
 
 
                     var sqlRequest;
 
-                    var startTime = lightData.startTime.toString().trim();
-                    var stopTime = lightData.stopTime.toString().trim();
+                    var startTime = data.startTime.toString().trim();
+                    var stopTime = data.stopTime.toString().trim();
                     var systemTime = time24.toString().trim();
-                    var lightName = lightData.lightName.toString().trim();
+                    var pref_name = data.pref_name.toString().trim();
 
 
-                    if (startTime.localeCompare(systemTime) === 0) {
+                    if (startTime.localeCompare(systemTime) === 0 || (systemTime > startTime && systemTime < stopTime)) {
 
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '" + lightName + "';";
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '" + pref_name+ "';";
 
                         db.run(sqlRequest, function (err) {
 
@@ -901,9 +916,9 @@ setInterval( function() {
 
                     }
 
-                    if (stopTime.localeCompare(systemTime) === 0) {
+                    if (stopTime.localeCompare(systemTime) === 0 || (systemTime < startTime || systemTime > stopTime)) {
 
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + lightName + "';";
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + pref_name + "';";
 
                         db.run(sqlRequest, function (err) {
 
@@ -913,104 +928,6 @@ setInterval( function() {
                         });
 
                     }
-
-            });
-
-        })
-
-    });
-
-
-
-
-
-    //var time = formatAMPM(date);
-
-// CONVERTING SYSTEM TIME FORMAT TO CHECK WITH SQL DATE DATA
-    function convertTo24Hour() {
-        var date = new Date();
-        var hours = date.getHours();
-        var minutes = date.getMinutes();
-        var ampm = hours >= 12 ? 'pm' : 'am';
-        hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
-        minutes = minutes < 10 ? '0'+minutes : minutes;
-        var time = hours + ':' + minutes + ' ' + ampm;
-
-        var hours = parseInt(time.substr(0, 2));
-        if(time.indexOf('am') != -1 && hours == 12) {
-            time = time.replace('12', '0');
-        }
-        if(time.indexOf('pm')  != -1 && hours < 12) {
-            time = time.replace(hours, (hours + 12));
-        }
-        return time.replace(/(am|pm)/, '');
-    }
-
-
-}, 1000);
-
-// timer for garden
-setInterval( function() {
-
-
-    sqlRequest = "SELECT * FROM 'PREFERENCE'";
-    var gardenData = [];
-    var time24 = convertTo24Hour();
-
-    db.serialize(function() {
-
-        db.each(sqlRequest, function(err, row) {
-
-            if (row.pref_name.startsWith('garden')) {
-
-                gardenData.push({
-                    gardenName: row.pref_name,
-                    startTime: row.pref_startTime,
-                    stopTime: row.pref_stopTime
-                })
-
-            }
-
-
-
-        }, function (){
-
-            gardensData.forEach(function(gardenData) {
-
-                var sqlRequest;
-
-                var startTime = gardenData.startTime.toString().trim();
-                var stopTime = gardenData.stopTime.toString().trim();
-                var systemTime = time24.toString().trim();
-                var gardenName = gardenData.gardenName.toString().trim();
-
-
-
-                if (startTime.localeCompare(systemTime) === 0){
-
-                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '"+ gardenName +"';";
-
-                    db.run(sqlRequest, function (err) {
-
-                        if (err !== null) next(err);
-
-                    });
-
-                }
-
-                if (stopTime.localeCompare(systemTime) === 0) {
-
-                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '"+ gardenName +"';";
-
-                    db.run(sqlRequest, function (err) {
-
-                        if (err !== null) next(err);
-
-
-                    });
-
-                }
 
             });
 
