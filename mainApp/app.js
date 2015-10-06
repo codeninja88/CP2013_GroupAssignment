@@ -11,7 +11,7 @@ var active = "color:white";
 var userStatusData = [];
 var userEditData = [];
 var lightsData = [];
-var gardenData = [];
+var gardensData = [];
 var db = new sqlite3.Database('database.sqlite');
 
 var app = express();
@@ -127,7 +127,7 @@ function setNavContent (navType) {
 
 }
 
-function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData, userEditData, lightsData, gardenData) {
+function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData, userEditData, lightsData, gardensData) {
 
     var ejsObject = {
         title: title,
@@ -139,9 +139,9 @@ function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedI
         isLoggedIn: isLoggedIn,
         userStatusData: userStatusData,
         userEditData: userEditData,
-        currentPage: active,
         lightsData: lightsData,
-        gardenData: gardenData
+        gardensData: gardensData,
+        currentPage: active
     };
 
     return ejsObject;
@@ -165,7 +165,7 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
         res.render('index.ejs', ejsObject);
 
@@ -177,7 +177,7 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
         res.render('index.ejs', ejsObject);
 
@@ -190,7 +190,7 @@ app.get('/', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, false, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, false, userStatusData, userEditData, "", "");
 
         res.render('index.ejs', ejsObject);
 
@@ -214,7 +214,7 @@ app.get('/admin', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
         res.render('admin.ejs', ejsObject);
 
@@ -260,7 +260,7 @@ app.get('/doorGates', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Doors and Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Doors and Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
         res.render('doorGates.ejs', ejsObject);
 
@@ -271,7 +271,7 @@ app.get('/doorGates', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Doors and Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Doors and Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
         res.render('doorGates.ejs', ejsObject);
 
@@ -297,7 +297,7 @@ app.get('/holidayMode', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
         res.render('holidayMode.ejs', ejsObject);
 
@@ -308,7 +308,7 @@ app.get('/holidayMode', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
         res.render('holidayMode.ejs', ejsObject);
 
@@ -336,7 +336,7 @@ app.get('/light', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData);
+        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, "");
 
         res.render('light.ejs', ejsObject);
 
@@ -347,7 +347,7 @@ app.get('/light', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData);
+        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, "");
 
         res.render('light.ejs', ejsObject);
 
@@ -374,7 +374,7 @@ app.get('/garden', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, gardenData);
+        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
         res.render('garden.ejs', ejsObject);
 
@@ -385,7 +385,7 @@ app.get('/garden', function(req, res) {
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, gardenData);
+        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData,"", "");
 
         res.render('garden.ejs', ejsObject);
 
@@ -445,7 +445,7 @@ app.post('/admin',
                     if (err !== null) next(err);
                     else {
                         msg = "New user has been created successfully";
-                        ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData);
+                        ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
                         res.render("admin.ejs", ejsObject);
 
                     }
@@ -471,7 +471,7 @@ app.post('/admin',
 
                 }, function (){
 
-                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
                     console.log(userStatusData);
 
@@ -510,7 +510,7 @@ app.post('/admin',
 
                 }, function (){
 
-                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData);
+                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
 
                     console.log(userEditData);
 
@@ -550,7 +550,7 @@ app.post('/admin',
                         else {
 
                             msg = "User details have been updated successfully";
-                            ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData);
+                            ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
                             res.render("admin.ejs", ejsObject);
 
                         }
@@ -567,7 +567,7 @@ app.post('/admin',
                         else {
 
                             msg = "User successfully deleted";
-                            ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData);
+                            ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
                             res.render("admin.ejs", ejsObject);
                             console.log("USER DELETED");
 
@@ -605,7 +605,7 @@ app.post('/',
 
                     userCheck(req);
 
-                    ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, errMsg, navMenu, false, userStatusData, userEditData);
+                    ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, errMsg, navMenu, false, userStatusData, userEditData, "", "");
 
                     res.render('index.ejs', ejsObject);
 
@@ -697,13 +697,13 @@ app.post('/light', function(req, res, next) {
                         startTime: row.pref_startTime,
                         stopTime: row.pref_stopTime,
                         isActive: row.pref_isActive
-                    })
+                    });
 
                 }
 
             }, function (){
 
-                ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData);
+                ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, "");
 
                 console.log(lightsData);
 
@@ -734,7 +734,7 @@ app.post('/light', function(req, res, next) {
                                         "when pref_name = 'light_kitchen' then '"+req.body.light_kitchenOff+"' "+
                                         "when pref_name = 'light_hallway' then '"+req.body.light_hallwayOff+"' "+
                                         "when pref_name = 'light_bathroom' then '"+req.body.light_bathroomOff+"' "+
-                                "end)";
+                                "end) WHERE pref_name LIKE 'light_%';";
 
         db.run(sqlRequest, function (err) {
 
@@ -748,7 +748,7 @@ app.post('/light', function(req, res, next) {
                 lightsData = '';
                 var msg = "Lights' on/off time updated successfully";
 
-                ejsObject = generateEjsVariables("Lights", "This is Light page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, lightsData);
+                ejsObject = generateEjsVariables("Lights", "This is Light page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, "");
 
                 res.render("light.ejs", ejsObject);
 
@@ -763,7 +763,7 @@ app.post('/garden', function(req, res, next) {
 
     var formName = req.body.formName;
     var sqlRequest;
-    var gardenData = '';
+    var gardensData = '';
     userCheck(req);
 
     if (formName === 'showGardenTimes') {
@@ -780,7 +780,9 @@ app.post('/garden', function(req, res, next) {
         var ejsObject;
         var userEditData = [];
         var userStatusData = [];
-        gardenData = [];
+        gardensData = [];
+
+
 
 
         db.serialize(function() {
@@ -789,20 +791,20 @@ app.post('/garden', function(req, res, next) {
 
                 if (row.pref_name.startsWith('garden')) {
 
-                    gardenData.push({
+                    gardensData.push({
                         gardenName: row.pref_name,
                         startTime: row.pref_startTime,
                         stopTime: row.pref_stopTime,
                         isActive: row.pref_isActive
-                    })
+                    });
 
                 }
 
             }, function (){
+                var lightsData = [];
+                ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, gardensData);
 
-                ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, gardenData);
-
-                console.log(gardenData);
+                console.log(gardensData);
 
                 res.render('garden.ejs', ejsObject);
 
@@ -813,16 +815,16 @@ app.post('/garden', function(req, res, next) {
     }
 
 
-    if (req.body.submitBttn === 'Set Times') {
+    if (req.body.submitBttn === 'Set Garden Times') {
 
         sqlRequest = "UPDATE PREFERENCE " +
             "SET pref_startTime = (case when pref_name = 'garden_sprinkler1' then '"+req.body.garden_sprinkler1On+"' "+
-            "when pref_name = 'garden_sprinkler2' then '"+req.body.garden_sprinkler2On+"' "+
-            "end)," +
+                                    "when pref_name = 'garden_sprinkler2' then '"+req.body.garden_sprinkler2On+"' "+
+                                    "end)," +
 
             "pref_stopTime = (case when pref_name = 'garden_sprinkler1' then '"+req.body.garden_sprinkler1Off+"' "+                                                          "when pref_name = 'light_livingRoom' then '"+req.body.light_livingRoomOff+"' "+
-            "when pref_name = 'garden_sprinkler2Off' then '"+req.body.garden_sprinkler2Off+"' "+
-            "end)";
+                                "when pref_name = 'garden_sprinkler2' then '"+req.body.garden_sprinkler2Off+"' "+
+                                "end) WHERE pref_name LIKE 'garden_%';";
 
         db.run(sqlRequest, function (err) {
 
@@ -833,10 +835,10 @@ app.post('/garden', function(req, res, next) {
                 var ejsObject;
                 var userEditData = [];
                 var userStatusData = [];
-                gardenData = '';
-                var msg = "Garden' on/off time updated successfully";
+                var gardensData = '';
+                var msg = "Garden on/off time updated successfully";
 
-                ejsObject = generateEjsVariables("Garden", "This is Garden page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, gardenData);
+                ejsObject = generateEjsVariables("Garden", "This is Garden page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, "", gardensData);
 
                 res.render("garden.ejs", ejsObject);
 
@@ -878,39 +880,39 @@ setInterval( function() {
 
             lightsData.forEach(function(lightData) {
 
-                var sqlRequest;
 
-                var startTime = lightData.startTime.toString().trim();
-                var stopTime = lightData.stopTime.toString().trim();
-                var systemTime = time24.toString().trim();
-                var lightName = lightData.lightName.toString().trim();
+                    var sqlRequest;
 
-
-
-                if (startTime.localeCompare(systemTime) === 0){
-
-                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '"+ lightName +"';";
-
-                    db.run(sqlRequest, function (err) {
-
-                        if (err !== null) next(err);
-
-                    });
-
-                }
-
-                if (stopTime.localeCompare(systemTime) === 0) {
-
-                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '"+ lightName +"';";
-
-                    db.run(sqlRequest, function (err) {
-
-                        if (err !== null) next(err);
+                    var startTime = lightData.startTime.toString().trim();
+                    var stopTime = lightData.stopTime.toString().trim();
+                    var systemTime = time24.toString().trim();
+                    var lightName = lightData.lightName.toString().trim();
 
 
-                    });
+                    if (startTime.localeCompare(systemTime) === 0) {
 
-                }
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '" + lightName + "';";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+                        });
+
+                    }
+
+                    if (stopTime.localeCompare(systemTime) === 0) {
+
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + lightName + "';";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+
+                        });
+
+                    }
 
             });
 
@@ -974,14 +976,14 @@ setInterval( function() {
 
         }, function (){
 
-            gardenData.forEach(function(gardensData) {
+            gardensData.forEach(function(gardenData) {
 
                 var sqlRequest;
 
-                var startTime = gardensData.startTime.toString().trim();
-                var stopTime = gardensData.stopTime.toString().trim();
+                var startTime = gardenData.startTime.toString().trim();
+                var stopTime = gardenData.stopTime.toString().trim();
                 var systemTime = time24.toString().trim();
-                var gardenName = gardensData.gardenName.toString().trim();
+                var gardenName = gardenData.gardenName.toString().trim();
 
 
 
