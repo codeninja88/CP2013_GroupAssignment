@@ -6,22 +6,6 @@ var generateEjsVariables = require("../modules/generateEjsVariables.js");
 var defaults = require("../modules/defaults.js");
 
 
-var userMsg = "";
-
-function userCheck(req) {
-
-    if (req.session.username) {
-
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-
-    } else {
-
-        userMsg = "";
-
-    }
-
-}
-
 
 // PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
 function printDebug(req, pageName) {
@@ -57,13 +41,11 @@ holidayModeRouter.get('/holidayMode', function(req, res) {
 
     function setInfo (nav){
 
-        userCheck(req);
-
         ejsObject = generateEjsVariables(
             "Holiday Mode",                        // Title of the page
             "This is Holiday Mode page",           // Heading of the page
             defaults.msg,                             // msg status update
-            userMsg,               // after login Welcome user name
+            defaults.userMsg(req),               // after login Welcome user name
             defaults.error,                           // error status
             nav,                        // nav menu data
             true,                            // isLoggedIn

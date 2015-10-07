@@ -6,38 +6,17 @@ var generateEjsVariables = require("../modules/generateEjsVariables.js");
 var defaults = require("../modules/defaults.js");
 
 
-var userMsg = "";
-
-
-function userCheck(req) {
-
-
-    if (req.session.username) {
-
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-
-    } else {
-
-        userMsg = "";
-
-    }
-
-}
-
-
 // GET HOME
 homeRouter.get('/', function(req, res) {
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 1){
 
-        userCheck(req);
-
         ejsObject = generateEjsVariables(
             "Home",                        // Title of the page
             "This is Home page",           // Heading of the page
             defaults.msg,                             // msg status update
-            userMsg,               // after login Welcome user name
+            defaults.userMsg(req),               // after login Welcome user name
             defaults.error,                           // error status
             nav.full,                        // nav menu data
             true,                            // isLoggedIn
@@ -55,12 +34,11 @@ homeRouter.get('/', function(req, res) {
 
     } else if (req.session.username && req.session.isAdmin === 0){
 
-        userCheck(req);
 
         ejsObject = generateEjsVariables(
             "Home",                        // Title of the page
             "This is Home page",           // Heading of the page
-            defaults.msg,                             // msg status update
+            defaults.userMsg(req),                             // msg status update
             userMsg,               // after login Welcome user name
             defaults.error,                           // error status
             nav.standard,                        // nav menu data
@@ -79,13 +57,12 @@ homeRouter.get('/', function(req, res) {
 
     } else {
 
-        userCheck(req);
 
         ejsObject = generateEjsVariables(
             "Home",                          // Title of the page
             "This is Home page",             // Heading of the page
             defaults.msg,                    // msg status update
-            userMsg,                // after login Welcome user name
+            defaults.userMsg(req),                // after login Welcome user name
             defaults.error,                  // error status
             nav.simple,                      // nav menu data
             false,                           // isLoggedIn

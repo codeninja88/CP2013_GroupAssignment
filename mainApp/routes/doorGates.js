@@ -6,23 +6,6 @@ var generateEjsVariables = require("../modules/generateEjsVariables.js");
 var defaults = require("../modules/defaults.js");
 
 
-var userMsg = "";
-
-function userCheck(req) {
-
-    if (req.session.username) {
-
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-
-    } else {
-
-        userMsg = "";
-
-    }
-
-}
-
-
 // PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
 function printDebug(req, pageName) {
 
@@ -37,8 +20,8 @@ function printDebug(req, pageName) {
 
     }
 
-
 }
+
 
 
 // GET DOORS/GATES
@@ -56,13 +39,11 @@ doorGatesRouter.get('/doorGates', function(req, res) {
 
     function setInfo (nav){
 
-        userCheck(req);
-
         ejsObject = generateEjsVariables(
             "Doors and Gates",                        // Title of the page
             "This is Doors/Gates page",           // Heading of the page
             defaults.msg,                             // msg status update
-            userMsg,               // after login Welcome user name
+            defaults.userMsg(req),               // after login Welcome user name
             defaults.error,                           // error status
             nav,                        // nav menu data
             true,                            // isLoggedIn
@@ -78,16 +59,7 @@ doorGatesRouter.get('/doorGates', function(req, res) {
 
     }
 
-
 });
-
-
-
-
-
-
-
-
 
 
 module.exports = doorGatesRouter;

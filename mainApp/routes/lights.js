@@ -11,24 +11,6 @@ var generateEjsVariables = require("../modules/generateEjsVariables.js");
 var defaults = require("../modules/defaults.js");
 
 
-var userMsg = "";
-
-
-function userCheck(req) {
-
-
-    if (req.session.username) {
-
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-
-    } else {
-
-        userMsg = "";
-
-    }
-
-}
-
 
 // PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
 function printDebug(req, pageName) {
@@ -54,7 +36,6 @@ lightsRouter.get('/light', function(req, res) {
 
     var ejsObject;
     lightsData = '';
-    userCheck(req);
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard, lightsData);
@@ -70,7 +51,7 @@ lightsRouter.get('/light', function(req, res) {
             "Lights",                        // Title of the page
             "This is Light page",           // Heading of the page
             defaults.msg,                             // msg status update
-            userMsg,                    // after login Welcome user name
+            defaults.userMsg(req),                    // after login Welcome user name
             defaults.error,                           // error status
             nav,                        // nav menu data
             true,                            // isLoggedIn
@@ -100,18 +81,16 @@ lightsRouter.post('/light', function(req, res, next) {
     var navMenu;
     var ejsObject;
 
-    userCheck(req);
-
     if (formName === 'showLightTimes') {
-
-        sqlRequest = "SELECT * FROM 'PREFERENCE'";
 
         if (req.session.isAdmin === 0) navMenu = nav.simple;
 
         else navMenu = nav.full;
 
-
         lightsData = [];
+
+
+        sqlRequest = "SELECT * FROM 'PREFERENCE'";
 
         db.serialize(function() {
 
@@ -135,7 +114,7 @@ lightsRouter.post('/light', function(req, res, next) {
                     "Lights",                        // Title of the page
                     "This is Light page",           // Heading of the page
                     defaults.msg,                             // msg status update
-                    userMsg,               // after login Welcome user name
+                    defaults.userMsg(req),               // after login Welcome user name
                     defaults.error,                           // error status
                     navMenu,                        // nav menu data
                     true,                            // isLoggedIn
@@ -187,7 +166,7 @@ lightsRouter.post('/light', function(req, res, next) {
                     "Lights",                        // Title of the page
                     "This is Light page",           // Heading of the page
                     "Lights' on/off time updated successfully",                             // msg status update
-                    userMsg,               // after login Welcome user name
+                    defaults.userMsg(req),               // after login Welcome user name
                     defaults.error,                           // error status
                     nav.full,                        // nav menu data
                     true,                            // isLoggedIn

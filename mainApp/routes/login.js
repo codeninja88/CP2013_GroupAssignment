@@ -11,24 +11,6 @@ var generateEjsVariables = require("../modules/generateEjsVariables.js");
 var defaults = require("../modules/defaults.js");
 
 
-var userMsg = "";
-
-
-function userCheck(req) {
-
-
-    if (req.session.username) {
-
-        userMsg = 'Welcome ' + req.session.username.toUpperCase();
-
-    } else {
-
-        userMsg = "";
-
-    }
-
-}
-
 
 // PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
 function printDebug(req, pageName) {
@@ -63,13 +45,11 @@ loginRouter.post('/',
                 // query returns undefined if username entered does not exist in db
                 if (row === undefined || !row.user_username) {
 
-                    userCheck(req);
-
                     ejsObject = generateEjsVariables(
                         "Home",                        // Title of the page
                         "This is Home page",           // Heading of the page
                         defaults.msg,                             // msg status update
-                        defaults.userMsg,               // after login Welcome user name
+                        defaults.userMsg(req),               // after login Welcome user name
                         "ERROR:\t Invalid username and/or password.",                           // error status
                         nav.simple,                        // nav menu data
                         false,                            // isLoggedIn
