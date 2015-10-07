@@ -6,30 +6,32 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var session = require('express-session');
 
-var userMsg = "";
-var active = "color:white";
-var userStatusData = [];
-var userEditData = [];
-var lightsData = [];
-var gardensData = [];
+//  custom modules
+var nav = require("./modules/nav.js");
+var generateEjsVariables = require("./modules/generateEjsVariables.js");
+var defaults = require("./modules/defaults.js");
+
+
 var db = new sqlite3.Database('database.sqlite');
+
+
+var routes = require('./routes/index');
+
 
 var app = express();
 
 app.use(express.static(__dirname));
 
+
 // SESSION SETUP
-app.use(
-    session(
-        {
-            secret: 'agileisawesome',
-            saveUninitialized: true,
-            resave: true
+app.use(session({
 
-        }
-    )
-);
+        secret: 'agileisawesome',
+        saveUninitialized: true,
+        resave: true
 
+    }
+));
 
 
 //---------------------------------------------------------------//
@@ -93,128 +95,41 @@ app.listen(
     });
 
 
-function setNavContent (navType) {
-    var navMenu;
-
-    if (navType === 'simple') {
-
-        navMenu = [
-            { navButton: '/', buttonName: 'Home' }
-        ];
-
-    }  else if (navType === 'full') {
-        navMenu = [
-            { navButton: '/', buttonName: 'Home' },
-            { navButton: 'admin', buttonName: 'Admin' },
-            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-            { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'garden', buttonName: 'Garden' }
-        ];
-
-    } else if (navType === 'standard') {
-        navMenu = [
-            { navButton: '/', buttonName: 'Home' },
-            { navButton: 'holidayMode', buttonName: 'Holiday Mode' },
-            { navButton: 'doorGates', buttonName: 'Doors and Gates' },
-            { navButton: 'light', buttonName: 'Lights' },
-            { navButton: 'garden', buttonName: 'Garden' }
-        ];
-
-    }
-
-    return navMenu;
-
-}
-
-function generateEjsVariables (title, body, msg, user, error, navMenu, isLoggedIn, userStatusData, userEditData, lightsData, gardensData) {
-
-    var ejsObject = {
-        title: title,
-        body: body,
-        msg: msg,
-        user: user,
-        error: error,
-        navMenu: navMenu,
-        isLoggedIn: isLoggedIn,
-        userStatusData: userStatusData,
-        userEditData: userEditData,
-        lightsData: lightsData,
-        gardensData: gardensData,
-        currentPage: active
-    };
-
-    return ejsObject;
-
-}
-
 
 //----------------------------------------------------------//
 //-------------> GET REQUESTS <----------------------------//
 
-// GET HOME
-app.get('/', function(req, res) {
-
-    var navMenu;
-    var ejsObject;
-
-    //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 1){
-
-        navMenu = setNavContent('full');
-
-        userCheck(req);
-
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
-
-        res.render('index.ejs', ejsObject);
-
-        printDebug(req, "HOME / INDEX");
 
 
-    } else if (req.session.username && req.session.isAdmin === 0){
-        navMenu = setNavContent('standard');
+app.use('/', routes);
 
-        userCheck(req);
-
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
-
-        res.render('index.ejs', ejsObject);
-
-        printDebug(req, "HOME / INDEX");
-
-    } else {
-
-        navMenu = setNavContent('simple');
-
-
-        userCheck(req);
-
-        ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, "", navMenu, false, userStatusData, userEditData, "", "");
-
-        res.render('index.ejs', ejsObject);
-
-        printDebug(req, "HOME / INDEX");
-    }
-
-});
 
 
 
 // GET ADMIN
 app.get('/admin', function(req, res) {
 
-    var navMenu;
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 1){
 
-        navMenu = setNavContent('full');
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+        ejsObject = generateEjsVariables(
+            "Admin",                        // Title of the page
+            "This is Admin page",           // Heading of the page
+            defaults.msg,                             // msg status update
+            defaults.userMsg,               // after login Welcome user name
+            defaults.error,                           // error status
+            nav.full,                        // nav menu data
+            true,                            // isLoggedIn
+            defaults.userStatusData,         // all users status whether logged in or not
+            defaults.userEditData,           // modify users info
+            defaults.lightsData,             // lights data
+            defaults.gardensData             // gardens data
+        );
 
         res.render('admin.ejs', ejsObject);
 
@@ -250,36 +165,40 @@ app.get('/logout', function(req, res) {
 // GET DOORS/GATES
 app.get('/doorGates', function(req, res) {
 
-    var navMenu;
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 0){
+    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard);
 
-        navMenu = setNavContent('standard');
+    else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full);
+
+    else res.redirect('/');
+
+
+    function setInfo (nav){
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Doors and Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+        ejsObject = generateEjsVariables(
+            "Doors and Gates",                        // Title of the page
+            "This is Doors/Gates page",           // Heading of the page
+            defaults.msg,                             // msg status update
+            defaults.userMsg,               // after login Welcome user name
+            defaults.error,                           // error status
+            nav,                        // nav menu data
+            true,                            // isLoggedIn
+            defaults.userStatusData,         // all users status whether logged in or not
+            defaults.userEditData,           // modify users info
+            defaults.lightsData,             // lights data
+            defaults.gardensData             // gardens data
+        );
 
         res.render('doorGates.ejs', ejsObject);
 
         printDebug(req, "DOORS/GATES");
-
-    } else if (req.session.username && req.session.isAdmin === 1) {
-        navMenu = setNavContent('full');
-
-        userCheck(req);
-
-        ejsObject = generateEjsVariables("Doors and Gates", "This is Doors/Gates page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
-
-        res.render('doorGates.ejs', ejsObject);
-
-        printDebug(req, "DOORS/GATES");
-    }else {
-        res.redirect('/');
 
     }
+
 
 });
 
@@ -287,37 +206,42 @@ app.get('/doorGates', function(req, res) {
 // GET HOLIDAY MODE
 app.get('/holidayMode', function(req, res) {
 
-    var navMenu;
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 0) {
+    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard);
 
-        navMenu = setNavContent('standard');
+    else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full);
+
+    else res.redirect('/');
+
+
+    function setInfo (nav){
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+        ejsObject = generateEjsVariables(
+            "Holiday Mode",                        // Title of the page
+            "This is Holiday Mode page",           // Heading of the page
+            defaults.msg,                             // msg status update
+            defaults.userMsg,               // after login Welcome user name
+            defaults.error,                           // error status
+            nav,                        // nav menu data
+            true,                            // isLoggedIn
+            defaults.userStatusData,         // all users status whether logged in or not
+            defaults.userEditData,           // modify users info
+            defaults.lightsData,             // lights data
+            defaults.gardensData             // gardens data
+        );
 
         res.render('holidayMode.ejs', ejsObject);
 
         printDebug(req, "HOLIDAY MODE");
-
-    } else if (req.session.username && req.session.isAdmin === 1) {
-        navMenu = setNavContent('full');
-
-        userCheck(req);
-
-        ejsObject = generateEjsVariables("Holiday Mode", "This is Holiday Mode page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
-
-        res.render('holidayMode.ejs', ejsObject);
-
-        printDebug(req, "HOLIDAY MODE");
-    } else {
-
-        res.redirect('/');
 
     }
+
+
+
 
 });
 
@@ -325,38 +249,41 @@ app.get('/holidayMode', function(req, res) {
 // GET LIGHTS
 app.get('/light', function(req, res) {
 
-    var navMenu;
     var ejsObject;
     lightsData = '';
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 0) {
+    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard, lightsData);
 
-        navMenu = setNavContent('standard');
+    else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full, lightsData);
+
+    else res.redirect('/');
+
+
+    function setInfo (nav, lightsData){
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, "");
+        ejsObject = generateEjsVariables(
+            "Lights",                        // Title of the page
+            "This is Light page",           // Heading of the page
+            defaults.msg,                             // msg status update
+            defaults.userMsg,               // after login Welcome user name
+            defaults.error,                           // error status
+            nav,                        // nav menu data
+            true,                            // isLoggedIn
+            defaults.userStatusData,         // all users status whether logged in or not
+            defaults.userEditData,           // modify users info
+            lightsData,             // lights data
+            defaults.gardensData             // gardens data
+        );
 
         res.render('light.ejs', ejsObject);
 
         printDebug(req, "LIGHT");
-
-    } else if (req.session.username && req.session.isAdmin === 1) {
-        navMenu = setNavContent('full');
-
-        userCheck(req);
-
-        ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, "");
-
-        res.render('light.ejs', ejsObject);
-
-        printDebug(req, "LIGHT");
-    }else {
-
-        res.redirect('/');
 
     }
+
 
 });
 
@@ -364,36 +291,37 @@ app.get('/light', function(req, res) {
 // GET GARDEN
 app.get('/garden', function(req, res) {
 
-    var navMenu;
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 0) {
+    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.simple);
 
-        navMenu = setNavContent('standard');
+    else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full);
+
+    else res.redirect('/');
+
+
+    function setInfo (nav){
 
         userCheck(req);
 
-        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+        ejsObject = generateEjsVariables(
+            "Garden",                        // Title of the page
+            "This is Garden page",           // Heading of the page
+            defaults.msg,                             // msg status update
+            defaults.userMsg,               // after login Welcome user name
+            defaults.error,                           // error status
+            nav,                        // nav menu data
+            true,                            // isLoggedIn
+            defaults.userStatusData,         // all users status whether logged in or not
+            defaults.userEditData,           // modify users info
+            defaults.lightsData,             // lights data
+            ''             // gardens data
+        );
 
         res.render('garden.ejs', ejsObject);
 
         printDebug(req, "GARDEN");
-
-    } else if (req.session.username && req.session.isAdmin === 1) {
-        navMenu = setNavContent('full');
-
-        userCheck(req);
-
-        ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData,"", "");
-
-        res.render('garden.ejs', ejsObject);
-
-        printDebug(req, "GARDEN");
-
-    }else {
-
-        res.redirect('/');
 
     }
 
@@ -410,10 +338,9 @@ app.post('/admin',
 
         var formName = req.body.formName;
         var sqlRequest;
-        var msg;
-        var userStatusData = [];
-        var userEditData = [];
-        navMenu = setNavContent('full');
+        //var msg;
+        //var userStatusData = [];
+        //var userEditData = [];
         userCheck(req);
 
         if (formName === 'createUser') {
@@ -444,9 +371,23 @@ app.post('/admin',
                 function (err) {
 
                     if (err !== null) next(err);
+
                     else {
-                        msg = "New user has been created successfully";
-                        ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+
+                        ejsObject = generateEjsVariables(
+                            "Admin",                        // Title of the page
+                            "This is Admin page",           // Heading of the page
+                            "New user has been created successfully",                             // msg status update
+                            defaults.userMsg,               // after login Welcome user name
+                            defaults.error,                           // error status
+                            nav.full,                        // nav menu data
+                            true,                            // isLoggedIn
+                            defaults.userStatusData,         // all users status whether logged in or not
+                            defaults.userEditData,           // modify users info
+                            defaults.lightsData,             // lights data
+                            defaults.gardensData             // gardens data
+                        );
+
                         res.render("admin.ejs", ejsObject);
 
                     }
@@ -457,12 +398,9 @@ app.post('/admin',
 
             sqlRequest = "SELECT * FROM 'USER'";
 
-            var navMenu = setNavContent('full');
             userCheck(req);
-            var ejsObject;
+            //var ejsObject;
             var userStatusData = [];
-            var userEditData = [];
-
 
             db.serialize(function() {
 
@@ -472,7 +410,19 @@ app.post('/admin',
 
                 }, function (){
 
-                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+                    ejsObject = generateEjsVariables(
+                        "Admin",                        // Title of the page
+                        "This is Admin page",           // Heading of the page
+                        defaults.msg,                             // msg status update
+                        defaults.userMsg,               // after login Welcome user name
+                        defaults.error,                           // error status
+                        nav.full,                        // nav menu data
+                        true,                            // isLoggedIn
+                        userStatusData,         // all users status whether logged in or not
+                        defaults.userEditData,           // modify users info
+                        defaults.lightsData,             // lights data
+                        defaults.gardensData             // gardens data
+                    );
 
                     console.log(userStatusData);
 
@@ -486,11 +436,10 @@ app.post('/admin',
 
             sqlRequest = "SELECT * FROM 'USER'";
 
-            var navMenu = setNavContent('full');
             userCheck(req);
             var ejsObject;
             var userEditData = [];
-            var userStatusData = [];
+            //var userStatusData = [];
 
 
             db.serialize(function() {
@@ -511,7 +460,20 @@ app.post('/admin',
 
                 }, function (){
 
-                    ejsObject = generateEjsVariables("Admin", "This is Admin page", "", userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+                    ejsObject = generateEjsVariables(
+                        "Admin",                        // Title of the page
+                        "This is Admin page",           // Heading of the page
+                        defaults.msg,                             // msg status update
+                        defaults.userMsg,               // after login Welcome user name
+                        defaults.error,                           // error status
+                        nav.full,                        // nav menu data
+                        true,                            // isLoggedIn
+                        defaults.userStatusData,         // all users status whether logged in or not
+                        userEditData,           // modify users info
+                        defaults.lightsData,             // lights data
+                        defaults.gardensData             // gardens data
+                    );
+
 
                     console.log(userEditData);
 
@@ -534,6 +496,7 @@ app.post('/admin',
                 "user_isAdmin = '" + req.body.userLevel + "', " +
                 "user_phone = '" + req.body.phone + "', " +
                 "user_email = '" + req.body.email + "'";
+
                 if (req.body.userLevel == 0) {
                     sqlRequest +=
                         ", user_startTime = '" + req.body.startTime + "', " +
@@ -550,13 +513,29 @@ app.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            msg = "User details have been updated successfully";
-                            ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+                            ejsObject = generateEjsVariables(
+                                "Admin",                        // Title of the page
+                                "This is Admin page",           // Heading of the page
+                                "User details have been updated successfully",                             // msg status update
+                                defaults.userMsg,               // after login Welcome user name
+                                defaults.error,                           // error status
+                                nav.full,                        // nav menu data
+                                true,                            // isLoggedIn
+                                defaults.userStatusData,         // all users status whether logged in or not
+                                defaults.userEditData,           // modify users info
+                                defaults.lightsData,             // lights data
+                                defaults.gardensData             // gardens data
+                            );
+
                             res.render("admin.ejs", ejsObject);
 
                         }
+
                     }
+
                 );
+
+
             } else if (req.body.submitBttn === 'Delete User') {
 
                 sqlRequest = "DELETE FROM 'USER' WHERE user_username = '" + req.body.username + "';";
@@ -567,9 +546,25 @@ app.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            msg = "User successfully deleted";
-                            ejsObject = generateEjsVariables("Admin", "This is Admin page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, "", "");
+
+                            ejsObject = generateEjsVariables(
+                                "Admin",                        // Title of the page
+                                "This is Admin page",           // Heading of the page
+                                "User successfully deleted",                             // msg status update
+                                defaults.userMsg,               // after login Welcome user name
+                                defaults.error,                           // error status
+                                nav.full,                        // nav menu data
+                                true,                            // isLoggedIn
+                                defaults.userStatusData,         // all users status whether logged in or not
+                                defaults.userEditData,           // modify users info
+                                defaults.lightsData,             // lights data
+                                defaults.gardensData             // gardens data
+                            );
+
+
+
                             res.render("admin.ejs", ejsObject);
+
                             console.log("USER DELETED");
 
                         }
@@ -595,33 +590,39 @@ app.post('/',
 
             function(err, row) {
 
-                var navMenu;
                 var ejsObject;
-                var errMsg = "ERROR:\t Invalid username and/or password.";
 
                 // query returns undefined if username entered does not exist in db
                 if (row === undefined || !row.user_username) {
 
-                    navMenu = setNavContent('simple');
-
                     userCheck(req);
 
-                    ejsObject = generateEjsVariables("Home", "This is Home page", "", userMsg, errMsg, navMenu, false, userStatusData, userEditData, "", "");
+                    ejsObject = generateEjsVariables(
+                        "Home",                        // Title of the page
+                        "This is Home page",           // Heading of the page
+                        defaults.msg,                             // msg status update
+                        defaults.userMsg,               // after login Welcome user name
+                        "ERROR:\t Invalid username and/or password.",                           // error status
+                        nav.simple,                        // nav menu data
+                        false,                            // isLoggedIn
+                        defaults.userStatusData,         // all users status whether logged in or not
+                        defaults.userEditData,           // modify users info
+                        defaults.lightsData,             // lights data
+                        defaults.gardensData             // gardens data
+                    );
 
                     res.render('index.ejs', ejsObject);
 
 
                 } else if (row.user_password === req.body.password && row.user_isAdmin === 0) { //different menu shown due to access level
 
-                    navMenu = setNavContent('standard');
+                    navMenu = nav.standard;
                     // Changing login status in database to user is logged in / true
                     db.run("UPDATE 'USER' SET user_isLoggedIn = ? WHERE user_username = ?", 1, req.body.username, function (err) {
 
                         if (err !== null) next(err);
 
                     });
-
-
 
 
                     req.session.username = req.body.username;
@@ -649,7 +650,7 @@ app.post('/',
                     printDebug(req, "INDEX");
 
                 } else if (row.user_password === req.body.password && row.user_isAdmin === 1) {
-                    navMenu = setNavContent('full')
+                    navMenu = nav.full;
                     // Changing login status in database to user is logged in / true
                     db.run("UPDATE 'USER' SET user_isLoggedIn = ? WHERE user_username = ?", 1, req.body.username, function (err) {
 
@@ -693,9 +694,9 @@ app.post('/light', function(req, res, next) {
 
         sqlRequest = "SELECT * FROM 'PREFERENCE'";
         if (req.session.isAdmin === 0) {
-            var navMenu = setNavContent('standard');
+            var navMenu = nav.simple;
         } else {
-            var navMenu = setNavContent('full');
+            var navMenu = nav.full;
         }
 
 
@@ -723,7 +724,19 @@ app.post('/light', function(req, res, next) {
 
             }, function (){
 
-                ejsObject = generateEjsVariables("Lights", "This is Light page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, "");
+                ejsObject = generateEjsVariables(
+                    "Lights",                        // Title of the page
+                    "This is Light page",           // Heading of the page
+                    defaults.msg,                             // msg status update
+                    defaults.userMsg,               // after login Welcome user name
+                    defaults.error,                           // error status
+                    navMenu,                        // nav menu data
+                    true,                            // isLoggedIn
+                    defaults.userStatusData,         // all users status whether logged in or not
+                    defaults.userEditData,           // modify users info
+                    lightsData,             // lights data
+                    defaults.gardensData             // gardens data
+                );
 
                 console.log(lightsData);
 
@@ -760,15 +773,26 @@ app.post('/light', function(req, res, next) {
 
             if (err !== null) next(err);
             else {
-                var navMenu = setNavContent('full');
                 userCheck(req);
-                var ejsObject;
-                var userEditData = [];
-                var userStatusData = [];
-                lightsData = '';
-                var msg = "Lights' on/off time updated successfully";
 
-                ejsObject = generateEjsVariables("Lights", "This is Light page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, "");
+                //var ejsObject;
+                //var userEditData = [];
+                //var userStatusData = [];
+                lightsData = '';
+
+                ejsObject = generateEjsVariables(
+                    "Lights",                        // Title of the page
+                    "This is Light page",           // Heading of the page
+                    "Lights' on/off time updated successfully",                             // msg status update
+                    defaults.userMsg,               // after login Welcome user name
+                    defaults.error,                           // error status
+                    nav.full,                        // nav menu data
+                    true,                            // isLoggedIn
+                    defaults.userStatusData,         // all users status whether logged in or not
+                    defaults.userEditData,           // modify users info
+                    lightsData,             // lights data
+                    defaults.gardensData             // gardens data
+                );
 
                 res.render("light.ejs", ejsObject);
 
@@ -790,9 +814,9 @@ app.post('/garden', function(req, res, next) {
 
         sqlRequest = "SELECT * FROM 'PREFERENCE'";
         if (req.session.isAdmin === 0) {
-            var navMenu = setNavContent('standard');
+            var navMenu = nav.simple;
         } else {
-            var navMenu = setNavContent('full');
+            var navMenu = nav.full;
         }
 
 
@@ -821,8 +845,22 @@ app.post('/garden', function(req, res, next) {
                 }
 
             }, function (){
-                var lightsData = [];
-                ejsObject = generateEjsVariables("Garden", "This is Garden page", "", userMsg, "", navMenu, true, userStatusData, userEditData, lightsData, gardensData);
+
+
+                ejsObject = generateEjsVariables(
+                    "Garden",                        // Title of the page
+                    "This is Garden page",           // Heading of the page
+                    defaults.msg,                             // msg status update
+                    defaults.userMsg,               // after login Welcome user name
+                    defaults.error,                           // error status
+                    navMenu,                        // nav menu data
+                    true,                            // isLoggedIn
+                    defaults.userStatusData,         // all users status whether logged in or not
+                    defaults.userEditData,           // modify users info
+                    defaults.lightsData,             // lights data
+                    gardensData             // gardens data
+                );
+
 
                 console.log(gardensData);
 
@@ -850,15 +888,26 @@ app.post('/garden', function(req, res, next) {
 
             if (err !== null) next(err);
             else {
-                var navMenu = setNavContent('full');
+                var navMenu = nav.full;
                 userCheck(req);
-                var ejsObject;
-                var userEditData = [];
-                var userStatusData = [];
+                //var ejsObject;
+                //var userEditData = [];
+                //var userStatusData = [];
                 var gardensData = '';
-                var msg = "Garden on/off time updated successfully";
 
-                ejsObject = generateEjsVariables("Garden", "This is Garden page", msg, userMsg, "", navMenu, true, userStatusData, userEditData, "", gardensData);
+                ejsObject = generateEjsVariables(
+                    "Garden",                        // Title of the page
+                    "This is Garden page",           // Heading of the page
+                    "Garden on/off time updated successfully",                             // msg status update
+                    defaults.userMsg,               // after login Welcome user name
+                    defaults.error,                           // error status
+                    navMenu,                        // nav menu data
+                    true,                            // isLoggedIn
+                    defaults.userStatusData,         // all users status whether logged in or not
+                    defaults.userEditData,           // modify users info
+                    defaults.lightsData,             // lights data
+                    gardensData             // gardens data
+                );
 
                 res.render("garden.ejs", ejsObject);
 
