@@ -1,17 +1,16 @@
 var express = require('express');
-var router = express.Router();
+var homeRouter = express.Router();
 
 var nav = require("../modules/nav.js");
-
 var generateEjsVariables = require("../modules/generateEjsVariables.js");
-
 var defaults = require("../modules/defaults.js");
 
+
+var userMsg = "";
 
 
 function userCheck(req) {
 
-    var userMsg = "";
 
     if (req.session.username) {
 
@@ -27,7 +26,7 @@ function userCheck(req) {
 
 
 // GET HOME
-router.get('/', function(req, res) {
+homeRouter.get('/', function(req, res) {
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 1){
@@ -38,7 +37,7 @@ router.get('/', function(req, res) {
             "Home",                        // Title of the page
             "This is Home page",           // Heading of the page
             defaults.msg,                             // msg status update
-            defaults.userMsg,               // after login Welcome user name
+            userMsg,               // after login Welcome user name
             defaults.error,                           // error status
             nav.full,                        // nav menu data
             true,                            // isLoggedIn
@@ -62,7 +61,7 @@ router.get('/', function(req, res) {
             "Home",                        // Title of the page
             "This is Home page",           // Heading of the page
             defaults.msg,                             // msg status update
-            defaults.userMsg,               // after login Welcome user name
+            userMsg,               // after login Welcome user name
             defaults.error,                           // error status
             nav.standard,                        // nav menu data
             true,                            // isLoggedIn
@@ -86,7 +85,7 @@ router.get('/', function(req, res) {
             "Home",                          // Title of the page
             "This is Home page",             // Heading of the page
             defaults.msg,                    // msg status update
-            defaults.userMsg,                // after login Welcome user name
+            userMsg,                // after login Welcome user name
             defaults.error,                  // error status
             nav.simple,                      // nav menu data
             false,                           // isLoggedIn
@@ -106,4 +105,4 @@ router.get('/', function(req, res) {
 });
 
 
-module.exports = router;
+module.exports = homeRouter;
