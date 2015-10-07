@@ -6,6 +6,23 @@ var generateEjsVariables = require("../modules/generateEjsVariables.js");
 var defaults = require("../modules/defaults.js");
 
 
+// PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
+function printDebug(req, pageName) {
+
+    //console.log(req.session);
+
+    console.log("\nPAGE: " + pageName);
+
+    if (req.session.username !== undefined) {
+
+        console.log("---> user: \t" + req.session.username);
+        console.log("---> isAdmin: \t" + req.session.isAdmin);
+
+    }
+
+}
+
+
 // GET HOME
 homeRouter.get('/', function(req, res) {
 
@@ -29,7 +46,7 @@ homeRouter.get('/', function(req, res) {
 
         res.render('index.ejs', ejsObject);
 
-        //printDebug(req, "HOME / INDEX");
+        printDebug(req, "HOME / INDEX");
 
 
     } else if (req.session.username && req.session.isAdmin === 0){
@@ -39,7 +56,7 @@ homeRouter.get('/', function(req, res) {
             "Home",                        // Title of the page
             "This is Home page",           // Heading of the page
             defaults.userMsg(req),                             // msg status update
-            userMsg,               // after login Welcome user name
+            defaults.userMsg(req),               // after login Welcome user name
             defaults.error,                           // error status
             nav.standard,                        // nav menu data
             true,                            // isLoggedIn
@@ -53,10 +70,9 @@ homeRouter.get('/', function(req, res) {
 
         res.render('index.ejs', ejsObject);
 
-        //printDebug(req, "HOME / INDEX");
+        printDebug(req, "HOME / INDEX");
 
     } else {
-
 
         ejsObject = generateEjsVariables(
             "Home",                          // Title of the page
@@ -76,7 +92,7 @@ homeRouter.get('/', function(req, res) {
         res.render('index.ejs', ejsObject);
 
 
-        //printDebug(req, "HOME / INDEX");
+        printDebug(req, "HOME / INDEX");
     }
 
 });

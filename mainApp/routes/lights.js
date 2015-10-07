@@ -83,7 +83,7 @@ lightsRouter.post('/light', function(req, res, next) {
 
     if (formName === 'showLightTimes') {
 
-        if (req.session.isAdmin === 0) navMenu = nav.simple;
+        if (req.session.isAdmin === 0) navMenu = nav.standard;
 
         else navMenu = nav.full;
 

@@ -1,7 +1,10 @@
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database('database.sqlite');
+
 var express = require('express');
 var adminRouter = express.Router();
+
+var database = require("../modules/database.js");
 
 var nav = require("../modules/nav.js");
 var generateEjsVariables = require("../modules/generateEjsVariables.js");
@@ -71,59 +74,48 @@ adminRouter.post('/admin',
 
         var formName = req.body.formName;
         var sqlRequest;
+        var reqFormData;
+
+        database.connect();
 
         if (formName === 'createUser') {
 
-            var firstName = req.body.firstName;
-            var lastName = req.body.lastName;
-            var username = req.body.username;
-            var password = req.body.password;
-            var isAdmin = req.body.userLevel;
-            var address = req.body.address;
-            var phone = req.body.phone;
-            var email = req.body.email;
+            reqFormData = {
 
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                username: req.body.username,
+                password: req.body.password,
+                isAdmin: req.body.userLevel,
+                address: req.body.address,
+                phone: req.body.phone,
+                email: req.body.email
 
-            sqlRequest= "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password, user_isAdmin, user_address, user_phone, user_email) " +
-                "VALUES('"
-                + firstName + "', '"
-                + lastName + "', '"
-                + username + "', '"
-                + password + "', '"
-                + isAdmin + "', '"
-                + address + "', '"
-                + phone + "', '"
-                + email + "')";
+            };
 
-            db.run(sqlRequest,
+            database.createUser(reqFormData);
 
-                function (err) {
+            ejsObject = generateEjsVariables(
 
-                    if (err !== null) next(err);
-
-                    else {
-
-                        ejsObject = generateEjsVariables(
-                            "Admin",                        // Title of the page
-                            "This is Admin page",           // Heading of the page
-                            "New user has been created successfully",                             // msg status update
-                            defaults.userMsg(req),               // after login Welcome user name
-                            defaults.error,                           // error status
-                            nav.full,                        // nav menu data
-                            true,                            // isLoggedIn
-                            defaults.userStatusData,         // all users status whether logged in or not
-                            defaults.userEditData,           // modify users info
-                            defaults.lightsData,             // lights data
-                            defaults.gardensData             // gardens data
-                        );
-
-                        res.render("admin.ejs", ejsObject);
-
-                    }
-                }
+                "Admin",                        // Title of the page
+                "This is Admin page",           // Heading of the page
+                "New user has been created successfully",  // msg status update
+                defaults.userMsg(req),               // after login Welcome user name
+                defaults.error,                           // error status
+                nav.full,                        // nav menu data
+                true,                            // isLoggedIn
+                defaults.userStatusData,         // all users status whether logged in or not
+                defaults.userEditData,           // modify users info
+                defaults.lightsData,             // lights data
+                defaults.gardensData             // gardens data
             );
 
+            res.render("admin.ejs", ejsObject);
+
+
+
         } else if (formName === 'showStatus') {
+
 
             sqlRequest = "SELECT * FROM 'USER'";
 

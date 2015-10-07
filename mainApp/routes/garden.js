@@ -37,7 +37,7 @@ gardenRouter.get('/garden', function(req, res) {
     var ejsObject;
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.simple);
+    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard);
 
     else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full);
 
@@ -84,7 +84,7 @@ gardenRouter.post('/garden', function(req, res, next) {
 
         if (req.session.isAdmin === 0) {
 
-            navMenu = nav.simple;
+            navMenu = nav.standard;
 
         } else {
 
