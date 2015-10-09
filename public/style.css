@@ -70,32 +70,54 @@ form {
 }
 
 
-#logoContainer div {
-    border-bottom-left-radius: 25px;
-	border-bottom-right-radius: 25px;
-    border: 5px solid #000000;
-    width: 100%;
+#logoContainer {
+
+    padding-top: 2%;
+    /*padding-left: 2%;
+    padding-right: 2.5%;*/
     min-height: 200%;
-	background: green;
-	margin: auto;
-	margin-list:none
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border: 5px solid #000000;
+    background: green;
+    margin: auto;
+    margin-list:none;
+    display: table;
+    width: 96%;
 }
 
-#logoContainer {
-	padding-right: 2.5%;
-	padding-top: 2%;
-	padding-left: 2%;
-	min-height: 200%;
+#logoDiv {
+    width: auto;
+    display: table-cell;
 }
+
+.plsWork {
+    display: table-cell;
+    border-collapse: collapse;
+    vertical-align: middle;
+    border: 2px;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.plsWork td {
+    width: 150px;
+}
+
+.spacer {
+    float:none;
+}
+
+
 
 #logo{
 	min-height: 30%;
-	min-width: 30%;
-	margin-left: auto;
 	padding-top: 7.5%;
 	padding-bottom: 7.5%;
+    padding-left: 7.5%;
 
 }
+
 
 #error, #msg {
     font-style: italic;
@@ -243,4 +265,8 @@ form {
         border: 1px solid #089108;
         background-color: #089108;
     }
+
+
 }
+
+
