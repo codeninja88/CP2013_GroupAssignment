@@ -50,8 +50,6 @@ app.use('/', gardenRouter);
 app.use('/', holidayModeRouter);
 app.use('/', doorGatesRouter);
 
-
-
 // timer checking if lights etc On/Off status changed
 setInterval(function () {
 
@@ -83,30 +81,80 @@ setInterval(function () {
                 var pref_name = data.pref_name.toString().trim();
 
 
-                if (startTime.localeCompare(systemTime) === 0 || (systemTime > startTime && systemTime < stopTime)) {
+                var timeMode = 0; // normal
 
-                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '" + pref_name + "';";
+                if (stopTime < startTime) {
+                    timeMode = 1;
+                    //time period crosses midnight
+                } else {
+                    timeMode = 0;
+                    //time period does not cross midnight
 
-                    db.run(sqlRequest, function (err) {
+                }
 
-                        if (err !== null) next(err);
 
-                    });
+
+                if (timeMode === 0) {
+
+                    if (systemTime >= startTime && systemTime < stopTime) {
+                        //IS ACTIVE
+
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '" + pref_name + "';";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+                        });
+                    }
+                    if (systemTime < startTime || systemTime >= stopTime) {
+                        // NOT ACTIVE
+
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + pref_name + "';";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+
+                        });
+                    }
+
+                } else if (timeMode === 1) {
+
+                    console.log("SYSTEM TIME: " + systemTime);
+                    if ((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) {
+                        //IS ACTIVE
+
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '" + pref_name + "';";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+                        });
+                    }
+
+                    if (systemTime >= stopTime && systemTime < startTime) {
+                        // NOT ACTIVE
+
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + pref_name + "';";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+
+                        });
+                    }
+
 
                 }
 
-                if (stopTime.localeCompare(systemTime) === 0 || (systemTime < startTime || systemTime > stopTime)) {
-
-                    sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + pref_name + "';";
-
-                    db.run(sqlRequest, function (err) {
-
-                        if (err !== null) next(err);
 
 
-                    });
 
-                }
+
 
             });
 
@@ -115,19 +163,19 @@ setInterval(function () {
     });
 
 
-    //var time = formatAMPM(date);
-
 // CONVERTING SYSTEM TIME FORMAT TO CHECK WITH SQL DATE DATA
     function convertTo24Hour() {
 
         var date = new Date();
         var hours = date.getHours();
         var minutes = date.getMinutes();
+
         var ampm = hours >= 12 ? 'pm' : 'am';
 
         hours = hours % 12;
         hours = hours ? hours : 12; // the hour '0' should be '12'
         minutes = minutes < 10 ? '0' + minutes : minutes;
+
 
         var time = hours + ':' + minutes + ' ' + ampm;
 
@@ -138,11 +186,10 @@ setInterval(function () {
         if (time.indexOf('pm') != -1 && hours < 12) time = time.replace(hoursAgain, (hoursAgain + 12));
 
         return time.replace(/(am|pm)/, '');
+
     }
 
-
 }, 1000);
-
 
 
 app.listen(process.env.PORT || 3000, function() {
