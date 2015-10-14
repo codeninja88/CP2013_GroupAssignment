@@ -33,7 +33,27 @@
     </div>
 
     <div class="plsWork">
-        <table border="1">
+
+        <%if (prefStatusData[0] !== undefined) {%>
+        <table>
+            <tr>
+                <td>Name</td>
+                <td>Status</td>
+            </tr>
+            <%prefStatusData.forEach(function(prefStatus) { %>
+            <tr>
+                <td><%= prefStatus.prefName%></td>
+                <%if (prefStatus.isActive === 1) {%>
+                <td><status>On</status> </td>
+                <%}%>
+
+
+            </tr>
+            <% }); %>
+        </table>
+        <%}%>
+
+        <!--<table border="1">
         <tr>
             <td>Jill</td>
             <td>Smith</td>
@@ -49,7 +69,7 @@
             <td>Doe</td>
             <td>80</td>
         </tr>
-        </table>
+        </table>-->
         <!--<div id="statusSummaryDiv">
             <div id="topSpacer" class="spacer">TOP</div>
             <div id="middle">TEST</div>

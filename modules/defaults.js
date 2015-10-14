@@ -7,6 +7,8 @@ var defaults = {
     userEditData: [],
     lightsData: [],
     gardensData: [],
+    prefStatusData: [],
+
     userMsg: function(req) {
 
         var userMsg = "";

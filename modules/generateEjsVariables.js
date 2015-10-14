@@ -1,4 +1,4 @@
-function generateEjsVariables (title, body, msg, userMsg, error, navMenu, isLoggedIn, userStatusData, userEditData, lightsData, gardensData) {
+function generateEjsVariables (title, body, msg, userMsg, error, navMenu, isLoggedIn, userStatusData, userEditData, lightsData, gardensData, prefStatusData) {
     
 
     var ejsObject = {
@@ -13,6 +13,7 @@ function generateEjsVariables (title, body, msg, userMsg, error, navMenu, isLogg
         userEditData: userEditData,
         lightsData: lightsData,
         gardensData: gardensData,
+        prefStatusData: prefStatusData,
         currentPage: "color:white"
     };
 

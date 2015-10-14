@@ -1,3 +1,6 @@
+var sqlite3 = require("sqlite3").verbose();
+var db = new sqlite3.Database('database.sqlite');
+
 var express = require('express');
 var homeRouter = express.Router();
 
@@ -25,29 +28,56 @@ function printDebug(req, pageName) {
 
 // GET HOME
 homeRouter.get('/', function(req, res) {
+    var ejsObject;
+
 
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 1){
 
-        ejsObject = generateEjsVariables(
-            "Home",                        // Title of the page
-            "This is Home page",           // Heading of the page
-            defaults.msg,                             // msg status update
-            defaults.userMsg(req),               // after login Welcome user name
-            defaults.error,                           // error status
-            nav.full,                        // nav menu data
-            true,                            // isLoggedIn
-            defaults.userStatusData,         // all users status whether logged in or not
-            defaults.userEditData,           // modify users info
-            defaults.lightsData,             // lights data
-            defaults.gardensData             // gardens data
-        );
+        sqlRequest = "SELECT * FROM 'PREFERENCE' WHERE pref_isActive = 1";
+
+        var prefStatusData = [];
+
+        db.serialize(function() {
+
+            db.each(sqlRequest, function (err, row) {
 
 
-        res.render('index.ejs', ejsObject);
+                console.log("running loop");
 
-        printDebug(req, "HOME / INDEX");
+                prefStatusData.push({
 
+                    prefName: row.pref_name,
+                    isActive: row.pref_isActive
+                });
+
+                console.log("PrefStatusData is: "+ prefStatusData.prefName + " prefActive " + prefStatusData.isActive);
+
+
+            }, function () {
+
+                console.log("PrefStatusData is: "+ prefStatusData.prefName + " prefActive " + prefStatusData.isActive);
+
+                ejsObject = generateEjsVariables(
+                    "Home",                        // Title of the page
+                    "This is Home page",           // Heading of the page
+                    defaults.msg,                             // msg status update
+                    defaults.userMsg(req),               // after login Welcome user name
+                    defaults.error,                           // error status
+                    nav.full,                        // nav menu data
+                    true,                            // isLoggedIn
+                    defaults.userStatusData,         // all users status whether logged in or not
+                    defaults.userEditData,           // modify users info
+                    defaults.lightsData,             // lights data
+                    defaults.gardensData,             // gardens data
+                    prefStatusData
+                );
+
+                res.render('index.ejs', ejsObject);
+
+                printDebug(req, "HOME / INDEX");
+            });
+        });
 
     } else if (req.session.username && req.session.isAdmin === 0){
 
@@ -63,7 +93,9 @@ homeRouter.get('/', function(req, res) {
             defaults.userStatusData,         // all users status whether logged in or not
             defaults.userEditData,           // modify users info
             defaults.lightsData,             // lights data
-            defaults.gardensData             // gardens data
+            defaults.gardensData,             // gardens data
+            defaults.prefStatusData
+
         );
 
 
@@ -85,7 +117,8 @@ homeRouter.get('/', function(req, res) {
             defaults.userStatusData,         // all users status whether logged in or not
             defaults.userEditData,           // modify users info
             defaults.lightsData,             // lights data
-            defaults.gardensData             // gardens data
+            defaults.gardensData,             // gardens data
+            defaults.prefStatusData
         );
 
 
