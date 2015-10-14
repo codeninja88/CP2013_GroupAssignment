@@ -51,7 +51,7 @@ app.use('/', holidayModeRouter);
 app.use('/', doorGatesRouter);
 
 var weatherNumber = 1;
-setInterval(getRandomNumber, 10000); // time to refresh weatherNumber
+setInterval(getRandomNumber, 30000); // time to refresh weatherNumber
 
 function getRandomNumber() {
     weatherNumber = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
@@ -116,7 +116,7 @@ setInterval(function () {
                         });
                     } else if ((systemTime >= startTime && systemTime < stopTime) && (weatherNumber >= 7 && weatherNumber <= 10)) {
 
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0";
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name LIKE 'g%';";
 
                         db.run(sqlRequest, function (err) {
 
@@ -135,7 +135,7 @@ setInterval(function () {
 
                         });
                     } else if ((systemTime < startTime || systemTime >= stopTime) && (weatherNumber >= 7 && weatherNumber <= 10)) {
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0";
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name LIKE 'g%';";
 
                         db.run(sqlRequest, function (err) {
 
@@ -160,7 +160,7 @@ setInterval(function () {
 
                         });
                     } else if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (weatherNumber >= 7 && weatherNumber <= 10)) {
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0";
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name LIKE 'g%';";
 
                         db.run(sqlRequest, function (err) {
 
@@ -182,7 +182,7 @@ setInterval(function () {
 
                         });
                     } else if ((systemTime >= stopTime && systemTime < startTime) && (weatherNumber >= 7 && weatherNumber <= 10)) {
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0";
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name LIKE 'g%';";
 
                         db.run(sqlRequest, function (err) {
 
