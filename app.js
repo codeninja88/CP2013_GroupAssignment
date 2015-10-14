@@ -50,6 +50,14 @@ app.use('/', gardenRouter);
 app.use('/', holidayModeRouter);
 app.use('/', doorGatesRouter);
 
+var weatherNumber = 1;
+setInterval(getRandomNumber, 10000); // time to refresh weatherNumber
+
+function getRandomNumber() {
+    weatherNumber = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+    console.log(weatherNumber);
+}
+
 // timer checking if lights etc On/Off status changed
 setInterval(function () {
 
@@ -57,7 +65,7 @@ setInterval(function () {
     var allData = [];
     var time24 = convertTo24Hour();
 
-    db.serialize(function () {
+    db.serialize(function (next) {
 
         db.each(sqlRequest, function (err, row) {
 
@@ -96,7 +104,7 @@ setInterval(function () {
 
                 if (timeMode === 0) {
 
-                    if (systemTime >= startTime && systemTime < stopTime) {
+                    if ((systemTime >= startTime && systemTime < stopTime) && (weatherNumber <= 6)) {
                         //IS ACTIVE
 
                         sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '" + pref_name + "';";
@@ -106,8 +114,17 @@ setInterval(function () {
                             if (err !== null) next(err);
 
                         });
+                    } else if ((systemTime >= startTime && systemTime < stopTime) && (weatherNumber >= 7 && weatherNumber <= 10)) {
+
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+                        });
                     }
-                    if (systemTime < startTime || systemTime >= stopTime) {
+                    if ((systemTime < startTime || systemTime >= stopTime) && (weatherNumber <= 6)) {
                         // NOT ACTIVE
 
                         sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + pref_name + "';";
@@ -116,14 +133,23 @@ setInterval(function () {
 
                             if (err !== null) next(err);
 
+                        });
+                    } else if ((systemTime < startTime || systemTime >= stopTime) && (weatherNumber >= 7 && weatherNumber <= 10)) {
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
 
                         });
                     }
+
 
                 } else if (timeMode === 1) {
 
                     console.log("SYSTEM TIME: " + systemTime);
-                    if ((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) {
+                    if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (weatherNumber <= 6)) {
                         //IS ACTIVE
 
                         sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1 WHERE pref_name = '" + pref_name + "';";
@@ -133,12 +159,30 @@ setInterval(function () {
                             if (err !== null) next(err);
 
                         });
+                    } else if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (weatherNumber >= 7 && weatherNumber <= 10)) {
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+
+                        });
                     }
 
-                    if (systemTime >= stopTime && systemTime < startTime) {
+                    if ((systemTime >= stopTime && systemTime < startTime) && (weatherNumber <= 6)) {
                         // NOT ACTIVE
 
                         sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + pref_name + "';";
+
+                        db.run(sqlRequest, function (err) {
+
+                            if (err !== null) next(err);
+
+
+                        });
+                    } else if ((systemTime >= stopTime && systemTime < startTime) && (weatherNumber >= 7 && weatherNumber <= 10)) {
+                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0";
 
                         db.run(sqlRequest, function (err) {
 
@@ -189,6 +233,8 @@ setInterval(function () {
 
     }
 
+
+
 }, 1000);
 
 
@@ -197,3 +243,4 @@ app.listen(process.env.PORT || 3000, function() {
     console.log("running at --> http://localhost:3000/");
 
 });
+
