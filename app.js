@@ -51,12 +51,28 @@ app.use('/', holidayModeRouter);
 app.use('/', doorGatesRouter);
 
 var weatherNumber = 1;
-setInterval(getRandomNumber, 30000); // time to refresh weatherNumber
+var motionLightNumber = 1;
+setInterval(getRandomNumber, 3000); // time to refresh weatherNumber
 
 function getRandomNumber() {
     weatherNumber = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-    console.log(weatherNumber);
+    motionLightNumber = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+    console.log("Weather:" + weatherNumber);
+    console.log("Motion:" + motionLightNumber);
+
+    var sqlRequest = "UPDATE 'TIMER' SET timer_time ='"+weatherNumber+"' WHERE timer_name = 'timer_weather'";
+    var sqlRequest2 = "UPDATE 'TIMER' SET timer_time ='"+motionLightNumber+"' WHERE timer_name = 'timer_light'";
+
+    db.serialize(function(next) {
+        db.run(sqlRequest, function (err, row) {
+            if (err !== null) next(err);
+        });
+        db.run(sqlRequest2, function (err) {
+            if (err !== null) next(err);
+        });
+    })
 }
+
 
 // timer checking if lights etc On/Off status changed
 setInterval(function () {
