@@ -33,6 +33,7 @@
 					<td><h2>On Time</h2></td>
 					<td><h2>Off Time</h2></td>
 					<td><h2>Garden Status</h2></td>
+					<td><h2>Sensor Triggered</h2></td>
 				</tr>
 				<%gardensData.forEach(function(gardenData) { %>
 				<tr>
@@ -44,6 +45,13 @@
 							Off
 							<% } else { %>
 							On
+							<%}%>
+						</label></td>
+					<td><label>
+							<% if (!gardenData.sensorActivated) {%>
+							No
+							<% } else { %>
+							Yes
 							<%}%>
 						</label></td>
 				</tr>

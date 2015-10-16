@@ -106,7 +106,8 @@ gardenRouter.post('/garden', function(req, res, next) {
                         gardenName: row.pref_name,
                         startTime: row.pref_startTime,
                         stopTime: row.pref_stopTime,
-                        isActive: row.pref_isActive
+                        isActive: row.pref_isActive,
+                        sensorActivated: row.pref_sensorTriggered
                     });
 
                 }
@@ -128,8 +129,6 @@ gardenRouter.post('/garden', function(req, res, next) {
                     gardensData                      // gardens data
                 );
 
-
-                console.log(gardensData);
 
                 res.render('garden.ejs', ejsObject);
 
