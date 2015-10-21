@@ -102,7 +102,8 @@ lightsRouter.post('/light', function(req, res, next) {
                         lightName: row.pref_name,
                         startTime: row.pref_startTime,
                         stopTime: row.pref_stopTime,
-                        isActive: row.pref_isActive
+                        isActive: row.pref_isActive,
+                        sensorActivated: row.pref_sensorTriggered
                     });
 
                 }
@@ -123,8 +124,6 @@ lightsRouter.post('/light', function(req, res, next) {
                     lightsData,             // lights data
                     defaults.gardensData             // gardens data
                 );
-
-                console.log(lightsData);
 
                 res.render('light.ejs', ejsObject);
 

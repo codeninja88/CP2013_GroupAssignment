@@ -33,6 +33,7 @@
                         <td><h2>On Time</h2></td>
                         <td><h2>Off Time</h2></td>
                         <td><h2>Light Status</h2></td>
+                        <td><h2>Sensor Triggered</h2></td>
                     </tr>
                     <%lightsData.forEach(function(lightData) { %>
                     <tr>
@@ -44,6 +45,13 @@
                                     Off
                                 <% } else { %>
                                     On
+                                <%}%>
+                            </label></td>
+                        <td><label>
+                                <% if (!lightData.sensorActivated) {%>
+                                No
+                                <% } else { %>
+                                Yes
                                 <%}%>
                             </label></td>
                     </tr>

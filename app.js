@@ -87,19 +87,52 @@ io.on('connection', function(socket){
 var raining = false;        // this variable start and stop garden sprinklers
 var wetGround = false;      // checks how long raining for and based on that start and stop spinklers
 var rainingTime = 0;        // keeps track on how long its been raining for
+var lightsActiveMotion = false;   // checks if light has been triggered from motion
 
-
-var motionLightNumber = 1;
-setInterval(getRandomNumber, 3000); // time to refresh raining
+setInterval(getRandomNumber, 3000); // time to refresh random numbers
 
 function getRandomNumber() {
+    var lightsData = [];
+    var lightsVar = [];
+    var sqlLightSensorTriggered;
+
+    db.serialize(function() {
+        var sqlRequestLights = "SELECT * FROM 'PREFERENCE' WHERE pref_name LIKE 'light%'";
+
+        db.each(sqlRequestLights, function(err, row) {
+            lightsData.push({
+                lightName: row.pref_name
+            });
+
+            var randomLightMotion = Math.floor(Math.random() * (10) + 1);
+            lightsVar.push({
+                lightName: row.pref_name,
+                lightMotion: randomLightMotion
+            });
+
+        }, function (){
+
+            for (var x = 0; x < lightsData.length; x++) {
+                if (lightsVar[x].lightMotion <= 3) {
+                    lightsActiveMotion = true;
+                    sqlLightSensorTriggered = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 1 WHERE pref_name = '"+lightsVar[x].lightName+"'";
+                } else {
+                    lightsActiveMotion = false;
+                    sqlLightSensorTriggered = "UPDATE 'PREFERENCE' SET pref_sensorTriggered = 0 WHERE pref_name = '"+lightsVar[x].lightName+"'";
+                }
+                console.log(lightsVar[x].lightName + " is triggered: " + lightsActiveMotion);
+
+                db.serialize(function(next) {
+                    db.run(sqlLightSensorTriggered, function (err) {
+                        if (err !== null) next(err);
+                    });
+                })
+            }
+            console.log(lightsVar);
+        });
+    });
+
     var weatherNumber = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-    motionLightNumber = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-    //console.log("Motion:" + motionLightNumber);
-
-
-    var sqlRequest = "UPDATE 'TIMER' SET timer_time ='"+ weatherNumber +"' WHERE timer_name = 'timer_weather'";
-    var sqlRequest2 = "UPDATE 'TIMER' SET timer_time ='"+ motionLightNumber +"' WHERE timer_name = 'timer_light'";
 
     if (weatherNumber > 6) {
         raining = true;
@@ -123,15 +156,6 @@ function getRandomNumber() {
     console.log('Ground is wet: '  + wetGround);
     console.log('Its raining: ' + raining);
 
-
-    db.serialize(function(next) {
-        db.run(sqlRequest, function (err, row) {
-            if (err !== null) next(err);
-        });
-        db.run(sqlRequest2, function (err) {
-            if (err !== null) next(err);
-        });
-    })
 }
 
 
