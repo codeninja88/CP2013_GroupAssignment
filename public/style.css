@@ -91,18 +91,36 @@ form {
     display: table-cell;
 }
 
-.plsWork {
+#summaryTable {
     display: table-cell;
     border-collapse: collapse;
     vertical-align: middle;
     border: 2px;
     padding-left: 5%;
     padding-right: 5%;
+    color: lightgreen;
+    font-size:18px;
+    font-family:Khula;
+
+
 }
 
-.plsWork td {
+#summaryTable td {
+    text-align: center;
     width: 150px;
 }
+
+#summaryTable th {
+    font-size: 22px;
+    color: white;
+    text-shadow: 2px 2px #111111;
+    /*-webkit-text-stroke: .1px black;*/
+}
+
+
+
+
+
 
 .spacer {
     float:none;

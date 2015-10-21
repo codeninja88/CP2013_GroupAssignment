@@ -1,12 +1,16 @@
 //-----------------------------------------------------------------//
 //-------> MODULE DECLARATIONS & INITIALISATIONS <-----------------//
 var sqlite3 = require("sqlite3").verbose();
-var bodyParser = require('body-parser');
-var express = require('express');
-var session = require('express-session');
-
 var db = new sqlite3.Database('database.sqlite');
+
+var express = require('express');
 var app = express();
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+var session = require('express-session');
+var bodyParser = require('body-parser');
 
 
 // SEPARATE ROUTES
@@ -51,6 +55,32 @@ app.use('/',
     holidayModeRouter,
     doorGatesRouter
 );
+
+
+//socket.io used here
+io.on('connection', function(socket){
+
+    setInterval(checkData, 1000);
+
+    function checkData (){
+        sqlRequest = "SELECT * FROM 'PREFERENCE' WHERE pref_isActive = 1";
+        var prefStatusData = [];
+        db.serialize(function() {
+            db.each(sqlRequest, function (err, row) {
+                prefStatusData.push({
+                    prefName: row.pref_name,
+                    isActive: row.pref_isActive
+                });
+
+            }, function () {
+                socket.emit('connection', prefStatusData);
+            });
+        });
+    }
+
+});
+
+
 
 
 
@@ -327,7 +357,7 @@ setInterval(function () {
 }, 1000);
 
 
-app.listen(process.env.PORT || 3000, function() {
+http.listen(process.env.PORT || 3000, function() {
 
     console.log("running at --> http://localhost:3000/");
 

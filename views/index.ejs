@@ -32,51 +32,44 @@
         <img id="logo" src="automationLogo.png">
     </div>
 
-    <div class="plsWork">
-
-        <%if (prefStatusData[0] !== undefined) {%>
-        <table>
-            <tr>
-                <td>Name</td>
-                <td>Status</td>
-            </tr>
-            <%prefStatusData.forEach(function(prefStatus) { %>
-            <tr>
-                <td><%= prefStatus.prefName%></td>
-                <%if (prefStatus.isActive === 1) {%>
-                <td><status>On</status> </td>
-                <%}%>
+    <div id="summaryTable">
 
 
-            </tr>
-            <% }); %>
-        </table>
-        <%}%>
-
-        <!--<table border="1">
-        <tr>
-            <td>Jill</td>
-            <td>Smith</td>
-            <td>50</td>
-        </tr>
-        <tr>
-            <td>Eve</td>
-            <td>Jackson</td>
-            <td>94</td>
-        </tr>
-        <tr>
-            <td>John</td>
-            <td>Doe</td>
-            <td>80</td>
-        </tr>
-        </table>-->
-        <!--<div id="statusSummaryDiv">
-            <div id="topSpacer" class="spacer">TOP</div>
-            <div id="middle">TEST</div>
-            <div id="bottomSpacer" class="spacer">BOTTOM</div>
-        </div>-->
     </div>
 
 </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<!--<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>-->
+<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+    var socket = io();
+    socket.on('connection', function(prefStatusData){
+
+        $('#summaryTable').empty();
+
+        var content = '<table>';
+        content += '<tr>';
+        content += '<strong><th>Name</th>';
+        content += '<th>Status</th></strong>';
+        content += "</tr>";
+
+        for(var i = 0; i < prefStatusData.length; i++){
+
+            content += '<tr><td>' + prefStatusData[i].prefName + '</td><td>On</td></tr>';
+
+        }
+
+
+        content += "</table>";
+
+        $('#summaryTable').append(content);
+
+
+
+
+    });
+
+</script>
 
 <% include footer.ejs %>
