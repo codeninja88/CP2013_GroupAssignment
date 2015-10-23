@@ -58,14 +58,18 @@ app.use('/',
 
 
 //socket.io used here
-io.on('connection', function(socket){
+
+
+
+io.on('connection', function (socket) {
+
 
     setInterval(checkData, 1000);
 
-    function checkData (){
+    function checkData() {
         sqlRequest = "SELECT * FROM 'PREFERENCE' WHERE pref_isActive = 1";
         var prefStatusData = [];
-        db.serialize(function() {
+        db.serialize(function () {
             db.each(sqlRequest, function (err, row) {
                 prefStatusData.push({
                     prefName: row.pref_name,
@@ -79,7 +83,6 @@ io.on('connection', function(socket){
     }
 
 });
-
 
 
 

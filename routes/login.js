@@ -94,6 +94,8 @@ loginRouter.post('/',
 
                     res.redirect("/");
 
+
+
                     console.log("Logged in successfully.");
                     printDebug(req, "INDEX");
 

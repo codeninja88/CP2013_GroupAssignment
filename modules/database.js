@@ -1,7 +1,7 @@
 var sqlite3 = require("sqlite3").verbose();
 
 var db;
-var sqlRequest;
+var sql;
 
 var database = {
 
@@ -11,31 +11,48 @@ var database = {
 
     } ,
 
-    createUser: function (reqFormData) {
 
-        sqlRequest= "INSERT INTO 'USER' (user_fName, user_lName, user_username, user_password, user_isAdmin, user_address, user_phone, user_email) " +
-            "VALUES('"
-            + reqFormData.firstName + "', '"
-            + reqFormData.lastName + "', '"
-            + reqFormData.username + "', '"
-            + reqFormData.password + "', '"
-            + reqFormData.isAdmin + "', '"
-            + reqFormData.address + "', '"
-            + reqFormData.phone + "', '"
-            + reqFormData.email + "')";
+    insert: function (tableName, data) {
 
-        db.run(sqlRequest, function (err) {
+        var dataKeys = Object.keys(data);
+        sql = "INSERT into '" + tableName + "' (";
+        var valueStr = ") VALUES (";
+
+        for (var i = 0; i < dataKeys.length; i++) {
+
+            var currKey = dataKeys[i];
+
+            if (i !== 0) {
+                sql += ", ";
+                valueStr += ", ";
+            }
+
+            sql += currKey;
+            valueStr += "'" + data[currKey] + "'";
+
+        }
+
+        sql += valueStr + ")";
+
+        db.run(sql, function (err) {
 
             if (err !== null) next(err);
 
             else {
 
-                console.log("Create User Query successfully ran.")
+                console.log("Insert Successful")
 
             }
         });
 
+
+    },
+
+    selectAll: function (tableName) {
+
+
     }
+
 
 
 };

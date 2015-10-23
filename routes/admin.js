@@ -74,26 +74,25 @@ adminRouter.post('/admin',
 
         var formName = req.body.formName;
         var sqlRequest;
-        var reqFormData;
 
         database.connect();
 
         if (formName === 'createUser') {
 
-            reqFormData = {
 
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                username: req.body.username,
-                password: req.body.password,
-                isAdmin: req.body.userLevel,
-                address: req.body.address,
-                phone: req.body.phone,
-                email: req.body.email
+            database.insert("USER", {
 
-            };
+                user_fName: req.body.firstName,
+                user_lName: req.body.lastName,
+                user_username: req.body.username,
+                user_password: req.body.password,
+                user_isAdmin: req.body.userLevel,
+                user_address: req.body.address,
+                user_phone: req.body.phone,
+                user_email: req.body.email
 
-            database.createUser(reqFormData);
+            });
+
 
             ejsObject = generateEjsVariables(
 
