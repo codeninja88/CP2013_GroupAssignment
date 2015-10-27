@@ -54,9 +54,13 @@
         content += '<th>Status</th></strong>';
         content += "</tr>";
 
-        for(var i = 0; i < prefStatusData.length; i++){
+        for(var i = 0; i < prefStatusData.length; i++) {
 
-            content += '<tr><td>' + prefStatusData[i].prefName + '</td><td>On</td></tr>';
+            if (prefStatusData[i].prefName.startsWith('l')) {
+                content += '<tr><td>' + '<img src="/public/icons/lightIcon_32x32.png" style="float:left"> ' + prefStatusData[i].prefName + '</td><td>On</td></tr>';
+            } else if (prefStatusData[i].prefName.startsWith('g')) {
+                content += '<tr><td>' + '<img src="/public/icons/gardenIcon_32x32.png" style="float:left"> ' + prefStatusData[i].prefName + '</td><td>On</td></tr>';
+            }
 
         }
 

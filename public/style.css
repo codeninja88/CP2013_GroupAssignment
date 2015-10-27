@@ -70,6 +70,7 @@ form {
 }
 
 
+
 #logoContainer {
 
     padding-top: 2%;
@@ -107,7 +108,7 @@ form {
 
 #summaryTable td {
     text-align: center;
-    width: 150px;
+    width: 180px;
 }
 
 #summaryTable th {
