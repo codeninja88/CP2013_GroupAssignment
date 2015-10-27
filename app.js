@@ -92,20 +92,17 @@ var wetGround = false;      // checks how long raining for and based on that sta
 var rainingTime = 0;        // keeps track on how long its been raining for
 var lightsActiveMotion = false;   // checks if light has been triggered from motion
 
-setInterval(getRandomNumber, 3000); // time to refresh random numbers
+
+setInterval(getRandomNumber, 5000); // time to refresh random numbers
 
 function getRandomNumber() {
-    var lightsData = [];
-    var lightsVar = [];
+    var lightsVar = [];                 // stores the light name with random number for motion
     var sqlLightSensorTriggered;
 
     db.serialize(function() {
         var sqlRequestLights = "SELECT * FROM 'PREFERENCE' WHERE pref_name LIKE 'light%'";
 
         db.each(sqlRequestLights, function(err, row) {
-            lightsData.push({
-                lightName: row.pref_name
-            });
 
             var randomLightMotion = Math.floor(Math.random() * (10) + 1);
             lightsVar.push({
@@ -114,14 +111,14 @@ function getRandomNumber() {
             });
 
         }, function (){
-
-            for (var x = 0; x < lightsData.length; x++) {
+            // runs as many times as the entries in lightsData and checks the random number value
+            for (var x = 0; x < lightsVar.length; x++) {
                 if (lightsVar[x].lightMotion <= 3) {
                     lightsActiveMotion = true;
                     sqlLightSensorTriggered = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 1 WHERE pref_name = '"+lightsVar[x].lightName+"'";
                 } else {
                     lightsActiveMotion = false;
-                    sqlLightSensorTriggered = "UPDATE 'PREFERENCE' SET pref_sensorTriggered = 0 WHERE pref_name = '"+lightsVar[x].lightName+"'";
+                    sqlLightSensorTriggered = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 0 WHERE pref_name = '"+lightsVar[x].lightName+"'";
                 }
                 console.log(lightsVar[x].lightName + " is triggered: " + lightsActiveMotion);
 
@@ -169,18 +166,23 @@ setInterval(function () {
     var allData = [];
     var time24 = convertTo24Hour();
 
+
     db.serialize(function (next) {
+        //console.log("lightName in timer loop: " + JSON.stringify(lightsVar));
 
         db.each(sqlRequest, function (err, row) {
 
             allData.push({
                 pref_name: row.pref_name,
                 startTime: row.pref_startTime,
-                stopTime: row.pref_stopTime
+                stopTime: row.pref_stopTime,
+                sensorActivated: row.sensorActivated
             })
 
 
+
         }, function () {
+
 
             allData.forEach(function (data) {
 
@@ -191,6 +193,8 @@ setInterval(function () {
                 var stopTime = data.stopTime.toString().trim();
                 var systemTime = time24.toString().trim();
                 var pref_name = data.pref_name.toString().trim();
+                var sensorActivated = data.pref_name.toString().trim();
+
 
 
                 var timeMode = 0; // normal
@@ -206,110 +210,26 @@ setInterval(function () {
 
 
 
-                if (timeMode === 0) {
+                    if (timeMode === 0) {
 
-                    // checking if timer is set between given time and not raining and ground is not wet THEN device/pref is active and sensor is off
-                    if ((systemTime >= startTime && systemTime < stopTime) && (raining === false) && (wetGround === false)) {
-                        //IS ACTIVE
+                        //GARDEN TIME
 
+                        // checking if timer is set between given time and not raining and ground is not wet THEN device/pref is active and sensor is off, motion is off
+                        if ((systemTime >= startTime && systemTime < stopTime) && (raining === false) && (wetGround === false)) {
+                            //IS ACTIVE
 
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 0 WHERE pref_name = '" + pref_name + "';";
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 0 WHERE pref_name = '" + pref_name + "';";
 
-                        db.run(sqlRequest, function (err) {
+                            db.run(sqlRequest, function (err) {
 
-                            if (err !== null) next(err);
+                                if (err !== null) next(err);
 
-                        });
+                            });
+                        }
 
+                        // checking if timer is set between given time and its raining THEN device/pref is de-active and sensor is On
+                        else if ((systemTime >= startTime && systemTime < stopTime) && (raining === true)) {
 
-                    }
-
-                    // checking if timer is set between given time and its raining THEN device/pref is de-active and sensor is On
-                    else if ((systemTime >= startTime && systemTime < stopTime) && (raining === true)) {
-
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 1 WHERE pref_name LIKE 'g%';";
-
-                        db.run(sqlRequest, function (err) {
-
-                            if (err !== null) next(err);
-
-                        });
-                    }
-
-                    // checking if timer is set between given time and its not but ground is wet THEN device/pref is de-active and sensor is On
-                    else if ((systemTime >= startTime && systemTime < stopTime) && (raining === false) && (wetGround === true)) {
-
-
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 1 WHERE pref_name LIKE 'g%';";
-
-
-                        db.run(sqlRequest, function (err) {
-
-                            if (err !== null) next(err);
-
-                        });
-
-                    }
-
-
-                    // Checking if time is outside given time and not raining THEN de-activate device/pref
-                    if ((systemTime < startTime || systemTime >= stopTime)) {
-                        // NOT ACTIVE
-
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 0 WHERE pref_name = '" + pref_name + "';";
-
-                        db.run(sqlRequest, function (err) {
-
-                            if (err !== null) next(err);
-
-                        });
-
-                    }
-
-
-
-
-
-
-
-                } else if (timeMode === 1) {
-
-                    //console.log("SYSTEM TIME: " + systemTime);
-
-
-                    // checking if timer is set between given time and its not raining THEN device/pref active and sensor is On
-                    if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (raining === false) && (wetGround === false)) {
-                        //IS ACTIVE
-
-
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 0  WHERE pref_name = '" + pref_name + "';";
-
-                        db.run(sqlRequest, function (err) {
-
-                            if (err !== null) next(err);
-
-                        });
-
-
-                    }
-
-                    // checking if timer is set between given time and its raining THEN device/pref is de-active and sensor is On
-                    else if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (raining === true)) {
-
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name LIKE 'g%';";
-
-                        db.run(sqlRequest, function (err) {
-
-                            if (err !== null) next(err);
-
-
-                        });
-                    }
-
-                    // checking if timer is set between given time and its not but ground is wet THEN device/pref is de-active and sensor is On
-                    else if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (raining === false) && (wetGround === true)) {
-
-                        try {
                             sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 1 WHERE pref_name LIKE 'g%';";
 
                             db.run(sqlRequest, function (err) {
@@ -317,33 +237,179 @@ setInterval(function () {
                                 if (err !== null) next(err);
 
                             });
+                        }
 
-                        } catch (err) {
+                        // checking if timer is set between given time and its not but ground is wet THEN device/pref is de-active and sensor is On
+                        else if ((systemTime >= startTime && systemTime < stopTime) && (raining === false) && (wetGround === true)) {
 
-                            console.log('Error where next was');
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 1 WHERE pref_name LIKE 'g%';";
+
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
+
+                        }
+
+
+                        // Checking if time is outside given time and not raining THEN de-activate device/pref
+                        if ((systemTime < startTime || systemTime >= stopTime)) {
+                            // NOT ACTIVE
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 0 WHERE pref_name = '" + pref_name + "';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
+
+                        }
+
+                        //LIGHT STUFF
+
+                        if ((systemTime >= startTime && systemTime < stopTime)) {
+                            //IS ACTIVE WITHOUT MOTION SENSOR
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 0 WHERE pref_name = '" + pref_name + "';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
+                        } else if ((systemTime >= startTime && systemTime < stopTime) && (sensorActivated) && (pref_name.startsWith('light'))) {
+                            //IS ACTIVE WITH MOTION SENSOR
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 1 WHERE pref_name = '" + pref_name + "';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
+                        }
+
+
+                        if ((systemTime < startTime || systemTime >= stopTime) && (sensorActivated) && (pref_name.startsWith('light'))) {
+                            //ACTIVE
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 1 WHERE pref_name = '" + pref_name + "';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
 
                         }
 
 
 
+                    } else if (timeMode === 1) {
+
+                        //GARDEN TIME
+
+                        // checking if timer is set between given time and its not raining THEN device/pref active and sensor is On
+                        if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (raining === false) && (wetGround === false)) {
+                            //IS ACTIVE
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 0  WHERE pref_name = '" + pref_name + "';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
+
+
+                        }
+                        // checking if timer is set between given time and its raining THEN device/pref is de-active and sensor is On
+                        else if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (raining === true)) {
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name LIKE 'g%';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+
+                            });
+                        }
+
+                        // checking if timer is set between given time and its not but ground is wet THEN device/pref is de-active and sensor is On
+                        else if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (raining === false) && (wetGround === true)) {
+
+                            try {
+                                sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 1 WHERE pref_name LIKE 'g%';";
+
+                                db.run(sqlRequest, function (err) {
+
+                                    if (err !== null) next(err);
+
+                                });
+
+                            } catch (err) {
+
+                                console.log('Error where next was');
+
+                            }
+
+                        }
+
+                        // Checking if time is outside given time THEN de-activate device/pref
+                        if ((systemTime >= stopTime && systemTime < startTime)) {
+                            // NOT ACTIVE
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 0 WHERE pref_name = '" + pref_name + "';";
+
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+
+                            });
+                        }
+
+                        //LIGHT STUFF
+
+                        if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime))) {
+                            //IS ACTIVE
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 0  WHERE pref_name = '" + pref_name + "';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
+
+                        } else if (((systemTime >= startTime && systemTime < '24:00') || (systemTime < stopTime)) && (sensorActivated) && (pref_name.startsWith('light')))  {
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0 WHERE pref_name = '" + pref_name + "';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
+                        }
+
+                        if ((systemTime >= stopTime && systemTime < startTime) && (sensorActivated) && (pref_name.startsWith('light'))) {
+
+                            sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 1, pref_sensorTriggered = 1 WHERE pref_name = '" + pref_name + "';";
+
+                            db.run(sqlRequest, function (err) {
+
+                                if (err !== null) next(err);
+
+                            });
+                        }
+
                     }
-
-                    // Checking if time is outside given time THEN de-activate device/pref
-                    if ((systemTime >= stopTime && systemTime < startTime)) {
-                        // NOT ACTIVE
-
-                        sqlRequest = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 1 WHERE pref_name = '" + pref_name + "';";
-
-
-                        db.run(sqlRequest, function (err) {
-
-                            if (err !== null) next(err);
-
-
-                        });
-                    }
-
-                }
 
 
             });
