@@ -60,8 +60,7 @@ var database = {
         }
 
         function handleCompletion() {
-            // all results collected, so use callback
-            // to signal data is ready....
+
             callback(results);
         }
 

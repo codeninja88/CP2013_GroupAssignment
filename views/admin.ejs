@@ -73,15 +73,14 @@
 
                 var selectedUser = document.getElementById("userDropbox");
 
-                userEditData.forEach(function(userData) {
+                userEditData.forEach(function(currUser) {
 
-                    if (userData.username === selectedUser.value)selectedUser = userData;
-
-
-                })
-
+                    if (currUser.user_username === selectedUser.value) {
+                        selectedUser = currUser;
+                    }
 
 
+                });
 
 
                 var formToShow =
@@ -89,11 +88,11 @@
                         " <form method='post'> " +
 
                         " <span>First Name:</span> " +
-                        " <input type='text' name='fName' required='required' value='" + selectedUser.fName + "'/> " +
+                        " <input type='text' name='fName' required='required' value='" + selectedUser.user_fName + "'/> " +
                         " <br/> " +
 
                         " <span>Last Name:</span> " +
-                        " <input type='text' name='lName' required='required' value='" + selectedUser.lName + "' /> " +
+                        " <input type='text' name='lName' required='required' value='" + selectedUser.user_lName + "' /> " +
                         " <br/> " +
 
                         " <span>User Level:</span> ";
@@ -101,12 +100,12 @@
 
 
 
-                if (selectedUser.isAdmin === 0) {
+                if (selectedUser.user_isAdmin === 0) {
                     formToShow +=  " <input type='radio' name='userLevel' required='required' value='0' checked />User" +
                     " <input type='radio'  name='userLevel' required='required' value='1'/>Admin";
 
-                    formToShow += "<br />Start Time: <input type='time' name='startTime' value='" + selectedUser.startTime + "' />";
-                    formToShow += "<br />End Time: <input type='time' name='endTime' value='" + selectedUser.endTime + "'/>";
+                    formToShow += "<br />Start Time: <input type='time' name='startTime' value='" + selectedUser.user_startTime + "' />";
+                    formToShow += "<br />End Time: <input type='time' name='endTime' value='" + selectedUser.user_endTime + "'/>";
 
                 } else {
                     formToShow +=  " <input type='radio' name='userLevel' required='required' value='0' />User" +
@@ -120,20 +119,20 @@
                         " <br/>" +
 
                         " <span>Address:</span>" +
-                        " <input type='text' name='address' value='" + selectedUser.address + "' /> " +
+                        " <input type='text' name='address' value='" + selectedUser.user_address + "' /> " +
                         " <br/> " +
 
                         " <span>Phone:</span>" +
-                        " <input type='text' name='phone' value='" + selectedUser.phone + "' /> " +
+                        " <input type='text' name='phone' value='" + selectedUser.user_phone + "' /> " +
                         " <br/> " +
 
                         " <span>Email:</span>" +
-                        " <input type='text' name='email' value='" + selectedUser.email + "' /> " +
+                        " <input type='text' name='email' value='" + selectedUser.user_email + "' /> " +
                         " <br/> " +
 
                         " <input type='hidden' name='formName' value='saveChanges'/>" +
 
-                        " <input type='hidden' name='username' value='" + selectedUser.username + "'/>" +
+                        " <input type='hidden' name='username' value='" + selectedUser.user_username + "'/>" +
 
 
                         " <input id='submitChanges' name='submitBttn' value='Save' type='submit' />" +
@@ -156,7 +155,7 @@
         <select id="userDropbox" onchange="showSelectedUser(<%= JSON.stringify(userEditData) %>)">
             <option value="">Select User</option>
             <%userEditData.forEach(function (usersData) { %>
-            <option value="<%=usersData.username %>"><%=usersData.username %></option>
+            <option value="<%=usersData.user_username %>"><%=usersData.user_username %></option>
 
 
             <%});%>

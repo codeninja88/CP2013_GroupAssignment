@@ -89,26 +89,20 @@ adminRouter.post('/admin',
 
         } else if (formName === 'showStatus') {
 
-            database.selectAll('USER', function (results) {
+            database.selectAll('USER',
 
-                results.forEach(function (result) {
+                function (results) {
 
-                    console.log(result.user_username);
-
-
-
-                });
-
-                ejsObject = EjsObjectFactory(
-                    {
-                        title: 'Admin',
-                        heading: 'Admin',
-                        navMenu: nav.full,
-                        userStatusData: results,
-                        isLoggedIn: true,
-                        username: req.session.username
-                    }
-                );
+                    ejsObject = EjsObjectFactory(
+                        {
+                            title: 'Admin',
+                            heading: 'Admin',
+                            navMenu: nav.full,
+                            userStatusData: results,
+                            isLoggedIn: true,
+                            username: req.session.username
+                        }
+                    );
 
 
                 res.render('admin.ejs', ejsObject);
@@ -118,30 +112,9 @@ adminRouter.post('/admin',
 
         } else if (formName === 'showEdit') {
 
-            sqlRequest = "SELECT * FROM 'USER'";
+            database.selectAll('USER',
 
-            var ejsObject;
-            var userEditData = [];
-
-            db.serialize(function() {
-
-                db.each(sqlRequest, function(err, row) {
-
-                    userEditData.push({
-                        username: row.user_username,
-                        fName: row.user_fName,
-                        lName: row.user_lName,
-                        isAdmin: row.user_isAdmin,
-                        address: row.user_address,
-                        phone: row.user_phone,
-                        email: row.user_email,
-                        startTime: row.user_startTime,
-                        endTime: row.user_endTime
-                    })
-
-
-
-                        }, function (){
+                function (results) {
 
                     ejsObject = EjsObjectFactory(
                         {
@@ -149,16 +122,18 @@ adminRouter.post('/admin',
                             heading: 'Admin',
                             navMenu: nav.full,
                             isLoggedIn: true,
-                            userEditData: userEditData,
+                            userEditData: results,
                             username: req.session.username
                         }
                     );
 
+
                     res.render('admin.ejs', ejsObject);
 
-                })
+                });
 
-            });
+
+
 
         }
 
