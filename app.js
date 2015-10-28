@@ -120,7 +120,7 @@ function getRandomNumber() {
                     lightsActiveMotion = false;
                     sqlLightSensorTriggered = "UPDATE 'PREFERENCE' SET pref_isActive = 0, pref_sensorTriggered = 0 WHERE pref_name = '"+lightsVar[x].lightName+"'";
                 }
-                console.log(lightsVar[x].lightName + " is triggered: " + lightsActiveMotion);
+                //console.log(lightsVar[x].lightName + " is triggered: " + lightsActiveMotion);
 
                 db.serialize(function(next) {
                     db.run(sqlLightSensorTriggered, function (err) {
@@ -128,7 +128,7 @@ function getRandomNumber() {
                     });
                 })
             }
-            console.log(lightsVar);
+            //console.log(lightsVar);
         });
     });
 

@@ -69,7 +69,10 @@ form {
 	font-family:Khula;
 }
 
-
+#innerContainerRight #lightDeactivator {
+    text-align: left;
+    font-family: Khula;
+}
 
 #logoContainer {
 
