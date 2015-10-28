@@ -7,63 +7,36 @@ var lightsRouter = express.Router();
 
 
 var nav = require("../modules/nav.js");
-var generateEjsVariables = require("../modules/generateEjsVariables.js");
-var defaults = require("../modules/defaults.js");
-
-
-
-// PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
-function printDebug(req, pageName) {
-
-    //console.log(req.session);
-
-    console.log("\nPAGE: " + pageName);
-
-    if (req.session.username !== undefined) {
-
-        console.log("---> user: \t" + req.session.username);
-        console.log("---> isAdmin: \t" + req.session.isAdmin);
-
-    }
-
-
-}
-
+var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
 
 
 // GET LIGHTS
 lightsRouter.get('/light', function(req, res) {
 
     var ejsObject;
-    lightsData = '';
 
     //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard, lightsData);
+    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard);
 
-    else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full, lightsData);
+    else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full);
 
     else res.redirect('/');
 
 
-    function setInfo (nav, lightsData){
+    function setInfo (nav){
 
-        ejsObject = generateEjsVariables(
-            "Lights",                        // Title of the page
-            "This is Light page",           // Heading of the page
-            defaults.msg,                             // msg status update
-            defaults.userMsg(req),                    // after login Welcome user name
-            defaults.error,                           // error status
-            nav,                        // nav menu data
-            true,                            // isLoggedIn
-            defaults.userStatusData,         // all users status whether logged in or not
-            defaults.userEditData,           // modify users info
-            lightsData,             // lights data
-            defaults.gardensData             // gardens data
+        ejsObject = EjsObjectFactory(
+            {
+                title: 'Lights',
+                heading: 'Lights',
+                navMenu: nav,
+                isLoggedIn: true,
+                username: req.session.username
+            }
         );
 
         res.render('light.ejs', ejsObject);
 
-        printDebug(req, "LIGHT");
 
     }
 
@@ -111,18 +84,15 @@ lightsRouter.post('/light', function(req, res, next) {
             }, function (){
 
 
-                ejsObject = generateEjsVariables(
-                    "Lights",                        // Title of the page
-                    "This is Light page",           // Heading of the page
-                    defaults.msg,                             // msg status update
-                    defaults.userMsg(req),               // after login Welcome user name
-                    defaults.error,                           // error status
-                    navMenu,                        // nav menu data
-                    true,                            // isLoggedIn
-                    defaults.userStatusData,         // all users status whether logged in or not
-                    defaults.userEditData,           // modify users info
-                    lightsData,             // lights data
-                    defaults.gardensData             // gardens data
+                ejsObject = EjsObjectFactory(
+                    {
+                        title: 'Lights',
+                        heading: 'Lights',
+                        navMenu: navMenu,
+                        isLoggedIn: true,
+                        lightsData: lightsData,
+                        username: req.session.username
+                    }
                 );
 
                 res.render('light.ejs', ejsObject);
@@ -159,20 +129,15 @@ lightsRouter.post('/light', function(req, res, next) {
             if (err !== null) next(err);
             else {
 
-                lightsData = '';
-
-                ejsObject = generateEjsVariables(
-                    "Lights",                        // Title of the page
-                    "This is Light page",           // Heading of the page
-                    "Lights' on/off time updated successfully",                             // msg status update
-                    defaults.userMsg(req),               // after login Welcome user name
-                    defaults.error,                           // error status
-                    nav.full,                        // nav menu data
-                    true,                            // isLoggedIn
-                    defaults.userStatusData,         // all users status whether logged in or not
-                    defaults.userEditData,           // modify users info
-                    lightsData,             // lights data
-                    defaults.gardensData             // gardens data
+                ejsObject = EjsObjectFactory(
+                    {
+                        title: 'Lights',
+                        heading: 'Lights',
+                        navMenu: nav.full,
+                        isLoggedIn: true,
+                        msg: 'lights on/off time updated successfully',
+                        username: req.session.username
+                    }
                 );
 
                 res.render("light.ejs", ejsObject);

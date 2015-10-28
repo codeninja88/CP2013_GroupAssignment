@@ -48,9 +48,24 @@ var database = {
 
     },
 
-    selectAll: function (tableName) {
+    selectAll: function (tableName, callback) {
 
+        sql = "SELECT * FROM '" + tableName + "'";
+        var results = [];
 
+        function handleRow(error, row) {
+
+            results.push(row);
+
+        }
+
+        function handleCompletion() {
+            // all results collected, so use callback
+            // to signal data is ready....
+            callback(results);
+        }
+
+        db.each(sql, handleRow, handleCompletion);
     }
 
 

@@ -7,26 +7,8 @@ var adminRouter = express.Router();
 var database = require("../modules/database.js");
 
 var nav = require("../modules/nav.js");
-var generateEjsVariables = require("../modules/generateEjsVariables.js");
-var defaults = require("../modules/defaults.js");
+var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
 
-
-// PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
-function printDebug(req, pageName) {
-
-    //console.log(req.session);
-
-    console.log("\nPAGE: " + pageName);
-
-    if (req.session.username !== undefined) {
-
-        console.log("---> user: \t" + req.session.username);
-        console.log("---> isAdmin: \t" + req.session.isAdmin);
-
-    }
-
-
-}
 
 
 
@@ -38,24 +20,19 @@ adminRouter.get('/admin', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 1){
 
-
-        ejsObject = generateEjsVariables(
-            "Admin",                        // Title of the page
-            "This is Admin page",           // Heading of the page
-            defaults.msg,                             // msg status update
-            defaults.userMsg(req),               // after login Welcome user name
-            defaults.error,                  // error status
-            nav.full,                        // nav menu data
-            true,                            // isLoggedIn
-            defaults.userStatusData,         // all users status whether logged in or not
-            defaults.userEditData,           // modify users info
-            defaults.lightsData,             // lights data
-            defaults.gardensData             // gardens data
+        ejsObject = EjsObjectFactory(
+            {
+                title: 'Admin',
+                heading: 'Admin',
+                navMenu: nav.full,
+                isLoggedIn: true,
+                username: req.session.username
+            }
         );
+
 
         res.render('admin.ejs', ejsObject);
 
-        printDebug(req, "ADMIN");
 
     } else {
 
@@ -94,19 +71,15 @@ adminRouter.post('/admin',
             });
 
 
-            ejsObject = generateEjsVariables(
-
-                "Admin",                        // Title of the page
-                "This is Admin page",           // Heading of the page
-                "New user has been created successfully",  // msg status update
-                defaults.userMsg(req),               // after login Welcome user name
-                defaults.error,                           // error status
-                nav.full,                        // nav menu data
-                true,                            // isLoggedIn
-                defaults.userStatusData,         // all users status whether logged in or not
-                defaults.userEditData,           // modify users info
-                defaults.lightsData,             // lights data
-                defaults.gardensData             // gardens data
+            ejsObject = EjsObjectFactory(
+                {
+                    title: 'Admin',
+                    heading: 'Admin',
+                    navMenu: nav.full,
+                    isLoggedIn: true,
+                    msg: 'New user has been created successfully',
+                    username: req.session.username
+                }
             );
 
             res.render("admin.ejs", ejsObject);
@@ -115,40 +88,29 @@ adminRouter.post('/admin',
 
         } else if (formName === 'showStatus') {
 
-
-            sqlRequest = "SELECT * FROM 'USER'";
-
-            var userStatusData = [];
-
-            db.serialize(function() {
-
-                db.each(sqlRequest, function(err, row) {
-
-                    userStatusData.push({username: row.user_username, status: row.user_isLoggedIn})
-
-                }, function (){
-
-                    ejsObject = generateEjsVariables(
-                        "Admin",                        // Title of the page
-                        "This is Admin page",           // Heading of the page
-                        defaults.msg,                             // msg status update
-                        defaults.userMsg(req),               // after login Welcome user name
-                        defaults.error,                           // error status
-                        nav.full,                        // nav menu data
-                        true,                            // isLoggedIn
-                        userStatusData,         // all users status whether logged in or not
-                        defaults.userEditData,           // modify users info
-                        defaults.lightsData,             // lights data
-                        defaults.gardensData             // gardens data
-                    );
-
-                    console.log(userStatusData);
-
-                    res.render('admin.ejs', ejsObject);
-
+            database.selectAll('USER', function (results) {
+                // use the results ere
+                console.log("jess was ere, results: " + results);
+                results.forEach(function (result) {
+                    console.log(result);
                 });
 
+                ejsObject = EjsObjectFactory(
+                    {
+                        title: 'Admin',
+                        heading: 'Admin',
+                        navMenu: nav.full,
+                        userStatusData: results,
+                        isLoggedIn: true,
+                        username: req.session.username
+                    }
+                );
+
+
+                res.render('admin.ejs', ejsObject);
+
             });
+
 
         } else if (formName === 'showEdit') {
 
@@ -175,22 +137,16 @@ adminRouter.post('/admin',
 
                 }, function (){
 
-                    ejsObject = generateEjsVariables(
-                        "Admin",                        // Title of the page
-                        "This is Admin page",           // Heading of the page
-                        defaults.msg,                             // msg status update
-                        defaults.userMsg(req),               // after login Welcome user name
-                        defaults.error,                           // error status
-                        nav.full,                        // nav menu data
-                        true,                            // isLoggedIn
-                        defaults.userStatusData,         // all users status whether logged in or not
-                        userEditData,           // modify users info
-                        defaults.lightsData,             // lights data
-                        defaults.gardensData             // gardens data
+                    ejsObject = EjsObjectFactory(
+                        {
+                            title: 'Admin',
+                            heading: 'Admin',
+                            navMenu: nav.full,
+                            isLoggedIn: true,
+                            userEditData: userEditData,
+                            username: req.session.username
+                        }
                     );
-
-
-                    console.log(userEditData);
 
                     res.render('admin.ejs', ejsObject);
 
@@ -228,18 +184,15 @@ adminRouter.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            ejsObject = generateEjsVariables(
-                                "Admin",                        // Title of the page
-                                "This is Admin page",           // Heading of the page
-                                "User details have been updated successfully",                             // msg status update
-                                defaults.userMsg(req),               // after login Welcome user name
-                                defaults.error,                           // error status
-                                nav.full,                        // nav menu data
-                                true,                            // isLoggedIn
-                                defaults.userStatusData,         // all users status whether logged in or not
-                                defaults.userEditData,           // modify users info
-                                defaults.lightsData,             // lights data
-                                defaults.gardensData             // gardens data
+                            ejsObject = EjsObjectFactory(
+                                {
+                                    title: 'Admin',
+                                    heading: 'Admin',
+                                    navMenu: nav.full,
+                                    isLoggedIn: true,
+                                    msg: 'User details have been updated successfully',
+                                    username: req.session.username
+                                }
                             );
 
                             res.render("admin.ejs", ejsObject);
@@ -261,24 +214,18 @@ adminRouter.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            ejsObject = generateEjsVariables(
-                                "Admin",                        // Title of the page
-                                "This is Admin page",           // Heading of the page
-                                "User successfully deleted",                             // msg status update
-                                defaults.userMsg(req),               // after login Welcome user name
-                                defaults.error,                           // error status
-                                nav.full,                        // nav menu data
-                                true,                            // isLoggedIn
-                                defaults.userStatusData,         // all users status whether logged in or not
-                                defaults.userEditData,           // modify users info
-                                defaults.lightsData,             // lights data
-                                defaults.gardensData             // gardens data
+                            ejsObject = EjsObjectFactory(
+                                {
+                                    title: 'Admin',
+                                    heading: 'Admin',
+                                    navMenu: nav.full,
+                                    isLoggedIn: true,
+                                    msg: 'User successfully deleted',
+                                    username: req.session.username
+                                }
                             );
 
-
                             res.render("admin.ejs", ejsObject);
-
-                            console.log("USER DELETED");
 
                         }
                     }
@@ -290,9 +237,6 @@ adminRouter.post('/admin',
 
     }
 );
-
-
-
 
 
 module.exports = adminRouter;

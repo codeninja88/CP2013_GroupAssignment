@@ -1,33 +1,11 @@
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database('database.sqlite');
 
-
 var express = require('express');
 var loginRouter = express.Router();
 
-
 var nav = require("../modules/nav.js");
-var generateEjsVariables = require("../modules/generateEjsVariables.js");
-var defaults = require("../modules/defaults.js");
-
-
-
-// PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
-function printDebug(req, pageName) {
-
-    //console.log(req.session);
-
-    console.log("\nPAGE: " + pageName);
-
-    if (req.session.username !== undefined) {
-
-        console.log("---> user: \t" + req.session.username);
-        console.log("---> isAdmin: \t" + req.session.isAdmin);
-
-    }
-
-
-}
+var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
 
 
 
@@ -45,18 +23,15 @@ loginRouter.post('/',
                 // query returns undefined if username entered does not exist in db
                 if (row === undefined || !row.user_username) {
 
-                    ejsObject = generateEjsVariables(
-                        "Home",                        // Title of the page
-                        "This is Home page",           // Heading of the page
-                        defaults.msg,                             // msg status update
-                        defaults.userMsg(req),               // after login Welcome user name
-                        "ERROR:\t Invalid username and/or password.",                           // error status
-                        nav.simple,                        // nav menu data
-                        false,                            // isLoggedIn
-                        defaults.userStatusData,         // all users status whether logged in or not
-                        defaults.userEditData,           // modify users info
-                        defaults.lightsData,             // lights data
-                        defaults.gardensData             // gardens data
+                    ejsObject = EjsObjectFactory(
+                        {
+                            title: 'Home',
+                            heading: 'Admin',
+                            navMenu: nav.simple,
+                            msg: 'ERROR:\t Invalid username and/or password',
+                            isLoggedIn: false,
+                            username: req.session.username
+                        }
                     );
 
                     res.render('index.ejs', ejsObject);
@@ -90,14 +65,9 @@ loginRouter.post('/',
 
                     }
 
-
-
                     res.redirect("/");
-
-
-
                     console.log("Logged in successfully.");
-                    printDebug(req, "INDEX");
+
 
                 } else if (row.user_password === req.body.password && row.user_isAdmin === 1) {
                     navMenu = nav.full;
@@ -113,9 +83,7 @@ loginRouter.post('/',
 
 
                     res.redirect("/");
-
                     console.log("Logged in successfully.");
-                    printDebug(req, "INDEX");
 
                 } else {
 

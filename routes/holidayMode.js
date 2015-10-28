@@ -2,28 +2,7 @@ var express = require('express');
 var holidayModeRouter = express.Router();
 
 var nav = require("../modules/nav.js");
-var generateEjsVariables = require("../modules/generateEjsVariables.js");
-var defaults = require("../modules/defaults.js");
-
-
-
-// PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
-function printDebug(req, pageName) {
-
-    //console.log(req.session);
-
-    console.log("\nPAGE: " + pageName);
-
-    if (req.session.username !== undefined) {
-
-        console.log("---> user: \t" + req.session.username);
-        console.log("---> isAdmin: \t" + req.session.isAdmin);
-
-    }
-
-
-}
-
+var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
 
 
 // GET HOLIDAY MODE
@@ -41,23 +20,17 @@ holidayModeRouter.get('/holidayMode', function(req, res) {
 
     function setInfo (nav){
 
-        ejsObject = generateEjsVariables(
-            "Holiday Mode",                        // Title of the page
-            "This is Holiday Mode page",           // Heading of the page
-            defaults.msg,                             // msg status update
-            defaults.userMsg(req),               // after login Welcome user name
-            defaults.error,                           // error status
-            nav,                        // nav menu data
-            true,                            // isLoggedIn
-            defaults.userStatusData,         // all users status whether logged in or not
-            defaults.userEditData,           // modify users info
-            defaults.lightsData,             // lights data
-            defaults.gardensData             // gardens data
+        ejsObject = EjsObjectFactory(
+            {
+                title: 'Holiday Mode',
+                heading: 'Holiday Mode',
+                navMenu: nav,
+                isLoggedIn: true,
+                username: req.session.username
+            }
         );
 
         res.render('holidayMode.ejs', ejsObject);
-
-        printDebug(req, "HOLIDAY MODE");
 
     }
 

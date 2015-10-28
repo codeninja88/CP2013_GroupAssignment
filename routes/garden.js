@@ -5,30 +5,8 @@ var db = new sqlite3.Database('database.sqlite');
 var express = require('express');
 var gardenRouter = express.Router();
 
-
 var nav = require("../modules/nav.js");
-var generateEjsVariables = require("../modules/generateEjsVariables.js");
-var defaults = require("../modules/defaults.js");
-
-
-
-// PRINT HELPFUL DEBUG INFORMATION TO CONSOLE
-function printDebug(req, pageName) {
-
-    //console.log(req.session);
-
-    console.log("\nPAGE: " + pageName);
-
-    if (req.session.username !== undefined) {
-
-        console.log("---> user: \t" + req.session.username);
-        console.log("---> isAdmin: \t" + req.session.isAdmin);
-
-    }
-
-
-}
-
+var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
 
 
 // GET GARDEN
@@ -46,23 +24,17 @@ gardenRouter.get('/garden', function(req, res) {
 
     function setInfo (nav){
 
-        ejsObject = generateEjsVariables(
-            "Garden",                       // Title of the page
-            "This is Garden page",          // Heading of the page
-            defaults.msg,                   // msg status update
-            defaults.userMsg(req),                        // after login Welcome user name
-            defaults.error,                 // error status
-            nav,                            // nav menu data
-            true,                           // isLoggedIn
-            defaults.userStatusData,        // all users status whether logged in or not
-            defaults.userEditData,          // modify users info
-            defaults.lightsData,            // lights data
-            ''                              // gardens data
+        ejsObject = EjsObjectFactory(
+            {
+                title: 'Garden',
+                heading: 'Garden',
+                navMenu: nav,
+                isLoggedIn: true,
+                username: req.session.username
+            }
         );
 
         res.render('garden.ejs', ejsObject);
-
-        printDebug(req, "GARDEN");
 
     }
 
@@ -114,21 +86,16 @@ gardenRouter.post('/garden', function(req, res, next) {
 
             }, function (){
 
-
-                ejsObject = generateEjsVariables(
-                    "Garden",                        // Title of the page
-                    "This is Garden page",           // Heading of the page
-                    defaults.msg,                    // msg status update
-                    defaults.userMsg(req),                         // after login Welcome user name
-                    defaults.error,                  // error status
-                    navMenu,                         // nav menu data
-                    true,                            // isLoggedIn
-                    defaults.userStatusData,         // all users status whether logged in or not
-                    defaults.userEditData,           // modify users info
-                    defaults.lightsData,             // lights data
-                    gardensData                      // gardens data
+                ejsObject = EjsObjectFactory(
+                    {
+                        title: 'Garden',
+                        heading: 'Garden',
+                        navMenu: navMenu,
+                        isLoggedIn: true,
+                        gardensData: gardensData,
+                        username: req.session.username
+                    }
                 );
-
 
                 res.render('garden.ejs', ejsObject);
 
@@ -154,21 +121,16 @@ gardenRouter.post('/garden', function(req, res, next) {
 
             if (err !== null) next(err);
             else {
-                var navMenu = nav.full;
-                var gardensData = '';
 
-                ejsObject = generateEjsVariables(
-                    "Garden",                                   // Title of the page
-                    "This is Garden page",                      // Heading of the page
-                    "Garden on/off time updated successfully",  // msg status update
-                    defaults.userMsg(req),                                    // after login Welcome user name
-                    defaults.error,                             // error status
-                    navMenu,                                    // nav menu data
-                    true,                                       // isLoggedIn
-                    defaults.userStatusData,                    // all users status whether logged in or not
-                    defaults.userEditData,                      // modify users info
-                    defaults.lightsData,                        // lights data
-                    gardensData                                 // gardens data
+                ejsObject = EjsObjectFactory(
+                    {
+                        title: 'Garden',
+                        heading: 'Garden',
+                        navMenu: nav.full,
+                        isLoggedIn: true,
+                        msg: 'Garden on/off time updated successfully',
+                        username: req.session.username
+                    }
                 );
 
                 res.render("garden.ejs", ejsObject);
@@ -178,8 +140,5 @@ gardenRouter.post('/garden', function(req, res, next) {
     }
 
 });
-
-
-
 
 module.exports = gardenRouter;
