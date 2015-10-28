@@ -35,8 +35,6 @@ doorGatesRouter.get('/doorGates', function(req, res) {
 
         res.render('doorGates.ejs', ejsObject);
 
-        printDebug(req, "DOORS/GATES");
-
     }
 
 });

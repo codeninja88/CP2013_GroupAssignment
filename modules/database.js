@@ -50,7 +50,7 @@ var database = {
 
     selectAll: function (tableName, callback) {
 
-        sql = "SELECT * FROM '" + tableName + "'";
+        sql = "SELECT * FROM '" + tableName + "';";
         var results = [];
 
         function handleRow(error, row) {

@@ -25,8 +25,7 @@ homeRouter.get('/', function(req, res) {
 
         res.render('index.ejs', ejsObject);
 
-            //});
-        //});
+
 
     } else if (req.session.username && req.session.isAdmin === 0){
 

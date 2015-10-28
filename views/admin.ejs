@@ -46,14 +46,18 @@
                 <td><h2>User</h2></td>
                 <td><h2>Status</h2></td>
             </tr>
-            <%userStatusData.forEach(function(usersData) { %>
+            <%userStatusData.forEach(function(currUser) { %>
             <tr>
-                <td><%= usersData.username %></td>
-                <%if (usersData.status === 1) {%>
+                <td><%= currUser.user_username %></td>
+                <% if (currUser.user_isLoggedIn === 1) { %>
                 <td><status class="green">Online</status> </td>
-                <%}else {%>
+
+                <% } else if (currUser.user_isLoggedIn === 0) { %>
                 <td><status class="red">Offline</status> </td>
-                <%}%>
+
+                <% } %>
+
+
             </tr>
             <% }); %>
         </table>

@@ -85,10 +85,6 @@ loginRouter.post('/',
                     res.redirect("/");
                     console.log("Logged in successfully.");
 
-                } else {
-
-                    console.log("If you got here that means we have bug in code.");
-
                 }
 
             }

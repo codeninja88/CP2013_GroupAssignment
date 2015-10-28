@@ -27,6 +27,7 @@ adminRouter.get('/admin', function(req, res) {
                 navMenu: nav.full,
                 isLoggedIn: true,
                 username: req.session.username
+
             }
         );
 
@@ -89,10 +90,13 @@ adminRouter.post('/admin',
         } else if (formName === 'showStatus') {
 
             database.selectAll('USER', function (results) {
-                // use the results ere
-                console.log("jess was ere, results: " + results);
+
                 results.forEach(function (result) {
-                    console.log(result);
+
+                    console.log(result.user_username);
+
+
+
                 });
 
                 ejsObject = EjsObjectFactory(
@@ -135,7 +139,9 @@ adminRouter.post('/admin',
                         endTime: row.user_endTime
                     })
 
-                }, function (){
+
+
+                        }, function (){
 
                     ejsObject = EjsObjectFactory(
                         {
