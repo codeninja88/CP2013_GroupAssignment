@@ -8,7 +8,7 @@ var database = require("../modules/database.js");
 
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
-
+var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 
@@ -26,7 +26,7 @@ adminRouter.get('/admin', function(req, res) {
                 heading: 'Admin',
                 navMenu: nav.full,
                 isLoggedIn: true,
-                username: req.session.username
+                username: generateUserMsg(req.session.username)
 
             }
         );
@@ -79,7 +79,7 @@ adminRouter.post('/admin',
                     navMenu: nav.full,
                     isLoggedIn: true,
                     msg: 'New user has been created successfully',
-                    username: req.session.username
+                    username: generateUserMsg(req.session.username)
                 }
             );
 
@@ -100,7 +100,7 @@ adminRouter.post('/admin',
                             navMenu: nav.full,
                             userStatusData: results,
                             isLoggedIn: true,
-                            username: req.session.username
+                            username: generateUserMsg(req.session.username)
                         }
                     );
 
@@ -123,7 +123,7 @@ adminRouter.post('/admin',
                             navMenu: nav.full,
                             isLoggedIn: true,
                             userEditData: results,
-                            username: req.session.username
+                            username: generateUserMsg(req.session.username)
                         }
                     );
 
@@ -172,7 +172,7 @@ adminRouter.post('/admin',
                                     navMenu: nav.full,
                                     isLoggedIn: true,
                                     msg: 'User details have been updated successfully',
-                                    username: req.session.username
+                                    username: generateUserMsg(req.session.username)
                                 }
                             );
 
@@ -187,41 +187,18 @@ adminRouter.post('/admin',
 
             } else if (req.body.submitBttn === 'Delete User') {
 
-<<<<<<< Updated upstream
-                sqlRequest = "DELETE FROM 'USER' WHERE user_username = '" + req.body.username + "';";
-
-                db.run(sqlRequest,
-                    function (err) {
-
-                        if (err !== null) next(err);
-                        else {
-
-                            ejsObject = ejsObjectFactory(
-                                {
-                                    title: 'Admin',
-                                    heading: 'Admin',
-                                    navMenu: nav.full,
-                                    isLoggedIn: true,
-                                    msg: 'User successfully deleted',
-                                    username: req.session.username
-                                }
-                            );
-
-                            res.render("admin.ejs", ejsObject);
-=======
                 database.remove("USER", {
                     user_username: req.body.username
                 });
->>>>>>> Stashed changes
 
-                ejsObject = EjsObjectFactory(
+                ejsObject = ejsObjectFactory(
                     {
                         title: 'Admin',
                         heading: 'Admin',
                         navMenu: nav.full,
                         isLoggedIn: true,
                         msg: 'User successfully deleted',
-                        username: req.session.username
+                        username: generateUserMsg(req.session.username)
                     }
                 );
 

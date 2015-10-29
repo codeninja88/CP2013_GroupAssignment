@@ -3,6 +3,7 @@ var holidayModeRouter = express.Router();
 
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
+var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET HOLIDAY MODE
@@ -26,7 +27,7 @@ holidayModeRouter.get('/holidayMode', function(req, res) {
                 heading: 'Holiday Mode',
                 navMenu: nav,
                 isLoggedIn: true,
-                username: req.session.username
+                username: generateUserMsg(req.session.username)
             }
         );
 

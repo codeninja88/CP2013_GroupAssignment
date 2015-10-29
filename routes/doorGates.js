@@ -3,8 +3,7 @@ var doorGatesRouter = express.Router();
 
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
-
-
+var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 
@@ -29,9 +28,14 @@ doorGatesRouter.get('/doorGates', function(req, res) {
                 heading: 'Doors and Gates',
                 navMenu: nav,
                 isLoggedIn: true,
-                username: req.session.username
+                username: generateUserMsg(req.session.username)
             }
         );
+
+
+
+        console.log(generateUserMsg(req.session.username));
+
 
         res.render('doorGates.ejs', ejsObject);
 

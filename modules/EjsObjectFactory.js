@@ -1,15 +1,5 @@
+
 function ejsObjectFactory (config) {
-
-    function generateUserMsg() {
-
-        var userMsg = '';
-
-        if (config.username !== undefined) {
-            userMsg = 'Welcome ' + config.username.toUpperCase();
-        }
-
-        return userMsg;
-    }
 
 
     var ejsObject = {
@@ -25,7 +15,7 @@ function ejsObjectFactory (config) {
         gardensData: config.gardensData || '',
         prefStatusData: config.prefStatusData || '',
         currentPage: "color:white",
-        userMsg: generateUserMsg()
+        userMsg: config.username
     };
 
     return ejsObject;

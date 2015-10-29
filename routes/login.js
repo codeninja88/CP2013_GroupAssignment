@@ -6,7 +6,7 @@ var loginRouter = express.Router();
 
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
-
+var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // POST -->  LOGIN
@@ -30,7 +30,7 @@ loginRouter.post('/',
                             navMenu: nav.simple,
                             msg: 'ERROR:\t Invalid username and/or password',
                             isLoggedIn: false,
-                            username: req.session.username
+                            username: generateUserMsg(req.session.username)
                         }
                     );
 

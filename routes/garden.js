@@ -7,6 +7,7 @@ var gardenRouter = express.Router();
 
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
+var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET GARDEN
@@ -30,7 +31,7 @@ gardenRouter.get('/garden', function(req, res) {
                 heading: 'Garden',
                 navMenu: nav,
                 isLoggedIn: true,
-                username: req.session.username
+                username: generateUserMsg(req.session.username)
             }
         );
 
@@ -79,7 +80,7 @@ gardenRouter.post('/garden', function(req, res, next) {
                         startTime: row.pref_startTime,
                         stopTime: row.pref_stopTime,
                         isActive: row.pref_isActive,
-                        sensorActivated: row.pref_sensorTriggered
+                        sensorActivated: row.pref_sensorTriggered,
                     });
 
                 }
@@ -93,7 +94,7 @@ gardenRouter.post('/garden', function(req, res, next) {
                         navMenu: navMenu,
                         isLoggedIn: true,
                         gardensData: gardensData,
-                        username: req.session.username
+                        username: generateUserMsg(req.session.username)
                     }
                 );
 
@@ -129,7 +130,7 @@ gardenRouter.post('/garden', function(req, res, next) {
                         navMenu: nav.full,
                         isLoggedIn: true,
                         msg: 'Garden on/off time updated successfully',
-                        username: req.session.username
+                        username: generateUserMsg(req.session.username)
                     }
                 );
 

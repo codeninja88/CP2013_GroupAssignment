@@ -1,13 +1,12 @@
 var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database('database.sqlite');
 
-
 var express = require('express');
 var lightsRouter = express.Router();
 
-
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
+var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET LIGHTS
@@ -31,7 +30,7 @@ lightsRouter.get('/light', function(req, res) {
                 heading: 'Lights',
                 navMenu: nav,
                 isLoggedIn: true,
-                username: req.session.username
+                username: generateUserMsg(req.session.username)
             }
         );
 
@@ -91,7 +90,7 @@ lightsRouter.post('/light', function(req, res, next) {
                         navMenu: navMenu,
                         isLoggedIn: true,
                         lightsData: lightsData,
-                        username: req.session.username
+                        username: generateUserMsg(req.session.username)
                     }
                 );
 
@@ -136,7 +135,7 @@ lightsRouter.post('/light', function(req, res, next) {
                         navMenu: nav.full,
                         isLoggedIn: true,
                         msg: 'lights on/off time updated successfully',
-                        username: req.session.username
+                        username: generateUserMsg(req.session.username)
                     }
                 );
 
