@@ -4,11 +4,15 @@ var db;
 
 var database = {
 
+
+
     connect: function connect() {
 
         db = new sqlite3.Database('database.sqlite');
 
     } ,
+
+
 
 
     insert: function (tableName, data) {
@@ -33,19 +37,12 @@ var database = {
 
         sql += valueStr + ")";
 
-        db.run(sql, function (err) {
-
-            if (err !== null) next(err);
-
-            else {
-
-                console.log("Insert Successful")
-
-            }
-        });
+        db.run(sql, function (err) { if (err !== null) next(err); });
 
 
     },
+
+
 
     selectAll: function (tableName, callback) {
 
@@ -72,18 +69,28 @@ var database = {
 
         var sql = "DELETE FROM '" + tableName + "' WHERE ";
 
+        var counter = 0;
+
         Object.keys(attributeObj).forEach(
 
             function (currKey) {
 
-                sql += currKey + " = '" + attributeObj[currKey] + "';";
+                if (counter > 0) sql += ", ";
+
+                sql += currKey + " = '" + attributeObj[currKey] + "'";
+
+                counter++;
 
             }
         );
 
+        sql += ";";
+
         db.run(sql, function (err) { if (err !== null) next(err); });
 
     },
+
+
 
     update: function(tableName, attributeObj, whereObj) {
 
@@ -121,8 +128,6 @@ var database = {
         );
 
         sql += ";";
-
-        console.log(sql);
 
         db.run(sql, function (err) { if (err !== null) next(err);});
 
