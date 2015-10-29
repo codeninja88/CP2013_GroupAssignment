@@ -187,6 +187,7 @@ adminRouter.post('/admin',
 
             } else if (req.body.submitBttn === 'Delete User') {
 
+<<<<<<< Updated upstream
                 sqlRequest = "DELETE FROM 'USER' WHERE user_username = '" + req.body.username + "';";
 
                 db.run(sqlRequest,
@@ -207,10 +208,24 @@ adminRouter.post('/admin',
                             );
 
                             res.render("admin.ejs", ejsObject);
+=======
+                database.remove("USER", {
+                    user_username: req.body.username
+                });
+>>>>>>> Stashed changes
 
-                        }
+                ejsObject = EjsObjectFactory(
+                    {
+                        title: 'Admin',
+                        heading: 'Admin',
+                        navMenu: nav.full,
+                        isLoggedIn: true,
+                        msg: 'User successfully deleted',
+                        username: req.session.username
                     }
                 );
+
+                res.render("admin.ejs", ejsObject);
 
             }
 

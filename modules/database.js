@@ -1,7 +1,6 @@
 var sqlite3 = require("sqlite3").verbose();
 
 var db;
-var sql;
 
 var database = {
 
@@ -15,7 +14,7 @@ var database = {
     insert: function (tableName, data) {
 
         var dataKeys = Object.keys(data);
-        sql = "INSERT into '" + tableName + "' (";
+        var sql = "INSERT into '" + tableName + "' (";
         var valueStr = ") VALUES (";
 
         for (var i = 0; i < dataKeys.length; i++) {
@@ -50,7 +49,7 @@ var database = {
 
     selectAll: function (tableName, callback) {
 
-        sql = "SELECT * FROM '" + tableName + "';";
+        var sql = "SELECT * FROM '" + tableName + "';";
         var results = [];
 
         function handleRow(error, row) {
@@ -65,6 +64,25 @@ var database = {
         }
 
         db.each(sql, handleRow, handleCompletion);
+    },
+
+
+
+    remove: function(tableName, attributeObj) {
+
+        var sql = "DELETE FROM '" + tableName + "' WHERE ";
+
+        Object.keys(attributeObj).forEach(
+
+            function (currKey) {
+
+                sql += currKey + " = '" + attributeObj[currKey] + "';";
+
+            }
+        );
+
+        db.run(sql, function (err) { if (err !== null) next(err); });
+
     }
 
 
