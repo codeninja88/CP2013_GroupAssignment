@@ -9,7 +9,7 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 indexRoute.get('/', function(req, res) {
 
     //helper function to generate ejsObject
-    function getEjsObject (nav, isLoggedIn){
+    function generateEjsObject (nav, isLoggedIn){
 
         return ejsObjectFactory(
             {
@@ -25,17 +25,17 @@ indexRoute.get('/', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 1){
 
-        res.render('index.ejs', getEjsObject(nav.full, true));
+        res.render('index.ejs', generateEjsObject(nav.full, true));
 
 
     } else if (req.session.username && req.session.isAdmin === 0){
 
-        res.render('index.ejs', getEjsObject(nav.standard, true));
+        res.render('index.ejs', generateEjsObject(nav.standard, true));
 
 
     } else {
 
-        res.render('index.ejs', getEjsObject(nav.simple, false));
+        res.render('index.ejs', generateEjsObject(nav.simple, false));
 
     }
 
