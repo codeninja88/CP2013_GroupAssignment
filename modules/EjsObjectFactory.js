@@ -1,4 +1,4 @@
-function EjsObjectFactory (config) {
+function ejsObjectFactory (config) {
 
     function generateUserMsg() {
 
@@ -34,4 +34,4 @@ function EjsObjectFactory (config) {
 }
 
 
-module.exports = EjsObjectFactory;
+module.exports = ejsObjectFactory;

@@ -2,7 +2,7 @@ var express = require('express');
 var holidayModeRouter = express.Router();
 
 var nav = require("../modules/nav.js");
-var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
+var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
 
 
 // GET HOLIDAY MODE
@@ -20,7 +20,7 @@ holidayModeRouter.get('/holidayMode', function(req, res) {
 
     function setInfo (nav){
 
-        ejsObject = EjsObjectFactory(
+        ejsObject = ejsObjectFactory(
             {
                 title: 'Holiday Mode',
                 heading: 'Holiday Mode',

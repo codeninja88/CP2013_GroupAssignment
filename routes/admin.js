@@ -7,7 +7,7 @@ var adminRouter = express.Router();
 var database = require("../modules/database.js");
 
 var nav = require("../modules/nav.js");
-var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
+var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
 
 
 
@@ -20,7 +20,7 @@ adminRouter.get('/admin', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 1){
 
-        ejsObject = EjsObjectFactory(
+        ejsObject = ejsObjectFactory(
             {
                 title: 'Admin',
                 heading: 'Admin',
@@ -72,7 +72,7 @@ adminRouter.post('/admin',
             });
 
 
-            ejsObject = EjsObjectFactory(
+            ejsObject = ejsObjectFactory(
                 {
                     title: 'Admin',
                     heading: 'Admin',
@@ -93,7 +93,7 @@ adminRouter.post('/admin',
 
                 function (results) {
 
-                    ejsObject = EjsObjectFactory(
+                    ejsObject = ejsObjectFactory(
                         {
                             title: 'Admin',
                             heading: 'Admin',
@@ -116,7 +116,7 @@ adminRouter.post('/admin',
 
                 function (results) {
 
-                    ejsObject = EjsObjectFactory(
+                    ejsObject = ejsObjectFactory(
                         {
                             title: 'Admin',
                             heading: 'Admin',
@@ -165,7 +165,7 @@ adminRouter.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            ejsObject = EjsObjectFactory(
+                            ejsObject = ejsObjectFactory(
                                 {
                                     title: 'Admin',
                                     heading: 'Admin',
@@ -195,7 +195,7 @@ adminRouter.post('/admin',
                         if (err !== null) next(err);
                         else {
 
-                            ejsObject = EjsObjectFactory(
+                            ejsObject = ejsObjectFactory(
                                 {
                                     title: 'Admin',
                                     heading: 'Admin',

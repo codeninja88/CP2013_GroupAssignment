@@ -5,7 +5,7 @@ var express = require('express');
 var loginRouter = express.Router();
 
 var nav = require("../modules/nav.js");
-var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
+var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
 
 
 
@@ -23,7 +23,7 @@ loginRouter.post('/',
                 // query returns undefined if username entered does not exist in db
                 if (row === undefined || !row.user_username) {
 
-                    ejsObject = EjsObjectFactory(
+                    ejsObject = ejsObjectFactory(
                         {
                             title: 'Home',
                             heading: 'Admin',

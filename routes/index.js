@@ -2,7 +2,7 @@ var express = require('express');
 var homeRouter = express.Router();
 
 var nav = require("../modules/nav.js");
-var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
+var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
 
 
 
@@ -14,7 +14,7 @@ homeRouter.get('/', function(req, res) {
     //Checking if user logged in otherwise redirecting to home page
     if (req.session.username && req.session.isAdmin === 1){
 
-        ejsObject = EjsObjectFactory(
+        ejsObject = ejsObjectFactory(
             {
                 title: 'Home',
                 navMenu: nav.full,
@@ -29,7 +29,7 @@ homeRouter.get('/', function(req, res) {
 
     } else if (req.session.username && req.session.isAdmin === 0){
 
-        ejsObject = EjsObjectFactory(
+        ejsObject = ejsObjectFactory(
             {
                 title: 'Home',
                 navMenu: nav.standard,
@@ -46,7 +46,7 @@ homeRouter.get('/', function(req, res) {
 
     } else {
 
-        ejsObject = EjsObjectFactory(
+        ejsObject = ejsObjectFactory(
             {
                 title: 'Home',
                 navMenu: nav.simple,

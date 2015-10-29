@@ -7,7 +7,7 @@ var lightsRouter = express.Router();
 
 
 var nav = require("../modules/nav.js");
-var EjsObjectFactory = require("../modules/EjsObjectFactory.js");
+var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
 
 
 // GET LIGHTS
@@ -25,7 +25,7 @@ lightsRouter.get('/light', function(req, res) {
 
     function setInfo (nav){
 
-        ejsObject = EjsObjectFactory(
+        ejsObject = ejsObjectFactory(
             {
                 title: 'Lights',
                 heading: 'Lights',
@@ -84,7 +84,7 @@ lightsRouter.post('/light', function(req, res, next) {
             }, function (){
 
 
-                ejsObject = EjsObjectFactory(
+                ejsObject = ejsObjectFactory(
                     {
                         title: 'Lights',
                         heading: 'Lights',
@@ -129,7 +129,7 @@ lightsRouter.post('/light', function(req, res, next) {
             if (err !== null) next(err);
             else {
 
-                ejsObject = EjsObjectFactory(
+                ejsObject = ejsObjectFactory(
                     {
                         title: 'Lights',
                         heading: 'Lights',
