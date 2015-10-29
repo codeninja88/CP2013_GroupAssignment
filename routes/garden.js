@@ -3,7 +3,7 @@ var db = new sqlite3.Database('database.sqlite');
 
 
 var express = require('express');
-var gardenRouter = express.Router();
+var gardenRoute = express.Router();
 
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
@@ -11,21 +11,12 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET GARDEN
-gardenRouter.get('/', function(req, res) {
+gardenRoute.get('/', function(req, res) {
 
-    var ejsObject;
+    //helper function
+    function generateEjsObject (nav) {
 
-    //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard);
-
-    else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full);
-
-    else res.redirect('/');
-
-
-    function setInfo (nav){
-
-        ejsObject = ejsObjectFactory(
+        return ejsObjectFactory(
             {
                 title: 'Garden',
                 heading: 'Garden',
@@ -35,16 +26,31 @@ gardenRouter.get('/', function(req, res) {
             }
         );
 
-        res.render('garden.ejs', ejsObject);
+    }
+
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username && req.session.isAdmin === 0) {
+
+        res.render('garden.ejs', generateEjsObject(nav.standard));
+
+
+    } else if (req.session.username && req.session.isAdmin === 1) {
+
+        res.render('garden.ejs', generateEjsObject(nav.full));
+
+
+    } else {
+
+        res.redirect('/');
 
     }
+
 
 });
 
 
-
 // POST -->  GARDEN
-gardenRouter.post('/', function(req, res, next) {
+gardenRoute.post('/', function(req, res, next) {
 
     var formName = req.body.formName;
     var sqlRequest;
@@ -142,4 +148,4 @@ gardenRouter.post('/', function(req, res, next) {
 
 });
 
-module.exports = gardenRouter;
+module.exports = gardenRoute;
