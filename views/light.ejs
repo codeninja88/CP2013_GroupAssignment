@@ -27,7 +27,7 @@
 
         <%if (lightsData !== '') {%>
             <form method="post">
-                <table>
+                <table id="data">
                     <tr>
                         <td><h2>Light Name</h2></td>
                         <td><h2>On Time</h2></td>
@@ -56,6 +56,7 @@
                             </label></td>
                     </tr>
                     <% }); %>
+                    <tr></tr>
                     <tr>
                         <td></td>
                         <td colspan="2"><input id='setLightTimes' name='submitBttn' value='Set Times' type='submit' /></td>

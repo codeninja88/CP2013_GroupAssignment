@@ -7,18 +7,38 @@
 
 <% if(isLoggedIn === false) { %>
 
-<form method="post">
-    <span>Username:</span>
-    <input type="text" name="username" required="required" />
-    <br/>
 
-    <span>Password:</span>
-    <input type="password" name="password" required="required" />
-    <br/>
+    <div id="login">
+        <form method="post">
+        <h1>Login</h1>
+            <table>
+                <tr>
+                    <td>
+                        <input type="text" name="username" required="required" placeholder="Username" />
+                        <input type="password" name="password" required="required" placeholder="Password" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 
-    <input type="submit" />
+<!--<form id="login" method="post">-->
+    <!--<span>Username:</span>-->
+    <!--<input type="text" name="username" required="required" />-->
+    <!--<br/>-->
 
-</form>
+    <!--<span>Password:</span>-->
+    <!--<input type="password" name="password" required="required" />-->
+    <!--<br/>-->
+
+    <!--<input type="submit" />-->
+
+<!--</form>-->
 
 <% } %>
 
@@ -38,13 +58,12 @@
     </div>
 
 </div>
-
 <script src="/socket.io/socket.io.js"></script>
 <!--<script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>-->
 <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
 <script>
     var socket = io();
-    socket.on('connection', function(prefStatusData){
+    socket.on('connection', function (prefStatusData) {
 
         $('#summaryTable').empty();
 
@@ -54,7 +73,7 @@
         content += '<th>Status</th></strong>';
         content += "</tr>";
 
-        for(var i = 0; i < prefStatusData.length; i++) {
+        for (var i = 0; i < prefStatusData.length; i++) {
 
             if (prefStatusData[i].prefName.startsWith('l')) {
                 content += '<tr><td>' + '<img src="/public/icons/lightIcon_32x32.png" style="float:left"> ' + prefStatusData[i].prefName + '</td><td>On</td></tr>';
@@ -68,8 +87,6 @@
         content += "</table>";
 
         $('#summaryTable').append(content);
-
-
 
 
     });
