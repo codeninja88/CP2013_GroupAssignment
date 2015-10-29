@@ -1,6 +1,7 @@
-var sqlite3 = require("sqlite3").verbose();
-var db = new sqlite3.Database('database.sqlite');
+//var sqlite3 = require("sqlite3").verbose();
+//var db = new sqlite3.Database('database.sqlite');
 
+var database = require("../modules/database.js");
 
 var express = require('express');
 var gardenRoute = express.Router();
@@ -53,26 +54,29 @@ gardenRoute.get('/', function(req, res) {
 gardenRoute.post('/', function(req, res, next) {
 
     var formName = req.body.formName;
-    var sqlRequest;
-    var gardensData = '';
+    //var sqlRequest;
+    //var gardensData = '';
     var navMenu;
 
     if (formName === 'showGardenTimes') {
-
-        sqlRequest = "SELECT * FROM 'PREFERENCE'";
-
-        if (req.session.isAdmin === 0) {
-
-            navMenu = nav.standard;
-
-        } else {
-
-            navMenu = nav.full;
-
-        }
-
         var ejsObject;
-        gardensData = [];
+        var gardensData = [];
+
+        if (req.session.isAdmin === 0) navMenu = nav.standard;
+        else navMenu = nav.full;
+
+        database.selectAll('PREFERENCE', function (results) {
+
+
+
+
+        });
+
+
+
+
+
+
 
 
         db.serialize(function() {
@@ -86,7 +90,7 @@ gardenRoute.post('/', function(req, res, next) {
                         startTime: row.pref_startTime,
                         stopTime: row.pref_stopTime,
                         isActive: row.pref_isActive,
-                        sensorActivated: row.pref_sensorTriggered,
+                        sensorActivated: row.pref_sensorTriggered
                     });
 
                 }

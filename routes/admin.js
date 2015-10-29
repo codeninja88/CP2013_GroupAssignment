@@ -159,7 +159,8 @@ adminRoute.post('/',
                     }
                 }
 
-                database.update('USER', attributes, {
+                database.update('USER', attributes,
+                    {
                         user_username: req.body.username
                     }
                 );
