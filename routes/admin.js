@@ -141,48 +141,48 @@ adminRouter.post('/',
 
             if (req.body.submitBttn === 'Save') {
 
-                sqlRequest = "UPDATE 'USER' SET " +
-                    "user_fName = '" + req.body.fName + "', " +
-                    "user_lName = '" + req.body.lName + "', " +
-                    "user_address = '" + req.body.address + "', " +
-                    "user_isAdmin = '" + req.body.userLevel + "', " +
-                    "user_phone = '" + req.body.phone + "', " +
-                    "user_email = '" + req.body.email + "'";
+                var attributes;
 
                 if (req.body.userLevel == 0) {
-                    sqlRequest +=
-                        ", user_startTime = '" + req.body.startTime + "', " +
-                        "user_endTime = '" + req.body.endTime + "'";
+                    attributes = {
+                        user_fName: req.body.fName,
+                        user_lName: req.body.lName,
+                        user_address: req.body.address,
+                        user_isAdmin: req.body.userLevel,
+                        user_phone: req.body.phone,
+                        user_email: req.body.email,
+                        user_startTime: req.body.startTime,
+                        user_endTime: req.body.endTime
+                    }
+                } else {
+                    attributes = {
+                        user_fName: req.body.fName,
+                        user_lName: req.body.lName,
+                        user_address: req.body.address,
+                        user_isAdmin: req.body.userLevel,
+                        user_phone: req.body.phone,
+                        user_email: req.body.email
+                    }
                 }
 
-                sqlRequest += " WHERE user_username = '" + req.body.username + "';";
-
-
-                db.run(sqlRequest,
-
-                    function (err) {
-
-                        if (err !== null) next(err);
-                        else {
-
-                            ejsObject = ejsObjectFactory(
-                                {
-                                    title: 'Admin',
-                                    heading: 'Admin',
-                                    navMenu: nav.full,
-                                    isLoggedIn: true,
-                                    msg: 'User details have been updated successfully',
-                                    username: generateUserMsg(req.session.username)
-                                }
-                            );
-
-                            res.render("admin.ejs", ejsObject);
-
-                        }
-
+                database.update('USER', attributes, {
+                        user_username: req.body.username
                     }
-
                 );
+
+
+                ejsObject = ejsObjectFactory(
+                    {
+                        title: 'Admin',
+                        heading: 'Admin',
+                        navMenu: nav.full,
+                        isLoggedIn: true,
+                        msg: 'User details have been updated successfully',
+                        username: generateUserMsg(req.session.username)
+                    }
+                );
+
+                res.render("admin.ejs", ejsObject);
 
 
             } else if (req.body.submitBttn === 'Delete User') {

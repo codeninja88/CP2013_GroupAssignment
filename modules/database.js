@@ -83,6 +83,49 @@ var database = {
 
         db.run(sql, function (err) { if (err !== null) next(err); });
 
+    },
+
+    update: function(tableName, attributeObj, whereObj) {
+
+        var sql = "UPDATE '" + tableName + "' SET ";
+
+        var counter = 0;
+
+        Object.keys(attributeObj).forEach(
+
+            function (currKey) {
+
+                if (counter > 0) sql += ", ";
+
+                sql += currKey + " = '" + attributeObj[currKey] + "'";
+
+                counter++;
+
+            }
+        );
+
+        sql += " WHERE ";
+
+        counter = 0;
+
+        Object.keys(whereObj).forEach(
+            function (currKey) {
+
+                if (counter > 0) sql += " AND ";
+
+                sql += currKey + " = '" + whereObj[currKey] + "'";
+
+                counter++;
+
+            }
+        );
+
+        sql += ";";
+
+        console.log(sql);
+
+        db.run(sql, function (err) { if (err !== null) next(err);});
+
     }
 
 
