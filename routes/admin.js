@@ -1,11 +1,7 @@
-var sqlite3 = require("sqlite3").verbose();
-var db = new sqlite3.Database('database.sqlite');
-
 var express = require('express');
-var adminRouter = express.Router();
+var adminRoute = express.Router();
 
 var database = require("../modules/database.js");
-
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
 var generateUserMsg = require('../modules/generateUserMsg.js');
@@ -13,7 +9,7 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET ADMIN
-adminRouter.get('/', function(req, res) {
+adminRoute.get('/', function(req, res) {
 
     var ejsObject;
 
@@ -46,17 +42,15 @@ adminRouter.get('/', function(req, res) {
 
 
 // POST --> ADD/EDIT USERS
-adminRouter.post('/',
+adminRoute.post('/',
 
-    function(req, res, next) {
+    function(req, res) {
 
         var formName = req.body.formName;
-        var sqlRequest;
 
         database.connect();
 
         if (formName === 'createUser') {
-
 
             database.insert("USER", {
 
@@ -72,7 +66,7 @@ adminRouter.post('/',
             });
 
 
-            ejsObject = ejsObjectFactory(
+            var ejsObject = ejsObjectFactory(
                 {
                     title: 'Admin',
                     heading: 'Admin',
@@ -93,7 +87,7 @@ adminRouter.post('/',
 
                 function (results) {
 
-                    ejsObject = ejsObjectFactory(
+                    var ejsObject = ejsObjectFactory(
                         {
                             title: 'Admin',
                             heading: 'Admin',
@@ -116,7 +110,7 @@ adminRouter.post('/',
 
                 function (results) {
 
-                    ejsObject = ejsObjectFactory(
+                    var ejsObject = ejsObjectFactory(
                         {
                             title: 'Admin',
                             heading: 'Admin',
@@ -212,4 +206,4 @@ adminRouter.post('/',
 );
 
 
-module.exports = adminRouter;
+module.exports = adminRoute;
