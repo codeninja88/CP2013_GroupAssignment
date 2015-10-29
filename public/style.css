@@ -230,7 +230,7 @@ form {
 }
 
 #innerContainerRight table {
-	/*width: 50%;*/
+	width: 50%;
 	border-collapse: collapse;
 	text-align: center;
 }
