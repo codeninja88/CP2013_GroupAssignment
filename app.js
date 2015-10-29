@@ -45,22 +45,19 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded( {extended: true} ));
 
 
-app.use('/',
-    homeRouter,
-    adminRouter,
-    lightsRouter,
-    loginRouter,
-    logoutRouter,
-    gardenRouter,
-    holidayModeRouter,
-    doorGatesRouter
+app.use('/', homeRouter,
+             loginRouter
 );
 
+app.use('/admin', adminRouter);
+app.use('/doorGates', doorGatesRouter);
+app.use('/garden', gardenRouter);
+app.use('/holidayMode', holidayModeRouter);
+app.use('/light', lightsRouter);
+app.use('/logout', logoutRouter);
 
-//socket.io used here
 
-
-
+//socket.io used here for index page real-time data
 io.on('connection', function (socket) {
 
 

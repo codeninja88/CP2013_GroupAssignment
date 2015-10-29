@@ -7,7 +7,7 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET HOLIDAY MODE
-holidayModeRouter.get('/holidayMode', function(req, res) {
+holidayModeRouter.get('/', function(req, res) {
 
     var ejsObject;
 

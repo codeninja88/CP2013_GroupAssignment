@@ -11,7 +11,7 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET GARDEN
-gardenRouter.get('/garden', function(req, res) {
+gardenRouter.get('/', function(req, res) {
 
     var ejsObject;
 
@@ -44,7 +44,7 @@ gardenRouter.get('/garden', function(req, res) {
 
 
 // POST -->  GARDEN
-gardenRouter.post('/garden', function(req, res, next) {
+gardenRouter.post('/', function(req, res, next) {
 
     var formName = req.body.formName;
     var sqlRequest;

@@ -13,7 +13,7 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET ADMIN
-adminRouter.get('/admin', function(req, res) {
+adminRouter.get('/', function(req, res) {
 
     var ejsObject;
 
@@ -46,7 +46,7 @@ adminRouter.get('/admin', function(req, res) {
 
 
 // POST --> ADD/EDIT USERS
-adminRouter.post('/admin',
+adminRouter.post('/',
 
     function(req, res, next) {
 

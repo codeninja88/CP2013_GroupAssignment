@@ -8,7 +8,7 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET DOORS/GATES
-doorGatesRouter.get('/doorGates', function(req, res) {
+doorGatesRouter.get('/', function(req, res) {
 
     var ejsObject;
 

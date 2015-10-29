@@ -10,7 +10,7 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET LIGHTS
-lightsRouter.get('/light', function(req, res) {
+lightsRouter.get('/', function(req, res) {
 
     var ejsObject;
 
@@ -45,7 +45,7 @@ lightsRouter.get('/light', function(req, res) {
 
 
 // POST -->  LIGHTS
-lightsRouter.post('/light', function(req, res, next) {
+lightsRouter.post('/', function(req, res, next) {
 
     var formName = req.body.formName;
     var sqlRequest;
