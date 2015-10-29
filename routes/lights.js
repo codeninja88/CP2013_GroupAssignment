@@ -2,7 +2,7 @@ var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database('database.sqlite');
 
 var express = require('express');
-var lightsRouter = express.Router();
+var lightsRoute = express.Router();
 
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
@@ -10,21 +10,11 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // GET LIGHTS
-lightsRouter.get('/', function(req, res) {
+lightsRoute.get('/', function(req, res) {
 
-    var ejsObject;
+    function generateEjsObject (nav){
 
-    //Checking if user logged in otherwise redirecting to home page
-    if (req.session.username && req.session.isAdmin === 0) setInfo(nav.standard);
-
-    else if (req.session.username && req.session.isAdmin === 1) setInfo(nav.full);
-
-    else res.redirect('/');
-
-
-    function setInfo (nav){
-
-        ejsObject = ejsObjectFactory(
+        return ejsObjectFactory(
             {
                 title: 'Lights',
                 heading: 'Lights',
@@ -34,8 +24,22 @@ lightsRouter.get('/', function(req, res) {
             }
         );
 
-        res.render('light.ejs', ejsObject);
+    }
 
+    //Checking if user logged in otherwise redirecting to home page
+    if (req.session.username && req.session.isAdmin === 0) {
+
+        res.render('light.ejs', generateEjsObject(nav.standard));
+
+
+    } else if (req.session.username && req.session.isAdmin === 1) {
+
+        res.render('light.ejs', generateEjsObject(nav.full));
+
+
+    } else {
+
+        res.redirect('/');
 
     }
 
@@ -45,7 +49,7 @@ lightsRouter.get('/', function(req, res) {
 
 
 // POST -->  LIGHTS
-lightsRouter.post('/', function(req, res, next) {
+lightsRoute.post('/', function(req, res, next) {
 
     var formName = req.body.formName;
     var sqlRequest;
@@ -147,4 +151,4 @@ lightsRouter.post('/', function(req, res, next) {
 
 });
 
-module.exports = lightsRouter;
+module.exports = lightsRoute;

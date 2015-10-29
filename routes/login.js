@@ -2,7 +2,7 @@ var sqlite3 = require("sqlite3").verbose();
 var db = new sqlite3.Database('database.sqlite');
 
 var express = require('express');
-var loginRouter = express.Router();
+var loginRoute = express.Router();
 
 var nav = require("../modules/nav.js");
 var ejsObjectFactory = require("../modules/ejsObjectFactory.js");
@@ -10,7 +10,7 @@ var generateUserMsg = require('../modules/generateUserMsg.js');
 
 
 // POST -->  LOGIN
-loginRouter.post('/',
+loginRoute.post('/',
 
     function(req, res, next) {
 
@@ -93,8 +93,4 @@ loginRouter.post('/',
 );
 
 
-
-
-
-
-module.exports = loginRouter;
+module.exports = loginRoute;
