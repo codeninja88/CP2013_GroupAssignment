@@ -14,14 +14,14 @@ var bodyParser = require('body-parser');
 
 
 // SEPARATE ROUTES
-var homeRouter = require('./routes/index');
-var adminRouter = require('./routes/admin');
-var lightsRouter = require('./routes/lights');
-var loginRouter = require('./routes/login');
-var logoutRouter = require('./routes/logout');
-var gardenRouter = require('./routes/garden');
-var holidayModeRouter = require('./routes/holidayMode');
-var doorGatesRouter = require('./routes/doorGates');
+var indexRoute = require('./routes/index');
+var adminRoute = require('./routes/admin');
+var lightsRoute = require('./routes/lights');
+var loginRoute = require('./routes/login');
+var logoutRoute = require('./routes/logout');
+var gardenRoute = require('./routes/garden');
+var holidayModeRoute = require('./routes/holidayMode');
+var doorGatesRoute = require('./routes/doorGates');
 
 
 app.use(express.static(__dirname));
@@ -45,16 +45,16 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded( {extended: true} ));
 
 
-app.use('/', homeRouter,
-             loginRouter
+app.use('/', indexRoute,
+             loginRoute
 );
 
-app.use('/admin', adminRouter);
-app.use('/doorGates', doorGatesRouter);
-app.use('/garden', gardenRouter);
-app.use('/holidayMode', holidayModeRouter);
-app.use('/light', lightsRouter);
-app.use('/logout', logoutRouter);
+app.use('/admin', adminRoute);
+app.use('/doorGates', doorGatesRoute);
+app.use('/garden', gardenRoute);
+app.use('/holidayMode', holidayModeRoute);
+app.use('/light', lightsRoute);
+app.use('/logout', logoutRoute);
 
 
 //socket.io used here for index page real-time data
