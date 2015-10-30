@@ -83,7 +83,7 @@ adminRoute.post('/',
 
         } else if (formName === 'showStatus') {
 
-            database.selectAll('USER',
+            database.selectAll('USER', {},
 
                 function (results) {
 
@@ -106,7 +106,7 @@ adminRoute.post('/',
 
         } else if (formName === 'showEdit') {
 
-            database.selectAll('USER',
+            database.selectAll('USER', {},
 
                 function (results) {
 

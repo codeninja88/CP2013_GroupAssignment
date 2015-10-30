@@ -44,9 +44,23 @@ var database = {
 
 
 
-    selectAll: function (tableName, callback) {
+    selectAll: function (tableName, likeObj, callback) {
 
-        var sql = "SELECT * FROM '" + tableName + "';";
+
+        var sql = "SELECT * FROM '" + tableName + "'";
+
+        if (likeObj.likeType === 'startsWith') {
+
+            sql += " WHERE " + likeObj.likeKey + " LIKE '" + likeObj.likeValue + "%';";
+
+        } else {
+
+            sql += ";";
+
+        }
+
+        console.log(sql);
+
         var results = [];
 
         function handleRow(error, row) {
@@ -62,6 +76,8 @@ var database = {
 
         db.each(sql, handleRow, handleCompletion);
     },
+
+
 
 
 

@@ -38,17 +38,17 @@
 				<%gardensData.forEach(function(gardenData) { %>
 				<tr>
 					<td><label><%= gardenData.gardenName %> </label></td>
-					<td><input type='time' name='<%= gardenData.gardenName %>On' value='<%= gardenData.startTime %>' /> </td>
-					<td><input type='time' name='<%= gardenData.gardenName %>Off' value='<%= gardenData.stopTime %>' /></td>
+					<td><input type='time' name='<%= gardenData.pref_name %>On' value='<%= gardenData.pref_startTime %>' /> </td>
+					<td><input type='time' name='<%= gardenData.pref_name %>Off' value='<%= gardenData.pref_stopTime %>' /></td>
 					<td><label>
-							<% if (!gardenData.isActive) {%>
+							<% if (!gardenData.pref_isActive) {%>
 							Off
 							<% } else { %>
 							On
 							<%}%>
 						</label></td>
 					<td><label>
-							<% if (!gardenData.sensorActivated) {%>
+							<% if (!gardenData.pref_sensorTriggered) {%>
 							No
 							<% } else { %>
 							Yes

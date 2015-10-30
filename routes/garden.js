@@ -1,5 +1,5 @@
-//var sqlite3 = require("sqlite3").verbose();
-//var db = new sqlite3.Database('database.sqlite');
+var sqlite3 = require("sqlite3").verbose();
+var db = new sqlite3.Database('database.sqlite');
 
 var database = require("../modules/database.js");
 
@@ -54,65 +54,46 @@ gardenRoute.get('/', function(req, res) {
 gardenRoute.post('/', function(req, res, next) {
 
     var formName = req.body.formName;
-    //var sqlRequest;
-    //var gardensData = '';
     var navMenu;
 
     if (formName === 'showGardenTimes') {
         var ejsObject;
-        var gardensData = [];
 
         if (req.session.isAdmin === 0) navMenu = nav.standard;
         else navMenu = nav.full;
 
-        database.selectAll('PREFERENCE', function (results) {
+        database.connect();
+
+        database.selectAll('PREFERENCE',
+            {
+                likeKey: 'pref_name',
+                likeValue: 'garden',
+                likeType: 'startsWith'
+            },
+            function (results) {
 
 
-
-
-        });
-
-
-
-
-
-
-
-
-        db.serialize(function() {
-
-            db.each(sqlRequest, function(err, row) {
-
-                if (row.pref_name.startsWith('garden')) {
-
-                    gardensData.push({
-                        gardenName: row.pref_name,
-                        startTime: row.pref_startTime,
-                        stopTime: row.pref_stopTime,
-                        isActive: row.pref_isActive,
-                        sensorActivated: row.pref_sensorTriggered
-                    });
-
+            ejsObject = ejsObjectFactory(
+                {
+                    title: 'Garden',
+                    heading: 'Garden',
+                    navMenu: navMenu,
+                    isLoggedIn: true,
+                    gardensData: results,
+                    username: generateUserMsg(req.session.username)
                 }
+            );
 
-            }, function (){
-
-                ejsObject = ejsObjectFactory(
-                    {
-                        title: 'Garden',
-                        heading: 'Garden',
-                        navMenu: navMenu,
-                        isLoggedIn: true,
-                        gardensData: gardensData,
-                        username: generateUserMsg(req.session.username)
-                    }
-                );
-
-                res.render('garden.ejs', ejsObject);
-
-            })
+            res.render('garden.ejs', ejsObject);
 
         });
+
+
+
+
+
+
+
 
     }
 
